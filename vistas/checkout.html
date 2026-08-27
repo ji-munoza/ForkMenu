@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu - Checkout</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>ForkMenu</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="blogs.html">Blogs</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <a href="login.html">Iniciar sesión</a> |
+            <a href="registro.html">Registrar usuario</a>
+            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="checkout">
+            <h2>Finalizar pedido</h2>
+
+            <form id="form-checkout" novalidate>
+
+                <fieldset class="modalidad-pedido">
+                    <legend>¿Cómo quieres recibir tu pedido?</legend>
+
+                    <label>
+                        <input type="radio" name="modalidad" value="delivery" required>
+                        Delivery
+                    </label>
+                    <label>
+                        <input type="radio" name="modalidad" value="retiro" required>
+                        Retiro en el local
+                    </label>
+                    <label>
+                        <input type="radio" name="modalidad" value="mesa" required>
+                        Consumo en mesa
+                    </label>
+                </fieldset>
+
+                <!-- Estos tres bloques se muestran/ocultan con JavaScript según la
+                     modalidad elegida (Fase 6). Por ahora quedan todos visibles. -->
+                <div class="campo-condicional" id="campos-delivery">
+                    <div class="campo">
+                        <label for="direccion-entrega">Dirección de entrega</label>
+                        <input type="text" id="direccion-entrega" name="direccion-entrega" maxlength="300">
+                        <span class="mensaje-error" id="error-direccion-entrega"></span>
+                    </div>
+                </div>
+
+                <div class="campo-condicional" id="campos-mesa">
+                    <div class="campo">
+                        <label for="numero-mesa">Número de mesa</label>
+                        <input type="number" id="numero-mesa" name="numero-mesa" min="1">
+                        <span class="mensaje-error" id="error-numero-mesa"></span>
+                    </div>
+                </div>
+
+                <div class="campo-condicional" id="campos-retiro">
+                    <p>Tu pedido estará listo para retirar en el local en aproximadamente 20 minutos.</p>
+                </div>
+
+                <div class="campo">
+                    <label for="nombre-cliente">Nombre completo</label>
+                    <input type="text" id="nombre-cliente" name="nombre-cliente" maxlength="100" required>
+                    <span class="mensaje-error" id="error-nombre-cliente"></span>
+                </div>
+
+                <div class="campo">
+                    <label for="telefono-contacto">Teléfono de contacto</label>
+                    <input type="tel" id="telefono-contacto" name="telefono-contacto">
+                    <span class="mensaje-error" id="error-telefono-contacto"></span>
+                </div>
+
+                <div class="campo">
+                    <label for="metodo-pago">Método de pago</label>
+                    <select id="metodo-pago" name="metodo-pago" required>
+                        <option value="">-- Selecciona una opción --</option>
+                        <option value="tarjeta">Tarjeta de crédito/débito</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="transferencia">Transferencia</option>
+                    </select>
+                </div>
+
+                <div class="resumen-pedido">
+                    <h3>Resumen del pedido</h3>
+                    <!-- Esta lista hoy es estática. En la Fase 5/6 se llenará
+                         con los productos reales guardados en localStorage. -->
+                    <ul id="resumen-items">
+                        <li>Hamburguesa Clásica x1 — $8.000</li>
+                    </ul>
+                    <p>Total: <span id="resumen-total">$8.000</span></p>
+                </div>
+
+                <!-- Por ahora es un enlace normal a confirmacion.html. En la Fase 6
+                     se reemplaza por un botón type="submit" interceptado por JS,
+                     que valida el formulario antes de redirigir. -->
+                <a href="confirmacion.html" class="btn btn-confirmar">Confirmar pedido</a>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

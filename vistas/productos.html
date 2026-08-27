@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu - Productos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>ForkMenu</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="blogs.html">Blogs</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <a href="login.html">Iniciar sesión</a> |
+            <a href="registro.html">Registrar usuario</a>
+            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="productos-listado">
+            <h2>Nuestros Productos</h2>
+
+            <div class="filtros-productos">
+                <label for="buscar-producto" class="visually-hidden">Buscar producto</label>
+                <input type="search" id="buscar-producto" name="buscar-producto" placeholder="Buscar producto...">
+
+                <nav class="tabs-categoria" aria-label="Filtrar por categoría">
+                    <button type="button" class="tab-categoria activo" data-categoria="todas">Todas</button>
+                    <button type="button" class="tab-categoria" data-categoria="hamburguesas">Hamburguesas</button>
+                    <button type="button" class="tab-categoria" data-categoria="pizzas">Pizzas</button>
+                    <button type="button" class="tab-categoria" data-categoria="bebidas">Bebidas</button>
+                    <button type="button" class="tab-categoria" data-categoria="postres">Postres</button>
+                </nav>
+            </div>
+
+            <!-- Esta grilla hoy es estática. En la Fase 5 la reemplazaremos
+                 por tarjetas generadas dinámicamente desde JavaScript, y el
+                 buscador/tabs de arriba filtrarán este mismo listado según
+                 data-categoria. -->
+            <div class="grilla-productos" id="grilla-productos">
+
+                <article class="producto" data-categoria="hamburguesas">
+                    <a href="detalle-producto.html">
+                        <div class="img-placeholder">[Imagen del producto]</div>
+                        <h3>Hamburguesa Clásica</h3>
+                    </a>
+                    <p class="precio">$8.000</p>
+                    <button type="button">Añadir al carrito</button>
+                </article>
+
+                <article class="producto" data-categoria="pizzas">
+                    <a href="detalle-producto.html">
+                        <div class="img-placeholder">[Imagen del producto]</div>
+                        <h3>Pizza Margarita</h3>
+                    </a>
+                    <p class="precio">$10.000</p>
+                    <button type="button">Añadir al carrito</button>
+                </article>
+
+                <article class="producto" data-categoria="postres">
+                    <a href="detalle-producto.html">
+                        <div class="img-placeholder">[Imagen del producto]</div>
+                        <h3>Tiramisú</h3>
+                    </a>
+                    <p class="precio">$5.500</p>
+                    <button type="button">Añadir al carrito</button>
+                </article>
+
+                <article class="producto" data-categoria="bebidas">
+                    <a href="detalle-producto.html">
+                        <div class="img-placeholder">[Imagen del producto]</div>
+                        <h3>Limonada Natural</h3>
+                    </a>
+                    <p class="precio">$3.000</p>
+                    <button type="button">Añadir al carrito</button>
+                </article>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

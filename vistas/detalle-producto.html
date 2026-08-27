@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu - Detalle del producto</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>ForkMenu</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="blogs.html">Blogs</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <a href="login.html">Iniciar sesión</a> |
+            <a href="registro.html">Registrar usuario</a>
+            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+        </div>
+    </header>
+
+    <main>
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Home</a> &gt;
+            <a href="productos.html">Productos</a> &gt;
+            <span>Hamburguesa Clásica</span>
+        </nav>
+
+        <section class="detalle-producto">
+            <div class="galeria">
+                <div class="img-placeholder img-principal">[Imagen principal]</div>
+                <div class="miniaturas">
+                    <div class="img-placeholder">[mini 1]</div>
+                    <div class="img-placeholder">[mini 2]</div>
+                    <div class="img-placeholder">[mini 3]</div>
+                </div>
+            </div>
+
+            <div class="info-producto">
+                <h2>Hamburguesa Clásica</h2>
+                <p class="precio">$8.000</p>
+                <p class="descripcion">
+                    Carne 100% vacuno, queso cheddar, lechuga, tomate y nuestra
+                    salsa de la casa, servida en pan brioche.
+                </p>
+
+                <form>
+                    <div class="campo">
+                        <label for="tamano">Tamaño</label>
+                        <select id="tamano" name="tamano">
+                            <option value="individual">Individual</option>
+                            <option value="doble">Doble</option>
+                        </select>
+                    </div>
+
+                    <fieldset class="ingredientes-extra">
+                        <legend>Ingredientes extra (opcional)</legend>
+                        <label><input type="checkbox" name="ingrediente" value="queso-extra"> Queso extra</label>
+                        <label><input type="checkbox" name="ingrediente" value="tocino"> Tocino</label>
+                        <label><input type="checkbox" name="ingrediente" value="palta"> Palta</label>
+                    </fieldset>
+
+                    <label for="cantidad">Cantidad</label>
+                    <input type="number" id="cantidad" name="cantidad" value="1" min="1">
+                    <button type="button">Añadir al carrito</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="productos-relacionados">
+            <h3>Productos relacionados</h3>
+            <div class="grilla-productos">
+                <article class="producto">
+                    <div class="img-placeholder">[Imagen]</div>
+                    <h4>Pizza Margarita</h4>
+                    <p class="precio">$10.000</p>
+                </article>
+                <article class="producto">
+                    <div class="img-placeholder">[Imagen]</div>
+                    <h4>Ensalada César</h4>
+                    <p class="precio">$6.500</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

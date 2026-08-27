@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu - Carrito de compras</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>ForkMenu</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="blogs.html">Blogs</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <a href="login.html">Iniciar sesión</a> |
+            <a href="registro.html">Registrar usuario</a>
+            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="carrito">
+            <h2>Mi carrito de compras</h2>
+
+            <!-- Esta lista es estática por ahora. En la Fase 5 se generará
+                 dinámicamente desde localStorage con JavaScript. -->
+            <div id="lista-carrito" class="lista-carrito">
+                <article class="item-carrito">
+                    <div class="img-placeholder">[Imagen]</div>
+                    <div class="item-info">
+                        <h3>Hamburguesa Clásica</h3>
+                        <p>$8.000</p>
+                    </div>
+                    <div class="item-cantidad">
+                        <button type="button">−</button>
+                        <input type="number" value="1" min="1">
+                        <button type="button">+</button>
+                    </div>
+                </article>
+            </div>
+
+            <div class="resumen-carrito">
+                <p>Total: <span id="total-carrito">$8.000</span></p>
+
+                <form id="form-cupon">
+                    <label for="cupon">Ingresa el cupón de descuento</label>
+                    <input type="text" id="cupon" name="cupon">
+                    <button type="submit">Aplicar</button>
+                </form>
+
+                <a href="checkout.html" class="btn btn-pagar">Pagar</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

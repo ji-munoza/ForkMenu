@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu Admin - Pedidos</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body class="admin-body">
+
+    <div class="admin-layout">
+
+        <nav class="admin-menu" aria-label="Menú de administración">
+            <div class="admin-logo">ForkMenu Admin</div>
+            <ul>
+                <li><a href="home-admin.html">Dashboard</a></li>
+                <li><a href="pedidos.html" class="activo">Pedidos</a></li>
+                <li><a href="productos-admin.html">Productos</a></li>
+                <li><a href="usuarios-admin.html">Usuarios</a></li>
+            </ul>
+            <ul class="admin-menu-inferior">
+                <li><a href="../../index.html">Salir a la tienda</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-content">
+            <h1>Historial de pedidos</h1>
+
+            <!-- TABLA ESTATICA, DEBE REMPLAZARSE POR UNA DINAMICA CON JS -->
+            <table class="tabla-pedidos">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Cliente</th>
+                        <th>Modalidad</th>
+                        <th>Estado</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FM-0001</td>
+                        <td>Juan Pérez</td>
+                        <td>Delivery</td>
+                        <td>En preparación</td>
+                        <td>$18.500</td>
+                    </tr>
+                    <tr>
+                        <td>FM-0002</td>
+                        <td>María González</td>
+                        <td>Retiro en local</td>
+                        <td>Listo para retiro</td>
+                        <td>$9.000</td>
+                    </tr>
+                    <tr>
+                        <td>FM-0003</td>
+                        <td>Mesa 4</td>
+                        <td>Consumo en mesa</td>
+                        <td>Confirmado</td>
+                        <td>$24.000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+    </div>
+
+</body>
+</html>
