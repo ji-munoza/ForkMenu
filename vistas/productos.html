@@ -24,7 +24,8 @@
         <div class="user-actions">
             <a href="login.html">Iniciar sesión</a> |
             <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <!-- Identificador agregado para que el carrito se actualice en esta vista -->
+            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         </div>
     </header>
 
@@ -45,46 +46,46 @@
                 </nav>
             </div>
 
-            <!-- Esta grilla hoy es estática. En la Fase 5 la reemplazaremos
-                 por tarjetas generadas dinámicamente desde JavaScript, y el
-                 buscador/tabs de arriba filtrarán este mismo listado según
-                 data-categoria. -->
             <div class="grilla-productos" id="grilla-productos">
 
                 <article class="producto" data-categoria="hamburguesas">
-                    <a href="detalle-producto.html">
+                    <!-- Parámetro ?id=1 agregado a la URL -->
+                    <a href="detalle-producto.html?id=1">
                         <div class="img-placeholder">[Imagen del producto]</div>
                         <h3>Hamburguesa Clásica</h3>
                     </a>
                     <p class="precio">$8.000</p>
-                    <button type="button">Añadir al carrito</button>
+                    <button type="button" class="btn-agregar" data-id="1" data-nombre="Hamburguesa Clásica" data-precio="8000">Añadir al carrito</button>
                 </article>
 
                 <article class="producto" data-categoria="pizzas">
-                    <a href="detalle-producto.html">
+                    <!-- Parámetro ?id=2 agregado a la URL -->
+                    <a href="detalle-producto.html?id=2">
                         <div class="img-placeholder">[Imagen del producto]</div>
                         <h3>Pizza Margarita</h3>
                     </a>
                     <p class="precio">$10.000</p>
-                    <button type="button">Añadir al carrito</button>
+                    <button type="button" class="btn-agregar" data-id="2" data-nombre="Pizza Margarita" data-precio="10000">Añadir al carrito</button>
                 </article>
 
                 <article class="producto" data-categoria="postres">
-                    <a href="detalle-producto.html">
+                    <!-- Parámetro ?id=3 agregado a la URL -->
+                    <a href="detalle-producto.html?id=3">
                         <div class="img-placeholder">[Imagen del producto]</div>
                         <h3>Tiramisú</h3>
                     </a>
                     <p class="precio">$5.500</p>
-                    <button type="button">Añadir al carrito</button>
+                    <button type="button" class="btn-agregar" data-id="3" data-nombre="Tiramisú" data-precio="5500">Añadir al carrito</button>
                 </article>
 
                 <article class="producto" data-categoria="bebidas">
-                    <a href="detalle-producto.html">
+                    <!-- Parámetro ?id=4 agregado a la URL -->
+                    <a href="detalle-producto.html?id=4">
                         <div class="img-placeholder">[Imagen del producto]</div>
                         <h3>Limonada Natural</h3>
                     </a>
                     <p class="precio">$3.000</p>
-                    <button type="button">Añadir al carrito</button>
+                    <button type="button" class="btn-agregar" data-id="4" data-nombre="Limonada Natural" data-precio="3000">Añadir al carrito</button>
                 </article>
 
             </div>
@@ -95,5 +96,7 @@
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- Etiqueta de script enlazada correctamente -->
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>

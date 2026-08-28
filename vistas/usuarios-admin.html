@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu Admin - Mantenedor de Usuarios</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="admin-body">
+
+    <div class="admin-layout">
+        <nav class="admin-menu">
+            <div class="admin-logo">ForkMenu Admin</div>
+            <ul>
+                <li><a href="pedidos.html">Pedidos</a></li>
+                <li><a href="productos-admin.html">Productos</a></li>
+                <li><a href="usuarios-admin.html" class="activo">Usuarios</a></li>
+            </ul>
+            <ul class="admin-menu-inferior">
+                <li><a href="../index.html">Salir a la tienda</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-content">
+            <h1>Gestión de Usuarios y Roles</h1>
+            
+            <form id="form-usuario-admin" class="form-mantenedor">
+                <div class="campo">
+                    <label for="run-usuario">RUN</label>
+                    <input type="text" id="run-usuario" placeholder="19011022K" required>
+                </div>
+                
+                <div class="campo">
+                    <label for="correo-usuario">Correo Electrónico</label>
+                    <input type="email" id="correo-usuario" required>
+                </div>
+
+                <!-- Campo exclusivo para asignar permisos dentro del sistema -->
+                <div class="campo">
+                    <label for="rol-usuario">Tipo de Usuario (Rol)</label>
+                    <select id="rol-usuario" required>
+                        <option value="cliente">Cliente (Solo Tienda)</option>
+                        <option value="vendedor">Vendedor (Ver Pedidos)</option>
+                        <option value="admin">Administrador (Acceso Total)</option>
+                    </select>
+                </div>
+
+                <button type="submit">Crear Usuario</button>
+            </form>
+        </main>
+    </div>
+    <script src="../js/validaciones.js"></script>
+</body>
+</html>

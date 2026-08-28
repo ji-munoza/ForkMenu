@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu Admin - Mantenedor de Productos</title>
+    <!-- Ruta corregida: solo retrocedemos una carpeta -->
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="admin-body">
+
+    <div class="admin-layout">
+        <!-- Menú lateral del panel de administración -->
+        <nav class="admin-menu">
+            <div class="admin-logo">ForkMenu Admin</div>
+            <ul>
+                <li><a href="pedidos.html">Pedidos</a></li>
+                <li><a href="productos-admin.html" class="activo">Productos</a></li>
+                <li><a href="usuarios-admin.html">Usuarios</a></li>
+            </ul>
+            <ul class="admin-menu-inferior">
+                <li><a href="../index.html">Salir a la tienda</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-content">
+            <h1>Gestión de Productos</h1>
+            
+            <!-- Formulario preparado con todos los campos requeridos en la evaluación -->
+            <form id="form-producto" class="form-mantenedor">
+                <div class="campo">
+                    <label for="codigo-prod">Código de Producto</label>
+                    <input type="text" id="codigo-prod" minlength="3" required>
+                </div>
+                
+                <div class="campo">
+                    <label for="nombre-prod">Nombre</label>
+                    <input type="text" id="nombre-prod" maxlength="100" required>
+                </div>
+
+                <div class="campo">
+                    <label for="precio-prod">Precio</label>
+                    <input type="number" id="precio-prod" min="0" required>
+                </div>
+
+                <div class="campo">
+                    <label for="stock-prod">Stock Total</label>
+                    <input type="number" id="stock-prod" min="0" required>
+                </div>
+
+                <div class="campo">
+                    <label for="stock-critico">Stock Crítico (Alerta)</label>
+                    <input type="number" id="stock-critico" min="0">
+                </div>
+
+                <div class="campo">
+                    <label for="categoria-prod">Categoría</label>
+                    <select id="categoria-prod" required>
+                        <option value="">Seleccione categoría</option>
+                        <option value="hamburguesas">Hamburguesas</option>
+                        <option value="pizzas">Pizzas</option>
+                        <option value="bebidas">Bebidas</option>
+                    </select>
+                </div>
+
+                <button type="submit">Guardar Producto</button>
+            </form>
+        </main>
+    </div>
+    <script src="../js/validaciones.js"></script>
+</body>
+</html>

@@ -34,25 +34,33 @@
 
             <form id="form-checkout" novalidate>
 
+                <!-- Reformulamos esta sección para usar tarjetas visuales. 
+                     CSS ocultará el "puntito" del radio button y JS mostrará los campos según lo que se elija -->
                 <fieldset class="modalidad-pedido">
                     <legend>¿Cómo quieres recibir tu pedido?</legend>
+                    
+                    <div class="opciones-tarjetas">
+                        <label class="tarjeta-opcion">
+                            <input type="radio" name="modalidad" value="delivery" required>
+                            <span class="icono">🛵</span>
+                            <span class="texto">A Domicilio</span>
+                        </label>
+                        
+                        <label class="tarjeta-opcion">
+                            <input type="radio" name="modalidad" value="retiro" required>
+                            <span class="icono">🏪</span>
+                            <span class="texto">Retiro en Local</span>
+                        </label>
 
-                    <label>
-                        <input type="radio" name="modalidad" value="delivery" required>
-                        Delivery
-                    </label>
-                    <label>
-                        <input type="radio" name="modalidad" value="retiro" required>
-                        Retiro en el local
-                    </label>
-                    <label>
-                        <input type="radio" name="modalidad" value="mesa" required>
-                        Consumo en mesa
-                    </label>
+                        <label class="tarjeta-opcion">
+                            <input type="radio" name="modalidad" value="mesa" required>
+                            <span class="icono">🍽️</span>
+                            <span class="texto">Consumo en Mesa</span>
+                        </label>
+                    </div>
                 </fieldset>
 
-                <!-- Estos tres bloques se muestran/ocultan con JavaScript según la
-                     modalidad elegida (Fase 6). Por ahora quedan todos visibles. -->
+                <!-- Contenedores preparados para que JS los muestre u oculte dependiendo de la tarjeta seleccionada -->
                 <div class="campo-condicional" id="campos-delivery">
                     <div class="campo">
                         <label for="direccion-entrega">Dirección de entrega</label>
@@ -67,10 +75,6 @@
                         <input type="number" id="numero-mesa" name="numero-mesa" min="1">
                         <span class="mensaje-error" id="error-numero-mesa"></span>
                     </div>
-                </div>
-
-                <div class="campo-condicional" id="campos-retiro">
-                    <p>Tu pedido estará listo para retirar en el local en aproximadamente 20 minutos.</p>
                 </div>
 
                 <div class="campo">
@@ -91,24 +95,18 @@
                         <option value="">-- Selecciona una opción --</option>
                         <option value="tarjeta">Tarjeta de crédito/débito</option>
                         <option value="efectivo">Efectivo</option>
-                        <option value="transferencia">Transferencia</option>
                     </select>
                 </div>
 
                 <div class="resumen-pedido">
                     <h3>Resumen del pedido</h3>
-                    <!-- Esta lista hoy es estática. En la Fase 5/6 se llenará
-                         con los productos reales guardados en localStorage. -->
                     <ul id="resumen-items">
                         <li>Hamburguesa Clásica x1 — $8.000</li>
                     </ul>
-                    <p>Total: <span id="resumen-total">$8.000</span></p>
+                    <p>Total a pagar: <span id="resumen-total">$8.000</span></p>
                 </div>
 
-                <!-- Por ahora es un enlace normal a confirmacion.html. En la Fase 6
-                     se reemplaza por un botón type="submit" interceptado por JS,
-                     que valida el formulario antes de redirigir. -->
-                <a href="confirmacion.html" class="btn btn-confirmar">Confirmar pedido</a>
+                <button type="submit" class="btn btn-confirmar">Confirmar pedido</button>
             </form>
         </section>
     </main>
@@ -116,6 +114,6 @@
     <footer>
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
-
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>
