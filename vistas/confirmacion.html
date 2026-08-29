@@ -24,7 +24,7 @@
         <div class="user-actions">
             <a href="login.html">Iniciar sesión</a> |
             <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         </div>
     </header>
 
@@ -32,17 +32,14 @@
         <section class="confirmacion">
             <h2>¡Gracias por tu pedido!</h2>
 
-            <!-- El código se genera con JavaScript en la Fase 5/6.
-                 Por ahora se muestra un valor de ejemplo. -->
-            <p class="codigo-pedido">Código de pedido: <strong id="codigo-pedido">FM-0001</strong></p>
-            <p class="estado-pedido">Estado: <span id="estado-pedido">Confirmado</span></p>
+            <p class="codigo-pedido">Código de pedido: <strong id="codigo-pedido">Cargando...</strong></p>
+            <p class="estado-pedido">Estado: <span id="estado-pedido">Procesando...</span></p>
 
             <div class="resumen-pedido">
                 <h3>Resumen</h3>
-                <ul id="resumen-items-confirmacion">
-                    <li>Hamburguesa Clásica x1 — $8.000</li>
-                </ul>
-                <p>Total: <span id="total-confirmacion">$8.000</span></p>
+                <!-- Contenedor vacío donde JS pondrá los platos reales comprados -->
+                <ul id="resumen-items-confirmacion"></ul>
+                <p>Total: <span id="total-confirmacion">$0</span></p>
             </div>
 
             <a href="../index.html" class="btn">Volver al inicio</a>
@@ -52,6 +49,6 @@
     <footer>
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
-
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>

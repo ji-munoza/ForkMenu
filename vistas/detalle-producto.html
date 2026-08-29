@@ -24,7 +24,7 @@
         <div class="user-actions">
             <a href="login.html">Iniciar sesión</a> |
             <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         </div>
     </header>
 
@@ -32,25 +32,21 @@
         <nav class="breadcrumb" aria-label="Ruta de navegación">
             <a href="../index.html">Home</a> &gt;
             <a href="productos.html">Productos</a> &gt;
-            <span>Hamburguesa Clásica</span>
+            <span id="breadcrumb-nombre">Cargando...</span>
         </nav>
 
         <section class="detalle-producto">
             <div class="galeria">
-                <div class="img-placeholder img-principal">[Imagen principal]</div>
-                <div class="miniaturas">
-                    <div class="img-placeholder">[mini 1]</div>
-                    <div class="img-placeholder">[mini 2]</div>
-                    <div class="img-placeholder">[mini 3]</div>
-                </div>
+                <!-- Se agregó un ID para cambiar la imagen con JS -->
+                <img id="detalle-imagen" src="" alt="Cargando producto" style="width: 100%; border-radius: 12px; object-fit: cover;">
             </div>
 
             <div class="info-producto">
-                <h2>Hamburguesa Clásica</h2>
-                <p class="precio">$8.000</p>
-                <p class="descripcion">
-                    Carne 100% vacuno, queso cheddar, lechuga, tomate y nuestra
-                    salsa de la casa, servida en pan brioche.
+                <!-- Se agregaron IDs al nombre, precio y descripción -->
+                <h2 id="detalle-nombre">Cargando...</h2>
+                <p class="precio" id="detalle-precio">$0</p>
+                <p class="descripcion" id="detalle-descripcion">
+                    Por favor espera, estamos cargando la información del producto.
                 </p>
 
                 <form>
@@ -62,33 +58,12 @@
                         </select>
                     </div>
 
-                    <fieldset class="ingredientes-extra">
-                        <legend>Ingredientes extra (opcional)</legend>
-                        <label><input type="checkbox" name="ingrediente" value="queso-extra"> Queso extra</label>
-                        <label><input type="checkbox" name="ingrediente" value="tocino"> Tocino</label>
-                        <label><input type="checkbox" name="ingrediente" value="palta"> Palta</label>
-                    </fieldset>
-
                     <label for="cantidad">Cantidad</label>
                     <input type="number" id="cantidad" name="cantidad" value="1" min="1">
-                    <button type="button">Añadir al carrito</button>
+                    
+                    <!-- Este botón no tiene atributos data- aún, JS se los inyectará cuando cargue el producto -->
+                    <button type="button" class="btn-agregar" id="detalle-btn-agregar">Añadir al carrito</button>
                 </form>
-            </div>
-        </section>
-
-        <section class="productos-relacionados">
-            <h3>Productos relacionados</h3>
-            <div class="grilla-productos">
-                <article class="producto">
-                    <div class="img-placeholder">[Imagen]</div>
-                    <h4>Pizza Margarita</h4>
-                    <p class="precio">$10.000</p>
-                </article>
-                <article class="producto">
-                    <div class="img-placeholder">[Imagen]</div>
-                    <h4>Ensalada César</h4>
-                    <p class="precio">$6.500</p>
-                </article>
             </div>
         </section>
     </main>
@@ -96,6 +71,6 @@
     <footer>
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
-
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>

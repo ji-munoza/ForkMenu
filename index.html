@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ForkMenu - Tu comida, a tu manera</title>
-    <!-- Stylesheet DE CSS PARA LOS ESTILOS -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <!-- CABECERA DEL SITIO -->
     <header>
         <div class="logo">
             <h1>ForkMenu</h1>
@@ -28,38 +26,32 @@
         <div class="user-actions">
             <a href="vistas/login.html">Iniciar sesión</a> | 
             <a href="vistas/registro.html">Registrar usuario</a>
-            <!-- El id="contador-carrito" es vital para que JS sepa dónde dibujar el número -->
             <a href="vistas/carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main>
-        
-        <!-- SECCIÓN DE BIENVENIDA -->
         <section class="hero-section">
             <h2>Explora, arma y recibe tu pedido como prefieras</h2>
             <p>Disfruta de nuestra carta eligiendo tu modalidad favorita: a domicilio, retiro en el local o pidiendo directamente desde tu mesa. Una experiencia simple y rápida.</p>
             <a href="vistas/productos.html" class="btn">Explorar Menú</a>
         </section>
 
-        <!-- SECCIÓN DE PRODUCTOS DESTACADOS -->
         <section class="productos-destacados">
             <h3>Nuestros Platos</h3>
             <div class="grilla-productos">
                 
                 <article class="producto">
-                    <div class="img-placeholder">[Imagen del producto]</div>
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Hamburguesa Clásica">
                     <h4>Hamburguesa Clásica</h4>
-                    <p>$8.000</p>
-                    <!-- Atributos inyectados para que JS capture la información al hacer clic -->
+                    <p class="precio">$8.000</p>
                     <button class="btn-agregar" data-id="1" data-nombre="Hamburguesa Clásica" data-precio="8000">Añadir al carrito</button>
                 </article>
 
                 <article class="producto">
-                    <div class="img-placeholder">[Imagen del producto]</div>
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="Pizza Margarita">
                     <h4>Pizza Margarita</h4>
-                    <p>$10.000</p>
+                    <p class="precio">$10.000</p>
                     <button class="btn-agregar" data-id="2" data-nombre="Pizza Margarita" data-precio="10000">Añadir al carrito</button>
                 </article>
                 
@@ -67,7 +59,6 @@
         </section>
     </main>
 
-    <!-- PIE DE PÁGINA CON INFORMACIÓN DE LA TIENDA -->
     <footer>
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
