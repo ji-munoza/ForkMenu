@@ -24,7 +24,8 @@
         <div class="user-actions">
             <a href="login.html">Iniciar sesión</a> |
             <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <!-- Se agregó el ID del contador para que JS mantenga el carrito sincronizado -->
+            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         </div>
     </header>
 
@@ -41,7 +42,8 @@
 
                 <div class="campo">
                     <label for="correo">Correo</label>
-                    <input type="email" id="correo" name="correo" maxlength="100">
+                    <!-- Se agregó el atributo 'required' faltante -->
+                    <input type="email" id="correo" name="correo" maxlength="100" required>
                     <span class="mensaje-error" id="error-correo"></span>
                 </div>
 
@@ -51,7 +53,8 @@
                     <span class="mensaje-error" id="error-mensaje"></span>
                 </div>
 
-                <button type="submit">Enviar mensaje</button>
+                <!-- Se agregó la clase 'btn' para mantener la consistencia visual -->
+                <button type="submit" class="btn">Enviar mensaje</button>
             </form>
         </section>
     </main>
@@ -60,5 +63,7 @@
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- Etiqueta conectora con tu JavaScript -->
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>

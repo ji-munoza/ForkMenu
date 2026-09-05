@@ -22,32 +22,32 @@
             </ul>
         </nav>
         <div class="user-actions">
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <a href="login.html">Iniciar sesión</a> |
+            <a href="registro.html">Registrar usuario</a>
+            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         </div>
     </header>
 
     <main>
         <section class="login">
-            <div class="img-placeholder logo-empresa">[Logo]</div>
-            <h2>ForkMenu</h2>
-
+            <h2>Iniciar sesión</h2>
             <form id="form-login" novalidate>
                 <div class="campo">
-                    <label for="correo">Correo</label>
-                    <input type="email" id="correo" name="correo" maxlength="100" required>
+                    <label for="correo">Correo Electrónico</label>
+                    <input type="email" id="correo" name="correo" required>
+                    <!-- Gancho para error dinámico -->
                     <span class="mensaje-error" id="error-correo"></span>
                 </div>
 
                 <div class="campo">
                     <label for="contrasena">Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" minlength="4" maxlength="10" required>
+                    <input type="password" id="contrasena" name="contrasena" required>
+                    <!-- Gancho para error dinámico -->
                     <span class="mensaje-error" id="error-contrasena"></span>
                 </div>
 
-                <button type="submit">Iniciar sesión</button>
+                <button type="submit" class="btn">Ingresar</button>
             </form>
-
-            <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
         </section>
     </main>
 
@@ -55,5 +55,6 @@
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
 
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>

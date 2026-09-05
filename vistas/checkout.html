@@ -24,86 +24,70 @@
         <div class="user-actions">
             <a href="login.html">Iniciar sesión</a> |
             <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         </div>
     </header>
 
     <main>
         <section class="checkout">
-            <h2>Finalizar pedido</h2>
+            <h2>Finalizar Pedido</h2>
 
-            <form id="form-checkout" novalidate>
-
-                <!-- Reformulamos esta sección para usar tarjetas visuales. 
-                     CSS ocultará el "puntito" del radio button y JS mostrará los campos según lo que se elija -->
+            <!-- Todo el proceso debe ser un formulario para que JS lo pueda interceptar -->
+            <form id="form-checkout">
+                
                 <fieldset class="modalidad-pedido">
-                    <legend>¿Cómo quieres recibir tu pedido?</legend>
-                    
+                    <legend>¿Cómo deseas recibir tu pedido?</legend>
                     <div class="opciones-tarjetas">
+                        
                         <label class="tarjeta-opcion">
                             <input type="radio" name="modalidad" value="delivery" required>
                             <span class="icono">🛵</span>
                             <span class="texto">A Domicilio</span>
                         </label>
-                        
+                
                         <label class="tarjeta-opcion">
-                            <input type="radio" name="modalidad" value="retiro" required>
-                            <span class="icono">🏪</span>
-                            <span class="texto">Retiro en Local</span>
+                            <input type="radio" name="modalidad" value="retiro">
+                            <span class="icono">🛍️</span>
+                            <span class="texto">Retiro en local</span>
                         </label>
-
+                
                         <label class="tarjeta-opcion">
-                            <input type="radio" name="modalidad" value="mesa" required>
+                            <input type="radio" name="modalidad" value="mesa">
                             <span class="icono">🍽️</span>
-                            <span class="texto">Consumo en Mesa</span>
+                            <span class="texto">Consumo en mesa</span>
                         </label>
                     </div>
                 </fieldset>
 
-                <!-- Contenedores preparados para que JS los muestre u oculte dependiendo de la tarjeta seleccionada -->
-                <div class="campo-condicional" id="campos-delivery">
+                <!-- Campos dinámicos ocultos por defecto -->
+                <div id="campos-delivery" style="display: none;">
                     <div class="campo">
-                        <label for="direccion-entrega">Dirección de entrega</label>
-                        <input type="text" id="direccion-entrega" name="direccion-entrega" maxlength="300">
-                        <span class="mensaje-error" id="error-direccion-entrega"></span>
+                        <label for="direccion">Dirección de entrega</label>
+                        <input type="text" id="direccion" name="direccion" placeholder="Calle, número, comuna">
                     </div>
                 </div>
 
-                <div class="campo-condicional" id="campos-mesa">
+                <div id="campos-mesa" style="display: none;">
                     <div class="campo">
                         <label for="numero-mesa">Número de mesa</label>
-                        <input type="number" id="numero-mesa" name="numero-mesa" min="1">
-                        <span class="mensaje-error" id="error-numero-mesa"></span>
+                        <input type="number" id="numero-mesa" name="numero-mesa" min="1" max="20" placeholder="Ej: 5">
                     </div>
-                </div>
-
-                <div class="campo">
-                    <label for="nombre-cliente">Nombre completo</label>
-                    <input type="text" id="nombre-cliente" name="nombre-cliente" maxlength="100" required>
-                    <span class="mensaje-error" id="error-nombre-cliente"></span>
-                </div>
-
-                <div class="campo">
-                    <label for="telefono-contacto">Teléfono de contacto</label>
-                    <input type="tel" id="telefono-contacto" name="telefono-contacto">
-                    <span class="mensaje-error" id="error-telefono-contacto"></span>
                 </div>
 
                 <div class="campo">
                     <label for="metodo-pago">Método de pago</label>
                     <select id="metodo-pago" name="metodo-pago" required>
-                        <option value="">-- Selecciona una opción --</option>
-                        <option value="tarjeta">Tarjeta de crédito/débito</option>
-                        <option value="efectivo">Efectivo</option>
+                        <option value="">Seleccione un método</option>
+                        <option value="tarjeta">Tarjeta de Crédito / Débito</option>
+                        <option value="efectivo">Efectivo al recibir</option>
                     </select>
                 </div>
 
                 <div class="resumen-pedido">
-                    <h3>Resumen del pedido</h3>
-                    <ul id="resumen-items">
-                        <li>Hamburguesa Clásica x1 — $8.000</li>
-                    </ul>
-                    <p>Total a pagar: <span id="resumen-total">$8.000</span></p>
+                    <h3>Resumen de tu pedido</h3>
+                    <!-- JS inyectará los platos aquí -->
+                    <ul id="resumen-items"></ul>
+                    <p>Total a pagar: <span id="resumen-total">$0</span></p>
                 </div>
 
                 <button type="submit" class="btn btn-confirmar">Confirmar pedido</button>
@@ -114,6 +98,7 @@
     <footer>
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
+
     <script src="../js/validaciones.js"></script>
 </body>
 </html>
