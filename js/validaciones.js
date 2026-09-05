@@ -166,8 +166,18 @@ if (botonesFiltro.length > 0) {
 }
 
 // ==================================================================
-// MÓDULO 5: VALIDACIÓN ESTRICTA DE FORMULARIO DE REGISTRO
+// MÓDULO 5: VALIDACIÓN Y FORMATO DEL REGISTRO
 // ==================================================================
+function formatearRUT(rut) {
+    const limpio = rut.replace(/[^0-9kK]/gi, '').toUpperCase();
+    if (limpio.length <= 1) return limpio;
+    
+    const cuerpo = limpio.slice(0, -1);
+    const dv = limpio.slice(-1);
+    const cuerpoConPuntos = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return `${cuerpoConPuntos}-${dv}`;
+}
+
 const formRegistro = document.getElementById('form-registro');
 
 if (formRegistro) {
@@ -181,17 +191,17 @@ if (formRegistro) {
     const selectComuna = document.getElementById('comuna');
     const inputDireccion = document.getElementById('direccion');
 
-    // 1. Lógica de limpieza visual en tiempo real
+    inputRun.maxLength = 12;
+
+    // RESPETA TU LÓGICA ORIGINAL DE INPUT
     inputRun.addEventListener('input', (e) => {
-        // Esta línea borra mágicamente cualquier punto o guion que el usuario intente teclear
-        e.target.value = e.target.value.replace(/[^0-9kK]/gi, '').toUpperCase();
+        let valorLimpio = e.target.value.replace(/[^0-9kK]/gi, '').toUpperCase();
+        if (valorLimpio.length > 9) valorLimpio = valorLimpio.slice(0, 9);
+        e.target.value = formatearRUT(valorLimpio);
         
         const error = document.getElementById('error-run');
-        if (e.target.value.length < 8 || e.target.value.length > 9) {
-            error.innerText = "Debe tener entre 8 y 9 caracteres (Sin puntos ni guion).";
-        } else {
-            error.innerText = "";
-        }
+        if (valorLimpio.length < 8) error.innerText = "El RUN está incompleto.";
+        else error.innerText = "";
     });
 
     inputNombre.addEventListener('input', (e) => {
@@ -232,7 +242,6 @@ if (formRegistro) {
         else error.innerText = "";
     });
 
-    // 2. Selectores de región dinámicos
     const comunasPorRegion = {
         metropolitana: ["Santiago", "Puente Alto", "Maipú", "Providencia"],
         araucania: ["Temuco", "Villarrica", "Pucón", "Angol"],
@@ -254,16 +263,15 @@ if (formRegistro) {
         }
     });
 
-    // 3. Bloqueo de envío de formulario
+    // INYECCIÓN DE LA CREACIÓN DEL USUARIO
     formRegistro.addEventListener('submit', (e) => {
         e.preventDefault(); 
-        
         let errores = false;
         const dominios = ['@duoc.cl', '@profesor.duoc.cl', '@gmail.com'];
         const correoValido = dominios.some(dominio => inputCorreo.value.toLowerCase().endsWith(dominio));
+        const rutValidar = inputRun.value.replace(/[^0-9kK]/gi, '');
 
-        // Verificamos todas las reglas en seco antes de dejarlo pasar
-        if (inputRun.value.length < 8 || inputRun.value.length > 9) errores = true;
+        if (rutValidar.length < 8 || rutValidar.length > 9) errores = true;
         if (inputNombre.value.trim().length === 0 || inputNombre.value.length > 50) errores = true;
         if (inputApellidos.value.trim().length === 0 || inputApellidos.value.length > 100) errores = true;
         if (!correoValido) errores = true;
@@ -276,8 +284,25 @@ if (formRegistro) {
         if (errores) {
             alert("Error: Por favor corrige todos los campos antes de registrarte.");
         } else {
-            alert("¡Usuario registrado con éxito!");
-            formRegistro.reset();
+            // Guardamos al usuario de forma local
+            const usuariosGuardados = JSON.parse(localStorage.getItem('usuariosForkMenu')) || [];
+            const correoExiste = usuariosGuardados.some(u => u.correo === inputCorreo.value.toLowerCase());
+            
+            if (correoExiste) {
+                alert("Error: Este correo ya se encuentra registrado.");
+            } else {
+                const nuevoUsuario = {
+                    nombre: inputNombre.value,
+                    correo: inputCorreo.value.toLowerCase(),
+                    contrasena: inputPass.value 
+                };
+                usuariosGuardados.push(nuevoUsuario);
+                localStorage.setItem('usuariosForkMenu', JSON.stringify(usuariosGuardados));
+                
+                alert("Usuario registrado exitosamente"); 
+                formRegistro.reset();
+                window.location.href = 'login.html'; 
+            }
         }
     });
 }
@@ -343,9 +368,54 @@ function renderizarTicketConfirmacion() {
 }
 
 // ==================================================================
-// MÓDULO 7: INICIALIZADOR GENERAL
+// MÓDULO 7: LOGIN Y CONTROL DE SESIÓN DINÁMICA
+// ==================================================================
+const formLogin = document.getElementById('form-login');
+if (formLogin) {
+    formLogin.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const correoIngresado = document.getElementById('correo').value.toLowerCase();
+        const passIngresada = document.getElementById('contrasena').value;
+        const usuariosGuardados = JSON.parse(localStorage.getItem('usuariosForkMenu')) || [];
+        
+        const usuarioValido = usuariosGuardados.find(u => u.correo === correoIngresado && u.contrasena === passIngresada);
+        
+        if (usuarioValido) {
+            localStorage.setItem('usuarioActivo', JSON.stringify({ nombre: usuarioValido.nombre, correo: usuarioValido.correo }));
+            window.location.href = '../index.html';
+        } else {
+            alert("Error: El usuario no existe o la contraseña es incorrecta.");
+        }
+    });
+}
+
+function verificarSesion() {
+    const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
+    const contenedorAcciones = document.querySelector('.user-actions');
+    
+    if (usuarioActivo && contenedorAcciones) {
+        contenedorAcciones.innerHTML = `
+            <span style="font-weight: bold; color: var(--color-principal);">Hola, ${usuarioActivo.nombre}</span> | 
+            <a href="#" id="btn-cerrar-sesion">Cerrar sesión</a>
+            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
+        `;
+    }
+}
+
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'btn-cerrar-sesion') {
+        e.preventDefault();
+        localStorage.removeItem('usuarioActivo');
+        window.location.reload();
+    }
+});
+
+// ==================================================================
+// MÓDULO 8: INICIALIZADOR GENERAL
 // ==================================================================
 document.addEventListener('DOMContentLoaded', () => {
+    verificarSesion(); // Primero revisa si el usuario está logeado
     actualizarContadorSuperior(); 
     renderizarCarrito();          
     renderizarResumenCheckout();  
