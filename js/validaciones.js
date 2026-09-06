@@ -22,7 +22,8 @@ function guardarProductos(productos) {
 
 const usuariosIniciales = [
     {
-        nombre: "Administrador",
+        run: "11.111.111-1",
+        nombre: "Administrador General",
         correo: "admin@forkmenu.cl",
         contrasena: "admin123",
         rol: "admin"
@@ -62,7 +63,6 @@ document.addEventListener('click', (e) => {
         const platoEnCarrito = carrito.find(item => item.id === id);
         const cantidadEnCarrito = platoEnCarrito ? platoEnCarrito.cantidad : 0;
 
-        // Verificar stock antes de agregar
         if (productoBD && (cantidadEnCarrito + 1) > productoBD.stock) {
             alert(`Stock insuficiente. Solo quedan ${productoBD.stock} unidades de ${productoBD.nombre}.`);
             return;
@@ -108,12 +108,12 @@ function renderizarCarrito() {
         articulo.innerHTML = `
             <div class="item-info">
                 <h3 style="margin-bottom: 0;">${producto.nombre}</h3>
-                <p style="color: var(--color-principal); font-weight: bold;">$${producto.precio.toLocaleString('es-CL')}</p>
+                <p style="color: var(--bs-primary, #dc3545); font-weight: bold;">$${producto.precio.toLocaleString('es-CL')}</p>
             </div>
             <div class="item-cantidad" style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="btn-restar btn" data-index="${index}" style="padding: 5px 15px;">−</button>
+                <button type="button" class="btn-restar btn btn-sm btn-outline-secondary" data-index="${index}">−</button>
                 <span style="font-weight: bold; font-size: 1.2rem;">${producto.cantidad}</span>
-                <button type="button" class="btn-sumar btn" data-index="${index}" style="padding: 5px 15px;">+</button>
+                <button type="button" class="btn-sumar btn btn-sm btn-outline-secondary" data-index="${index}">+</button>
             </div>
         `;
         contenedor.appendChild(articulo);
@@ -319,9 +319,11 @@ if (formRegistro) {
                 alert("Error: Este correo ya se encuentra registrado.");
             } else {
                 const nuevoUsuario = {
-                    nombre: inputNombre.value,
+                    run: inputRun.value,
+                    nombre: `${inputNombre.value} ${inputApellidos.value}`,
                     correo: inputCorreo.value.toLowerCase(),
-                    contrasena: inputPass.value 
+                    contrasena: inputPass.value,
+                    rol: 'cliente'
                 };
                 usuariosGuardados.push(nuevoUsuario);
                 localStorage.setItem('usuariosForkMenu', JSON.stringify(usuariosGuardados));
@@ -394,6 +396,7 @@ function renderizarResumenCheckout() {
     carrito.forEach(producto => {
         subtotal += producto.precio * producto.cantidad;
         const li = document.createElement('li');
+        li.className = "list-group-item d-flex justify-content-between align-items-center bg-transparent px-0";
         li.innerText = `${producto.nombre} x${producto.cantidad} — $${(producto.precio * producto.cantidad).toLocaleString('es-CL')}`;
         listaResumen.appendChild(li);
     });
@@ -412,8 +415,8 @@ function renderizarResumenCheckout() {
 
     if (totalResumen) {
         if (descuento > 0) {
-            document.getElementById('linea-subtotal').style.display = 'block';
-            document.getElementById('linea-descuento').style.display = 'block';
+            document.getElementById('linea-subtotal').style.display = 'flex';
+            document.getElementById('linea-descuento').style.display = 'flex';
             document.getElementById('resumen-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')}`;
             document.getElementById('resumen-descuento').innerText = `-$${descuento.toLocaleString('es-CL')}`;
         }
@@ -432,7 +435,6 @@ if (formCheckout) {
 
         let productos = obtenerProductos();
 
-        // 1. Descontar Stock de los productos
         for (const item of carrito) {
             const prod = productos.find(p => p.id === item.id);
             if (prod) {
@@ -445,7 +447,6 @@ if (formCheckout) {
         }
         guardarProductos(productos);
 
-        // 2. Recalcular Total
         let subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
         let descuento = 0;
         if (cuponAplicado) {
@@ -454,7 +455,6 @@ if (formCheckout) {
         }
         const totalPagar = subtotal - descuento;
 
-        // 3. Obtener Datos de Cliente y Modalidad
         const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
         const clienteNombre = usuarioActivo ? usuarioActivo.nombre : "Cliente Anónimo";
         
@@ -480,13 +480,11 @@ if (formCheckout) {
             fecha: new Date().toLocaleString()
         };
 
-        // 4. Guardar orden individual y en el array global de pedidos para el Admin
         localStorage.setItem('ordenReciente', JSON.stringify(nuevaOrden));
         const pedidosTotales = JSON.parse(localStorage.getItem('pedidosForkMenu')) || [];
         pedidosTotales.push(nuevaOrden);
         localStorage.setItem('pedidosForkMenu', JSON.stringify(pedidosTotales));
 
-        // 5. Vaciar Carrito y Redirigir
         carrito = [];
         localStorage.setItem('carritoForkMenu', JSON.stringify(carrito));
         window.location.href = 'confirmacion.html';
@@ -506,10 +504,7 @@ function renderizarTicketConfirmacion() {
             listaEl.innerHTML = '';
             ordenGuardada.items.forEach(producto => {
                 const li = document.createElement('li');
-                li.style.display = 'flex';
-                li.style.justifyContent = 'space-between';
-                li.style.padding = '10px 0';
-                li.style.borderBottom = '1px solid var(--color-borde)';
+                li.className = "d-flex justify-content-between py-2 border-bottom";
                 li.innerText = `${producto.nombre} x${producto.cantidad} — $${(producto.precio * producto.cantidad).toLocaleString('es-CL')}`;
                 listaEl.appendChild(li);
             });
@@ -558,9 +553,10 @@ function verificarSesion() {
     if (usuarioActivo && contenedorAcciones) {
         const rutaVistas = window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/') ? 'vistas/' : '';
         contenedorAcciones.innerHTML = `
-            <a href="${rutaVistas}perfil.html" style="font-weight: bold; color: var(--color-principal); text-decoration: none;">👤 Hola, ${usuarioActivo.nombre}</a> | 
-            <a href="#" id="btn-cerrar-sesion">Cerrar sesión</a>
-            <a href="${rutaVistas}carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
+            <a href="${rutaVistas}perfil.html" class="text-white text-decoration-none fw-semibold">👤 Hola, ${usuarioActivo.nombre}</a>
+            <span class="text-white-50">|</span>
+            <a href="#" id="btn-cerrar-sesion" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
+            <a href="${rutaVistas}carrito.html" class="btn btn-danger btn-sm ms-2 cart" id="contador-carrito">🛒 Cart (0)</a>
         `;
     }
 }
@@ -599,20 +595,22 @@ function renderizarProductosAdmin() {
     productos.forEach(p => {
         const esCritico = p.stock <= (p.stockCritico || 0);
         const tr = document.createElement('tr');
-        if (esCritico) tr.style.backgroundColor = '#ffe6e6';
+        if (esCritico) tr.className = 'table-danger';
 
         tr.innerHTML = `
-            <td>${p.codigo}</td>
+            <td><code>${p.codigo}</code></td>
             <td><strong>${p.nombre}</strong></td>
             <td>$${p.precio.toLocaleString('es-CL')}</td>
             <td>
-                <input type="number" value="${p.stock}" min="0" style="width: 70px; padding: 5px;" id="stock-input-${p.id}">
-                ${esCritico ? '<span style="color:red; font-weight:bold; margin-left: 5px;">⚠️ Stock Crítico</span>' : ''}
+                <div class="d-flex align-items-center gap-2">
+                    <input type="number" value="${p.stock}" min="0" class="form-control form-control-sm" style="width: 80px;" id="stock-input-${p.id}">
+                    ${esCritico ? '<span class="badge bg-danger">⚠️ Crítico</span>' : ''}
+                </div>
             </td>
             <td>${p.stockCritico || 0}</td>
-            <td><span style="text-transform: capitalize;">${p.categoria}</span></td>
+            <td><span class="badge bg-secondary text-capitalize">${p.categoria}</span></td>
             <td>
-                <button type="button" class="btn" style="padding: 5px 10px;" onclick="actualizarStockDirecto('${p.id}')">Guardar Stock</button>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="actualizarStockDirecto('${p.id}')">Guardar</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -651,14 +649,12 @@ if (formProducto) {
         const existe = productos.find(p => p.codigo === codigo);
 
         if (existe) {
-            // Actualizar existente
             existe.nombre = nombre;
             existe.precio = precio;
             existe.stock = stock;
             existe.stockCritico = stockCritico;
             existe.categoria = categoria;
         } else {
-            // Crear nuevo
             const nuevoProd = {
                 id: String(Date.now()),
                 codigo,
@@ -691,7 +687,7 @@ function renderizarPedidosAdmin() {
     tbody.innerHTML = '';
 
     if (pedidos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 1rem;">No hay pedidos registrados en el sistema.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center p-3">No hay pedidos registrados en el sistema.</td></tr>';
         return;
     }
 
@@ -700,11 +696,11 @@ function renderizarPedidosAdmin() {
         const listaItems = ped.items ? ped.items.map(i => `${i.nombre} (x${i.cantidad})`).join('<br>') : 'Sin items';
 
         tr.innerHTML = `
-            <td><strong>${ped.codigo}</strong></td>
+            <td><code>${ped.codigo}</code></td>
             <td>${ped.cliente}</td>
             <td>${ped.modalidad}</td>
             <td>
-                <select onchange="cambiarEstadoPedido(${index}, this.value)" style="padding: 5px;">
+                <select class="form-select form-select-sm" onchange="cambiarEstadoPedido(${index}, this.value)">
                     <option value="En preparación" ${ped.estado === 'En preparación' ? 'selected' : ''}>En preparación</option>
                     <option value="Listo para retiro" ${ped.estado === 'Listo para retiro' ? 'selected' : ''}>Listo para retiro</option>
                     <option value="En camino" ${ped.estado === 'En camino' ? 'selected' : ''}>En camino</option>
@@ -712,8 +708,8 @@ function renderizarPedidosAdmin() {
                     <option value="Cancelado" ${ped.estado === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
                 </select>
             </td>
-            <td>$${ped.total.toLocaleString('es-CL')}</td>
-            <td style="font-size: 0.85rem;">${listaItems}</td>
+            <td class="fw-bold text-danger">$${ped.total.toLocaleString('es-CL')}</td>
+            <td class="small text-secondary">${listaItems}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -725,6 +721,99 @@ window.cambiarEstadoPedido = function(index, nuevoEstado) {
     localStorage.setItem('pedidosForkMenu', JSON.stringify(pedidos));
     alert(`El pedido ${pedidos[index].codigo} cambió a estado: "${nuevoEstado}"`);
 };
+
+// ==================================================================
+// MÓDULO 10: PANEL ADMIN - GESTIÓN DE USUARIOS Y ROLES
+// ==================================================================
+function renderizarUsuariosAdmin() {
+    const tbody = document.getElementById('tabla-usuarios-body');
+    if (!tbody) return;
+
+    const usuarios = JSON.parse(localStorage.getItem('usuariosForkMenu')) || [];
+    tbody.innerHTML = '';
+
+    if (usuarios.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center p-3">No hay usuarios registrados en el sistema.</td></tr>';
+        return;
+    }
+
+    usuarios.forEach((user, index) => {
+        const tr = document.createElement('tr');
+        const runTexto = user.run || 'Sin RUN';
+        const nombreTexto = user.nombre || 'Usuario';
+        const rolActual = user.rol || 'cliente';
+
+        tr.innerHTML = `
+            <td>
+                <strong>${runTexto}</strong><br>
+                <small class="text-muted">${nombreTexto}</small>
+            </td>
+            <td>${user.correo}</td>
+            <td>
+                <select class="form-select form-select-sm" onchange="cambiarRolUsuario(${index}, this.value)">
+                    <option value="cliente" ${rolActual === 'cliente' ? 'selected' : ''}>Cliente (Solo Tienda)</option>
+                    <option value="vendedor" ${rolActual === 'vendedor' ? 'selected' : ''}>Vendedor (Ver Pedidos)</option>
+                    <option value="admin" ${rolActual === 'admin' ? 'selected' : ''}>Administrador (Acceso Total)</option>
+                </select>
+            </td>
+            <td>
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="eliminarUsuarioAdmin(${index})">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+window.cambiarRolUsuario = function(index, nuevoRol) {
+    let usuarios = JSON.parse(localStorage.getItem('usuariosForkMenu')) || [];
+    usuarios[index].rol = nuevoRol;
+    localStorage.setItem('usuariosForkMenu', JSON.stringify(usuarios));
+    alert(`El rol de ${usuarios[index].correo} se actualizó a: "${nuevoRol}"`);
+};
+
+window.eliminarUsuarioAdmin = function(index) {
+    let usuarios = JSON.parse(localStorage.getItem('usuariosForkMenu')) || [];
+    if (confirm(`¿Estás seguro de eliminar a ${usuarios[index].correo}?`)) {
+        usuarios.splice(index, 1);
+        localStorage.setItem('usuariosForkMenu', JSON.stringify(usuarios));
+        renderizarUsuariosAdmin();
+    }
+};
+
+const formUsuarioAdmin = document.getElementById('form-usuario-admin');
+if (formUsuarioAdmin) {
+    formUsuarioAdmin.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const run = document.getElementById('run-usuario').value;
+        const correo = document.getElementById('correo-usuario').value.toLowerCase();
+        const rol = document.getElementById('rol-usuario').value;
+
+        let usuarios = JSON.parse(localStorage.getItem('usuariosForkMenu')) || [];
+        const usuarioExiste = usuarios.find(u => u.correo === correo || (u.run && u.run === run));
+
+        if (usuarioExiste) {
+            usuarioExiste.run = run;
+            usuarioExiste.rol = rol;
+            alert("Información y rol del usuario actualizados.");
+        } else {
+            const nuevoUsuario = {
+                run: run,
+                nombre: "Usuario Administrador",
+                correo: correo,
+                contrasena: "1234",
+                rol: rol
+            };
+            usuarios.push(nuevoUsuario);
+            alert("Usuario creado exitosamente. Contraseña asignada: 1234");
+        }
+
+        localStorage.setItem('usuariosForkMenu', JSON.stringify(usuarios));
+        formUsuarioAdmin.reset();
+        renderizarUsuariosAdmin();
+    });
+}
 
 // ==================================================================
 // MÓDULO: SEGURIDAD Y PROTECCIÓN DE RUTAS ADMIN
@@ -743,8 +832,11 @@ function protegerRutasAdmin() {
     }
 }
 
+// ==================================================================
+// INICIALIZADOR GENERAL
+// ==================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    protegerRutasAdmin(); // Se ejecuta en primer lugar para bloquear el render si no es admin
+    protegerRutasAdmin();
     verificarSesion(); 
     cargarPerfilUsuario(); 
     actualizarContadorSuperior(); 
@@ -754,4 +846,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarTicketConfirmacion(); 
     renderizarProductosAdmin();
     renderizarPedidosAdmin();
+    renderizarUsuariosAdmin();
 });
