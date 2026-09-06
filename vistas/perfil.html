@@ -4,61 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ForkMenu - Mi Perfil</title>
+    <!-- Bootstrap 5 CSS e Iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Estilos Personalizados -->
     <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
+    <!-- Header / Navbar Principal -->
     <header>
-        <div class="logo">
-            <h1>ForkMenu</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="productos.html">Productos</a></li>
-                <li><a href="nosotros.html">Nosotros</a></li>
-                <li><a href="blogs.html">Blogs</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-danger fs-3 d-flex align-items-center" href="../index.html">
+                    <i class="bi bi-cup-hot-fill me-2"></i>ForkMenu
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="productos.html">Productos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+                        <li class="nav-item"><a class="nav-link" href="blogs.html">Blogs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+                    </ul>
+
+                    <!-- Contenedor manipulado dinámicamente por JS -->
+                    <div class="user-actions d-flex align-items-center gap-2">
+                        <a href="login.html" class="btn btn-outline-light btn-sm">Iniciar sesión</a>
+                        <span class="text-white-50">|</span>
+                        <a href="registro.html" class="btn btn-outline-light btn-sm">Registrar usuario</a>
+                        <a href="carrito.html" class="btn btn-danger btn-sm ms-2 cart" id="contador-carrito">
+                            <i class="bi bi-cart-fill me-1"></i> Cart (0)
+                        </a>
+                    </div>
+                </div>
+            </div>
         </nav>
-        <div class="user-actions">
-            <!-- JS inyectará aquí el nombre del usuario y el botón de cerrar sesión -->
-        </div>
     </header>
 
-    <main>
-        <section class="perfil" style="max-width: 900px; margin: 40px auto; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 40px;">Panel de Usuario</h2>
+    <!-- Contenido Principal -->
+    <main class="container my-5 flex-grow-1">
+        <section class="perfil mx-auto" style="max-width: 950px;">
+            <div class="text-center mb-5">
+                <h2 class="h3 fw-bold d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-person-bounding-box text-danger"></i>Panel de Usuario
+                </h2>
+                <p class="text-muted">Gestiona tu información personal, beneficios y soporte</p>
+            </div>
 
-            <!-- Contenedor principal del Dashboard en cuadrícula -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
+            <!-- Contenedor principal en cuadrícula -->
+            <div class="row g-4">
                 
                 <!-- COLUMNA IZQUIERDA -->
-                <div style="display: flex; flex-direction: column; gap: 25px;">
+                <div class="col-md-6 d-flex flex-column gap-4">
                     
                     <!-- Tarjeta de Datos (Funcional) -->
-                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--blanco); box-shadow: var(--shadow-sm);">
-                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                            <div style="width: 50px; height: 50px; background-color: var(--color-principal-light); color: var(--color-principal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                    <div class="card shadow-sm border-0 rounded-3 p-4 bg-white">
+                        <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+                            <div class="rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 1.5rem;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
                             <div>
-                                <h3 style="margin: 0; color: var(--color-principal);">Mis Datos</h3>
-                                <span style="font-size: 0.8rem; color: var(--color-exito); font-weight: bold;">Cuenta Activa</span>
+                                <h3 class="h5 fw-bold text-dark mb-1">Mis Datos</h3>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Cuenta Activa</span>
                             </div>
                         </div>
-                        <p style="margin-bottom: 10px;"><strong>Nombre:</strong> <span id="perfil-nombre">Cargando...</span></p>
-                        <p style="margin-bottom: 10px;"><strong>Correo:</strong> <span id="perfil-correo">Cargando...</span></p>
-                        <p style="margin-bottom: 0; font-size: 0.85rem; color: var(--color-texto-suave);">Miembro desde: 2026</p>
+                        <div class="lh-lg text-secondary">
+                            <p class="mb-2"><strong>Nombre:</strong> <span id="perfil-nombre" class="text-dark fw-semibold">Cargando...</span></p>
+                            <p class="mb-2"><strong>Correo:</strong> <span id="perfil-correo" class="text-dark fw-semibold">Cargando...</span></p>
+                            <p class="mb-0 text-muted small"><i class="bi bi-calendar-check me-1"></i>Miembro desde: 2026</p>
+                        </div>
                     </div>
 
-                    <!-- Tarjeta del Club / Programa de Lealtad (Visual Estática) -->
-                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--blanco); box-shadow: var(--shadow-sm);">
-                        <h3 style="color: var(--color-principal); margin-bottom: 15px;">ForkMenu Club 🌟</h3>
-                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Disfruta de los beneficios exclusivos de nuestra comunidad.</p>
+                    <!-- Tarjeta del Club / Programa de Lealtad -->
+                    <div class="card shadow-sm border-0 rounded-3 p-4 bg-white">
+                        <h3 class="h5 fw-bold text-dark mb-2 d-flex align-items-center gap-2">
+                            ForkMenu Club <i class="bi bi-star-fill text-warning"></i>
+                        </h3>
+                        <p class="text-muted small mb-3">Disfruta de los beneficios exclusivos de nuestra comunidad.</p>
                         
-                        <div style="background-color: var(--color-fondo); padding: 15px; border-radius: var(--radius-md); border-left: 4px solid var(--color-secundario);">
-                            <p style="margin-bottom: 5px;"><strong>Nivel Actual:</strong> Foodie Principiante</p>
-                            <ul style="margin-left: 20px; font-size: 0.85rem; color: var(--color-texto-suave);">
-                                <li>Acceso a cupones mensuales.</li>
+                        <div class="card bg-light border-0 border-start border-warning border-4 p-3 rounded-3">
+                            <p class="fw-bold text-dark mb-2">Nivel Actual: <span class="text-warning-emphasis">Foodie Principiante</span></p>
+                            <ul class="mb-0 ps-3 text-secondary small">
+                                <li class="mb-1">Acceso a cupones mensuales.</li>
                                 <li>Preferencia en preparación de pedidos.</li>
                             </ul>
                         </div>
@@ -66,33 +99,41 @@
                 </div>
 
                 <!-- COLUMNA DERECHA -->
-                <div style="display: flex; flex-direction: column; gap: 25px;">
+                <div class="col-md-6 d-flex flex-column gap-4">
                     
-                    <!-- Tarjeta de Cupones (Funcional en el checkout) -->
-                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--color-principal-light); box-shadow: var(--shadow-sm);">
-                        <h3 style="color: var(--color-principal); margin-bottom: 15px;">Mis Cupones 🎁</h3>
-                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Aplica estos códigos al momento de finalizar tu pago:</p>
+                    <!-- Tarjeta de Cupones -->
+                    <div class="card shadow-sm border-0 rounded-3 p-4 bg-white">
+                        <h3 class="h5 fw-bold text-dark mb-2 d-flex align-items-center gap-2">
+                            Mis Cupones <i class="bi bi-ticket-perforated-fill text-danger"></i>
+                        </h3>
+                        <p class="text-muted small mb-3">Aplica estos códigos al momento de finalizar tu pago:</p>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div style="background-color: var(--blanco); padding: 15px 10px; border: 1.5px dashed var(--color-principal); border-radius: var(--radius-md); text-align: center;">
-                                <span style="font-weight: bold; font-size: 1.1rem; display: block; margin-bottom: 5px;">FORK20</span>
-                                <p style="font-size: 0.75rem; color: var(--color-texto-suave); margin: 0; line-height: 1.2;">20% off en el total</p>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-light border border-danger border-dashed rounded-3 text-center">
+                                    <span class="fw-bold fs-5 d-block text-danger mb-1">FORK20</span>
+                                    <p class="text-muted small mb-0 lh-sm">20% off en el total</p>
+                                </div>
                             </div>
-                            <div style="background-color: var(--blanco); padding: 15px 10px; border: 1.5px dashed var(--color-principal); border-radius: var(--radius-md); text-align: center;">
-                                <span style="font-weight: bold; font-size: 1.1rem; display: block; margin-bottom: 5px;">BIENVENIDA</span>
-                                <p style="font-size: 0.75rem; color: var(--color-texto-suave); margin: 0; line-height: 1.2;">-$3.000 en tu compra</p>
+                            <div class="col-6">
+                                <div class="p-3 bg-light border border-danger border-dashed rounded-3 text-center">
+                                    <span class="fw-bold fs-5 d-block text-danger mb-1">BIENVENIDA</span>
+                                    <p class="text-muted small mb-0 lh-sm">-$3.000 en tu compra</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tarjeta de Centro de Ayuda (Redirige a otra vista existente) -->
-                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--blanco); box-shadow: var(--shadow-sm);">
-                        <h3 style="color: var(--color-principal); margin-bottom: 15px;">Centro de Soporte 🛠️</h3>
-                        <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--color-texto-suave);">¿Tuviste algún inconveniente con un pedido reciente o necesitas ayuda con tu cuenta?</p>
+                    <!-- Tarjeta de Centro de Ayuda -->
+                    <div class="card shadow-sm border-0 rounded-3 p-4 bg-white">
+                        <h3 class="h5 fw-bold text-dark mb-2 d-flex align-items-center gap-2">
+                            Centro de Soporte <i class="bi bi-headset text-danger"></i>
+                        </h3>
+                        <p class="text-muted small mb-4">¿Tuviste algún inconveniente con un pedido reciente o necesitas ayuda con tu cuenta?</p>
                         
-                        <div style="text-align: center;">
-                            <a href="contacto.html" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--color-principal); color: var(--color-principal);">Contactar al restaurante</a>
-                        </div>
+                        <a href="contacto.html" class="btn btn-outline-danger w-100 fw-semibold">
+                            <i class="bi bi-envelope-fill me-2"></i>Contactar al restaurante
+                        </a>
                     </div>
 
                 </div>
@@ -100,10 +141,15 @@
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-auto border-top border-secondary">
+        <div class="container">
+            <p class="mb-0 text-white-50">&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
+    <!-- Scripts de Bootstrap y Lógica JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/validaciones.js"></script>
 </body>
 </html>

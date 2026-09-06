@@ -4,61 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ForkMenu - Blogs y Noticias</title>
+    <!-- Bootstrap 5 CSS e Iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Estilos Personalizados -->
     <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
+    <!-- Header / Navbar Principal -->
     <header>
-        <div class="logo">
-            <h1>ForkMenu</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="productos.html">Productos</a></li>
-                <li><a href="nosotros.html">Nosotros</a></li>
-                <li><a href="blogs.html">Blogs</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-danger fs-3 d-flex align-items-center" href="../index.html">
+                    <i class="bi bi-cup-hot-fill me-2"></i>ForkMenu
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="productos.html">Productos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="blogs.html">Blogs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+                    </ul>
+
+                    <!-- Contenedor manipulado dinámicamente por JS -->
+                    <div class="user-actions d-flex align-items-center gap-2">
+                        <a href="login.html" class="btn btn-outline-light btn-sm">Iniciar sesión</a>
+                        <span class="text-white-50">|</span>
+                        <a href="registro.html" class="btn btn-outline-light btn-sm">Registrar usuario</a>
+                        <a href="carrito.html" class="btn btn-danger btn-sm ms-2 cart" id="contador-carrito">
+                            <i class="bi bi-cart-fill me-1"></i> Cart (0)
+                        </a>
+                    </div>
+                </div>
+            </div>
         </nav>
-        <div class="user-actions">
-            <!-- JS inyectará aquí el nombre del usuario y el botón de cerrar sesión -->
-        </div>
     </header>
 
-    <main>
+    <!-- Contenido Principal -->
+    <main class="container my-5 flex-grow-1">
         <section class="blogs">
-            <h2>Nuestra Cocina</h2>
-            <p style="color: var(--color-texto-suave); margin-bottom: var(--space-6);">Conoce los secretos, ingredientes y el trabajo artesanal detrás de nuestros mejores platos.</p>
+            <div class="mb-4">
+                <h2 class="h3 fw-bold mb-2 d-flex align-items-center">
+                    <i class="bi bi-journal-text me-2 text-danger"></i>Nuestra Cocina
+                </h2>
+                <p class="text-muted mb-0">Conoce los secretos, ingredientes y el trabajo artesanal detrás de nuestros mejores platos.</p>
+            </div>
 
-            <article class="blog-card">
-                <!-- Imagen en miniatura minimalista (Pizza) -->
-                <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80" alt="Masa de pizza artesanal" style="width: 180px; aspect-ratio: 1; object-fit: cover; flex-shrink: 0; border-radius: var(--radius-md);">
-                
-                <div class="blog-info">
-                    <h3>El secreto detrás de nuestra Masa a la Piedra</h3>
-                    <p>Descubre por qué nuestra Pizza Margarita tiene esa textura crujiente por fuera y suave por dentro. Un proceso de fermentación lenta de 48 horas marca toda la diferencia.</p>
-                    <a href="detalle-blog-1.html" class="btn">Leer artículo</a>
-                </div>
-            </article>
+            <div class="d-flex flex-column gap-4">
+                <!-- Blog Card 1 -->
+                <article class="card shadow-sm border-0 rounded-3 overflow-hidden blog-card">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-3 col-lg-2 text-center p-3">
+                            <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80" alt="Masa de pizza artesanal" class="img-fluid rounded-3 object-fit-cover w-100" style="aspect-ratio: 1; max-height: 180px;">
+                        </div>
+                        <div class="col-md-9 col-lg-10">
+                            <div class="card-body blog-info p-3 p-md-4">
+                                <h3 class="card-title h4 fw-bold mb-2">El secreto detrás de nuestra Masa a la Piedra</h3>
+                                <p class="card-text text-secondary mb-3">Descubre por qué nuestra Pizza Margarita tiene esa textura crujiente por fuera y suave por dentro. Un proceso de fermentación lenta de 48 horas marca toda la diferencia.</p>
+                                <a href="detalle-blog-1.html" class="btn btn-outline-danger btn-sm fw-semibold">
+                                    Leer artículo <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
 
-            <article class="blog-card">
-                <!-- Imagen en miniatura minimalista (Hamburguesa) -->
-                <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&q=80" alt="Hamburguesa clásica minimalista" style="width: 180px; aspect-ratio: 1; object-fit: cover; flex-shrink: 0; border-radius: var(--radius-md);">
-                
-                <div class="blog-info">
-                    <h3>El origen de nuestra Hamburguesa Clásica</h3>
-                    <p>Más que un plato, es una red de apoyo local. Descubre de dónde provienen nuestros ingredientes y cómo apoyamos a los agricultores de la región.</p>
-                    <a href="detalle-blog-2.html" class="btn">Leer artículo</a>
-                </div>
-            </article>
+                <!-- Blog Card 2 -->
+                <article class="card shadow-sm border-0 rounded-3 overflow-hidden blog-card">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-3 col-lg-2 text-center p-3">
+                            <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&q=80" alt="Hamburguesa clásica minimalista" class="img-fluid rounded-3 object-fit-cover w-100" style="aspect-ratio: 1; max-height: 180px;">
+                        </div>
+                        <div class="col-md-9 col-lg-10">
+                            <div class="card-body blog-info p-3 p-md-4">
+                                <h3 class="card-title h4 fw-bold mb-2">El origen de nuestra Hamburguesa Clásica</h3>
+                                <p class="card-text text-secondary mb-3">Más que un plato, es una red de apoyo local. Descubre de dónde provienen nuestros ingredientes y cómo apoyamos a los agricultores de la región.</p>
+                                <a href="detalle-blog-2.html" class="btn btn-outline-danger btn-sm fw-semibold">
+                                    Leer artículo <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-auto border-top border-secondary">
+        <div class="container">
+            <p class="mb-0 text-white-50">&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
-    <script src="../js/validaciones.js"></script> 
+    <!-- Scripts de Bootstrap y Lógica JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>

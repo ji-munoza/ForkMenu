@@ -4,46 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ForkMenu Admin - Pedidos</title>
+    <!-- Bootstrap 5 CSS e Iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Estilos Personalizados -->
     <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body class="admin-body">
+<body>
 
-    <div class="admin-layout">
+    <div class="admin-wrapper">
+        <!-- Sidebar Lateral de Administración -->
+        <aside class="admin-sidebar p-3 d-flex flex-column justify-content-between">
+            <div>
+                <a href="#" class="d-flex align-items-center mb-4 text-white text-decoration-none fs-4 fw-bold">
+                    <i class="bi bi-cup-hot-fill text-danger me-2"></i> ForkMenu
+                </a>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a href="pedidos.html" class="nav-link active"><i class="bi bi-receipt me-2"></i> Pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="productos-admin.html" class="nav-link"><i class="bi bi-box-seam me-2"></i> Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="usuarios-admin.html" class="nav-link"><i class="bi bi-people me-2"></i> Usuarios</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <a href="../index.html" class="btn btn-outline-light w-100"><i class="bi bi-shop me-2"></i> Ir a la Tienda</a>
+            </div>
+        </aside>
 
-        <nav class="admin-menu" aria-label="Menú de administración">
-            <div class="admin-logo">ForkMenu Admin</div>
-            <ul>
-                <li><a href="pedidos.html" class="activo">Pedidos</a></li>
-                <li><a href="productos-admin.html">Productos</a></li>
-                <li><a href="usuarios-admin.html">Usuarios</a></li>
-            </ul>
-            <ul class="admin-menu-inferior">
-                <li><a href="../index.html">Salir a la tienda</a></li>
-            </ul>
-        </nav>
-
+        <!-- Contenido Principal -->
         <main class="admin-content">
-            <h1>Historial de pedidos</h1>
+            <h2 class="h3 mb-4 fw-bold">Historial de Pedidos</h2>
 
-            <table class="tabla-pedidos">
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Cliente</th>
-                        <th>Modalidad</th>
-                        <th>Estado</th>
-                        <th>Monto</th>
-                        <th>Detalle de Items</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-pedidos-body">
-                    <!-- JS inyectará los pedidos aquí dinámicamente -->
-                </tbody>
-            </table>
+            <!-- Tabla de Pedidos en Card -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">Gestión y Control de Pedidos</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Cliente</th>
+                                    <th>Modalidad</th>
+                                    <th>Estado</th>
+                                    <th>Monto</th>
+                                    <th>Detalle de Items</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-pedidos-body">
+                                <!-- JS inyectará los pedidos aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
-
     </div>
 
+    <!-- Scripts de Bootstrap y Lógica JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/validaciones.js"></script>
 </body>
 </html>

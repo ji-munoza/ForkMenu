@@ -4,73 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ForkMenu - Detalle del producto</title>
+    <!-- Bootstrap 5 CSS e Iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Estilos Personalizados -->
     <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
+    <!-- Header / Navbar Principal -->
     <header>
-        <div class="logo">
-            <h1>ForkMenu</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="productos.html">Productos</a></li>
-                <li><a href="nosotros.html">Nosotros</a></li>
-                <li><a href="blogs.html">Blogs</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-danger fs-3 d-flex align-items-center" href="../index.html">
+                    <i class="bi bi-cup-hot-fill me-2"></i>ForkMenu
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="productos.html">Productos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+                        <li class="nav-item"><a class="nav-link" href="blogs.html">Blogs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+                    </ul>
+
+                    <!-- Contenedor manipulado dinámicamente por JS -->
+                    <div class="user-actions d-flex align-items-center gap-2">
+                        <a href="login.html" class="btn btn-outline-light btn-sm">Iniciar sesión</a>
+                        <span class="text-white-50">|</span>
+                        <a href="registro.html" class="btn btn-outline-light btn-sm">Registrar usuario</a>
+                        <a href="carrito.html" class="btn btn-danger btn-sm ms-2 cart" id="contador-carrito">
+                            <i class="bi bi-cart-fill me-1"></i> Cart (0)
+                        </a>
+                    </div>
+                </div>
+            </div>
         </nav>
-        <div class="user-actions">
-            <a href="login.html">Iniciar sesión</a> |
-            <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
-        </div>
     </header>
 
-    <main>
-        <nav class="breadcrumb" aria-label="Ruta de navegación">
-            <a href="../index.html">Home</a> &gt;
-            <a href="productos.html">Productos</a> &gt;
-            <span id="breadcrumb-nombre">Cargando...</span>
+    <!-- Contenido Principal -->
+    <main class="container my-5 flex-grow-1">
+        <!-- Breadcrumb -->
+        <nav aria-label="Ruta de navegación" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none text-danger fw-semibold">Home</a></li>
+                <li class="breadcrumb-item"><a href="productos.html" class="text-decoration-none text-danger fw-semibold">Productos</a></li>
+                <li class="breadcrumb-item active text-muted" aria-current="page"><span id="breadcrumb-nombre">Cargando...</span></li>
+            </ol>
         </nav>
 
-        <section class="detalle-producto">
-            <div class="galeria">
-                <!-- Se agregó un ID para cambiar la imagen con JS -->
-                <img id="detalle-imagen" src="" alt="Cargando producto" style="width: 100%; border-radius: 12px; object-fit: cover;">
-            </div>
-
-            <div class="info-producto">
-                <!-- Se agregaron IDs al nombre, precio y descripción -->
-                <h2 id="detalle-nombre">Cargando...</h2>
-                <p class="precio" id="detalle-precio">$0</p>
-                <p class="descripcion" id="detalle-descripcion">
-                    Por favor espera, estamos cargando la información del producto.
-                </p>
-
-                <form>
-                    <div class="campo">
-                        <label for="tamano">Tamaño</label>
-                        <select id="tamano" name="tamano">
-                            <option value="individual">Individual</option>
-                            <option value="doble">Doble</option>
-                        </select>
+        <!-- Sección Detalle del Producto -->
+        <section class="detalle-producto card shadow-sm border-0 rounded-3 p-4 p-md-5 bg-white">
+            <div class="row g-4 align-items-center">
+                <!-- Galería / Imagen -->
+                <div class="col-md-6 text-center">
+                    <div class="galeria overflow-hidden rounded-3 bg-light p-2 border">
+                        <img id="detalle-imagen" src="" alt="Cargando producto" class="img-fluid rounded-3 object-fit-cover w-100" style="max-height: 400px;">
                     </div>
+                </div>
 
-                    <label for="cantidad">Cantidad</label>
-                    <input type="number" id="cantidad" name="cantidad" value="1" min="1">
-                    
-                    <!-- Este botón no tiene atributos data- aún, JS se los inyectará cuando cargue el producto -->
-                    <button type="button" class="btn-agregar" id="detalle-btn-agregar">Añadir al carrito</button>
-                </form>
+                <!-- Información del Producto -->
+                <div class="col-md-6">
+                    <div class="info-producto">
+                        <h2 id="detalle-nombre" class="h2 fw-bold text-dark mb-2">Cargando...</h2>
+                        <p class="precio text-danger fw-bold fs-3 mb-3" id="detalle-precio">$0</p>
+                        <p class="descripcion text-secondary lh-base mb-4" id="detalle-descripcion">
+                            Por favor espera, estamos cargando la información del producto.
+                        </p>
+
+                        <form class="row g-3">
+                            <div class="campo col-12 col-sm-6">
+                                <label for="tamano" class="form-label fw-semibold">Tamaño</label>
+                                <select id="tamano" name="tamano" class="form-select">
+                                    <option value="individual">Individual</option>
+                                    <option value="doble">Doble</option>
+                                </select>
+                            </div>
+
+                            <div class="campo col-12 col-sm-6">
+                                <label for="cantidad" class="form-label fw-semibold">Cantidad</label>
+                                <input type="number" id="cantidad" name="cantidad" class="form-control" value="1" min="1">
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <button type="button" class="btn btn-danger btn-lg w-100 fw-bold shadow-sm btn-agregar" id="detalle-btn-agregar">
+                                    <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-auto border-top border-secondary">
+        <div class="container">
+            <p class="mb-0 text-white-50">&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+        </div>
     </footer>
+
+    <!-- Scripts de Bootstrap y Lógica JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/validaciones.js"></script>
 </body>
 </html>
