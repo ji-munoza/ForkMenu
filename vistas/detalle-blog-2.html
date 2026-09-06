@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ForkMenu - Caso curioso #2</title>
+    <title>ForkMenu - Origen de Ingredientes</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -22,9 +22,7 @@
             </ul>
         </nav>
         <div class="user-actions">
-            <a href="login.html">Iniciar sesión</a> |
-            <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <!-- JS inyectará aquí el nombre del usuario y el botón de cerrar sesión -->
         </div>
     </header>
 
@@ -32,16 +30,37 @@
         <nav class="breadcrumb" aria-label="Ruta de navegación">
             <a href="../index.html">Home</a> &gt;
             <a href="blogs.html">Blogs</a> &gt;
-            <span>Caso curioso #2</span>
+            <span>Origen de Ingredientes</span>
         </nav>
 
-        <article class="detalle-blog">
-            <h2>Caso curioso #2</h2>
-            <div class="img-placeholder">[Imagen]</div>
+        <article class="detalle-blog" style="margin-top: var(--space-4);">
+            <h2 style="margin-bottom: var(--space-3);">El origen de nuestra Hamburguesa Clásica</h2>
+            <p style="color: var(--color-texto-suave); margin-bottom: var(--space-5);">Publicado el 02 de Noviembre, 2026 • Categoría: Gastronomía Local</p>
+            
+            <!-- Imagen Hero Minimalista -->
+            <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=1000&q=80" alt="Hamburguesa clásica premium" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: var(--space-5);">
+            
+            <h3 style="color: var(--color-principal);">Un menú construido en comunidad</h3>
+            <p style="margin-bottom: var(--space-4);">
+                Nuestra <strong>Hamburguesa Clásica</strong> es el plato más vendido en ForkMenu (representa el 42% de nuestros pedidos por delivery). Pero lo que la hace especial no es una receta secreta guardada bajo llave, sino la frescura de los ingredientes y el ecosistema local que la sostiene.
+            </p>
+
+            <h3 style="color: var(--color-principal);">Del productor a la mesa</h3>
+            <p style="margin-bottom: var(--space-4);">
+                Decidimos alejarnos de los proveedores industriales. El pan brioche que sella los sabores es horneado cada madrugada por una panadería artesanal ubicada a solo tres cuadras de nuestra cocina central. Esto no solo garantiza un pan esponjoso que soporta los jugos de la carne, sino que reduce nuestra huella de carbono por transporte a casi cero.
+            </p>
+
+            <div style="background-color: var(--color-fondo); padding: var(--space-5); border-left: 4px solid var(--color-principal); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-5);">
+                <h4 style="margin-bottom: 10px;">Ficha Técnica del Producto:</h4>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Proteína:</strong> 150g de carne 100% vacuno, molienda diaria sin preservantes.</li>
+                    <li><strong>Vegetales:</strong> Lechuga hidropónica y tomates de agricultores de la región.</li>
+                    <li><strong>El Pan:</strong> Brioche de fermentación lenta, sellado con mantequilla clarificada.</li>
+                </ul>
+            </div>
+
             <p>
-                Aquí va la descripción larga del caso curioso: origen de un plato,
-                una anécdota del local, o cualquier contenido de libre elección
-                relacionado con la tienda.
+                La próxima vez que pidas este clásico a través de nuestra web, recuerda que no solo estás disfrutando de un gran plato, sino que estás apoyando el trabajo de múltiples familias y emprendedores de nuestra región.
             </p>
         </article>
     </main>
@@ -49,6 +68,8 @@
     <footer>
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
+
+    <script src="../js/validaciones.js"></script>
 
 </body>
 </html>

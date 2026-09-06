@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ForkMenu - Caso curioso #1</title>
+    <title>ForkMenu - Nuestra Masa a la Piedra</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -22,9 +22,7 @@
             </ul>
         </nav>
         <div class="user-actions">
-            <a href="login.html">Iniciar sesión</a> |
-            <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <!-- JS inyectará aquí el nombre del usuario y el botón de cerrar sesión -->
         </div>
     </header>
 
@@ -32,16 +30,37 @@
         <nav class="breadcrumb" aria-label="Ruta de navegación">
             <a href="../index.html">Home</a> &gt;
             <a href="blogs.html">Blogs</a> &gt;
-            <span>Caso curioso #1</span>
+            <span>Masa a la Piedra</span>
         </nav>
 
-        <article class="detalle-blog">
-            <h2>Caso curioso #1</h2>
-            <div class="img-placeholder">[Imagen]</div>
+        <article class="detalle-blog" style="margin-top: var(--space-4);">
+            <h2 style="margin-bottom: var(--space-3);">El secreto detrás de nuestra Masa a la Piedra</h2>
+            <p style="color: var(--color-texto-suave); margin-bottom: var(--space-5);">Publicado el 15 de Octubre, 2026 • Categoría: Cocina y Tradición</p>
+            
+            <!-- Imagen Hero Minimalista -->
+            <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=1000&q=80" alt="Pizza margarita recién salida del horno" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: var(--space-5);">
+            
+            <h3 style="color: var(--color-principal);">La paciencia es nuestro mejor ingrediente</h3>
+            <p style="margin-bottom: var(--space-4);">
+                Hacer una buena pizza es fácil; hacer una pizza inolvidable requiere ciencia y paciencia. En ForkMenu, nuestra <strong>Pizza Margarita</strong> se ha convertido en la favorita de los fines de semana (representando el 38% de las ventas nocturnas). El secreto no está en agregar más ingredientes, sino en perfeccionar la base: nuestra masa.
+            </p>
+
+            <h3 style="color: var(--color-principal);">Fermentación de 48 horas</h3>
+            <p style="margin-bottom: var(--space-4);">
+                A diferencia de las pizzerías de comida rápida que hacen su masa en un par de horas, nosotros utilizamos un proceso de fermentación lenta en frío. Durante 48 horas, las levaduras trabajan lentamente, descomponiendo los azúcares complejos de la harina. ¿El resultado? Una masa increíblemente ligera, fácil de digerir y con esos característicos bordes inflados ("cornicione") llenos de aire.
+            </p>
+
+            <div style="background-color: var(--color-fondo); padding: var(--space-5); border-left: 4px solid var(--color-secundario); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-5);">
+                <h4 style="margin-bottom: 10px;">La anatomía de nuestra Margarita:</h4>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Hidratación:</strong> Masa al 70% de hidratación para asegurar humedad y ligereza.</li>
+                    <li><strong>La Salsa:</strong> Tomates naturales triturados a mano, sin cocción previa, con solo una pizca de sal marina.</li>
+                    <li><strong>Horneado:</strong> 90 segundos a más de 400°C sobre piedra refractaria.</li>
+                </ul>
+            </div>
+
             <p>
-                Aquí va la descripción larga del caso curioso: origen de un plato,
-                una anécdota del local, o cualquier contenido de libre elección
-                relacionado con la tienda.
+                Menos es más. Harina, agua, sal, levadura, tomate, mozzarella y albahaca fresca. Te invitamos a probarla y descubrir cómo la tradición italiana se siente en cada bocado.
             </p>
         </article>
     </main>
@@ -50,5 +69,6 @@
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
 
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>

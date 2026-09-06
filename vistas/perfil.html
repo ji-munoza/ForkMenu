@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkMenu - Mi Perfil</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>ForkMenu</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="blogs.html">Blogs</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <!-- JS inyectará aquí el nombre del usuario y el botón de cerrar sesión -->
+        </div>
+    </header>
+
+    <main>
+        <section class="perfil" style="max-width: 900px; margin: 40px auto; padding: 20px;">
+            <h2 style="text-align: center; margin-bottom: 40px;">Panel de Usuario</h2>
+
+            <!-- Contenedor principal del Dashboard en cuadrícula -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
+                
+                <!-- COLUMNA IZQUIERDA -->
+                <div style="display: flex; flex-direction: column; gap: 25px;">
+                    
+                    <!-- Tarjeta de Datos (Funcional) -->
+                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--blanco); box-shadow: var(--shadow-sm);">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                            <div style="width: 50px; height: 50px; background-color: var(--color-principal-light); color: var(--color-principal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                            <div>
+                                <h3 style="margin: 0; color: var(--color-principal);">Mis Datos</h3>
+                                <span style="font-size: 0.8rem; color: var(--color-exito); font-weight: bold;">Cuenta Activa</span>
+                            </div>
+                        </div>
+                        <p style="margin-bottom: 10px;"><strong>Nombre:</strong> <span id="perfil-nombre">Cargando...</span></p>
+                        <p style="margin-bottom: 10px;"><strong>Correo:</strong> <span id="perfil-correo">Cargando...</span></p>
+                        <p style="margin-bottom: 0; font-size: 0.85rem; color: var(--color-texto-suave);">Miembro desde: 2026</p>
+                    </div>
+
+                    <!-- Tarjeta del Club / Programa de Lealtad (Visual Estática) -->
+                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--blanco); box-shadow: var(--shadow-sm);">
+                        <h3 style="color: var(--color-principal); margin-bottom: 15px;">ForkMenu Club 🌟</h3>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Disfruta de los beneficios exclusivos de nuestra comunidad.</p>
+                        
+                        <div style="background-color: var(--color-fondo); padding: 15px; border-radius: var(--radius-md); border-left: 4px solid var(--color-secundario);">
+                            <p style="margin-bottom: 5px;"><strong>Nivel Actual:</strong> Foodie Principiante</p>
+                            <ul style="margin-left: 20px; font-size: 0.85rem; color: var(--color-texto-suave);">
+                                <li>Acceso a cupones mensuales.</li>
+                                <li>Preferencia en preparación de pedidos.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA -->
+                <div style="display: flex; flex-direction: column; gap: 25px;">
+                    
+                    <!-- Tarjeta de Cupones (Funcional en el checkout) -->
+                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--color-principal-light); box-shadow: var(--shadow-sm);">
+                        <h3 style="color: var(--color-principal); margin-bottom: 15px;">Mis Cupones 🎁</h3>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Aplica estos códigos al momento de finalizar tu pago:</p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="background-color: var(--blanco); padding: 15px 10px; border: 1.5px dashed var(--color-principal); border-radius: var(--radius-md); text-align: center;">
+                                <span style="font-weight: bold; font-size: 1.1rem; display: block; margin-bottom: 5px;">FORK20</span>
+                                <p style="font-size: 0.75rem; color: var(--color-texto-suave); margin: 0; line-height: 1.2;">20% off en el total</p>
+                            </div>
+                            <div style="background-color: var(--blanco); padding: 15px 10px; border: 1.5px dashed var(--color-principal); border-radius: var(--radius-md); text-align: center;">
+                                <span style="font-weight: bold; font-size: 1.1rem; display: block; margin-bottom: 5px;">BIENVENIDA</span>
+                                <p style="font-size: 0.75rem; color: var(--color-texto-suave); margin: 0; line-height: 1.2;">-$3.000 en tu compra</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta de Centro de Ayuda (Redirige a otra vista existente) -->
+                    <div style="padding: 25px; border: 1px solid var(--color-borde); border-radius: var(--radius-lg); background: var(--blanco); box-shadow: var(--shadow-sm);">
+                        <h3 style="color: var(--color-principal); margin-bottom: 15px;">Centro de Soporte 🛠️</h3>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--color-texto-suave);">¿Tuviste algún inconveniente con un pedido reciente o necesitas ayuda con tu cuenta?</p>
+                        
+                        <div style="text-align: center;">
+                            <a href="contacto.html" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--color-principal); color: var(--color-principal);">Contactar al restaurante</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="../js/validaciones.js"></script>
+</body>
+</html>

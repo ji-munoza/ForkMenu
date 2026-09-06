@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ForkMenu - Blogs</title>
+    <title>ForkMenu - Blogs y Noticias</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -22,31 +22,34 @@
             </ul>
         </nav>
         <div class="user-actions">
-            <a href="login.html">Iniciar sesión</a> |
-            <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <!-- JS inyectará aquí el nombre del usuario y el botón de cerrar sesión -->
         </div>
     </header>
 
     <main>
         <section class="blogs">
-            <h2>Noticias importantes</h2>
+            <h2>Nuestra Cocina</h2>
+            <p style="color: var(--color-texto-suave); margin-bottom: var(--space-6);">Conoce los secretos, ingredientes y el trabajo artesanal detrás de nuestros mejores platos.</p>
 
             <article class="blog-card">
-                <div class="img-placeholder">[Imagen]</div>
+                <!-- Imagen en miniatura minimalista (Pizza) -->
+                <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80" alt="Masa de pizza artesanal" style="width: 180px; aspect-ratio: 1; object-fit: cover; flex-shrink: 0; border-radius: var(--radius-md);">
+                
                 <div class="blog-info">
-                    <h3>Caso curioso #1</h3>
-                    <p>Un breve adelanto de la noticia, para invitar a leer el detalle completo.</p>
-                    <a href="detalle-blog-1.html" class="btn">Ver caso</a>
+                    <h3>El secreto detrás de nuestra Masa a la Piedra</h3>
+                    <p>Descubre por qué nuestra Pizza Margarita tiene esa textura crujiente por fuera y suave por dentro. Un proceso de fermentación lenta de 48 horas marca toda la diferencia.</p>
+                    <a href="detalle-blog-1.html" class="btn">Leer artículo</a>
                 </div>
             </article>
 
             <article class="blog-card">
-                <div class="img-placeholder">[Imagen]</div>
+                <!-- Imagen en miniatura minimalista (Hamburguesa) -->
+                <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&q=80" alt="Hamburguesa clásica minimalista" style="width: 180px; aspect-ratio: 1; object-fit: cover; flex-shrink: 0; border-radius: var(--radius-md);">
+                
                 <div class="blog-info">
-                    <h3>Caso curioso #2</h3>
-                    <p>Un breve adelanto de la noticia, para invitar a leer el detalle completo.</p>
-                    <a href="detalle-blog-2.html" class="btn">Ver caso</a>
+                    <h3>El origen de nuestra Hamburguesa Clásica</h3>
+                    <p>Más que un plato, es una red de apoyo local. Descubre de dónde provienen nuestros ingredientes y cómo apoyamos a los agricultores de la región.</p>
+                    <a href="detalle-blog-2.html" class="btn">Leer artículo</a>
                 </div>
             </article>
         </section>
@@ -56,5 +59,6 @@
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
 
+    <script src="../js/validaciones.js"></script> 
 </body>
 </html>

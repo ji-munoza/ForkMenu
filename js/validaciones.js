@@ -85,21 +85,18 @@ function renderizarCarrito() {
     if (totalEl) totalEl.innerText = `$${totalPrecio.toLocaleString('es-CL')}`;
 }
 
-function renderizarResumenCheckout() {
-    const listaResumen = document.getElementById('resumen-items');
-    const totalResumen = document.getElementById('resumen-total');
-    if (!listaResumen) return;
-    listaResumen.innerHTML = '';
-    let totalPrecio = 0;
-
-    carrito.forEach(producto => {
-        totalPrecio += producto.precio * producto.cantidad;
-        const li = document.createElement('li');
-        li.innerText = `${producto.nombre} x${producto.cantidad} — $${(producto.precio * producto.cantidad).toLocaleString('es-CL')}`;
-        listaResumen.appendChild(li);
-    });
-    if (totalResumen) totalResumen.innerText = `$${totalPrecio.toLocaleString('es-CL')}`;
-}
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('btn-sumar')) {
+        carrito[e.target.getAttribute('data-index')].cantidad += 1;
+        guardarYActualizarCarrito();
+    }
+    if (e.target.classList.contains('btn-restar')) {
+        const index = e.target.getAttribute('data-index');
+        if (carrito[index].cantidad > 1) carrito[index].cantidad -= 1;
+        else carrito.splice(index, 1);
+        guardarYActualizarCarrito();
+    }
+});
 
 function cargarDetalleProducto() {
     const parametrosURL = new URLSearchParams(window.location.search);
@@ -120,19 +117,6 @@ function cargarDetalleProducto() {
         }
     }
 }
-
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('btn-sumar')) {
-        carrito[e.target.getAttribute('data-index')].cantidad += 1;
-        guardarYActualizarCarrito();
-    }
-    if (e.target.classList.contains('btn-restar')) {
-        const index = e.target.getAttribute('data-index');
-        if (carrito[index].cantidad > 1) carrito[index].cantidad -= 1;
-        else carrito.splice(index, 1);
-        guardarYActualizarCarrito();
-    }
-});
 
 // ==================================================================
 // MÓDULO 4: FILTROS Y BÚSQUEDA
@@ -166,7 +150,7 @@ if (botonesFiltro.length > 0) {
 }
 
 // ==================================================================
-// MÓDULO 5: VALIDACIÓN Y FORMATO DEL REGISTRO
+// MÓDULO 5: VALIDACIÓN Y FORMATO DEL REGISTRO (SIN TOCAR EL RUT)
 // ==================================================================
 function formatearRUT(rut) {
     const limpio = rut.replace(/[^0-9kK]/gi, '').toUpperCase();
@@ -193,7 +177,6 @@ if (formRegistro) {
 
     inputRun.maxLength = 12;
 
-    // RESPETA TU LÓGICA ORIGINAL DE INPUT
     inputRun.addEventListener('input', (e) => {
         let valorLimpio = e.target.value.replace(/[^0-9kK]/gi, '').toUpperCase();
         if (valorLimpio.length > 9) valorLimpio = valorLimpio.slice(0, 9);
@@ -263,7 +246,6 @@ if (formRegistro) {
         }
     });
 
-    // INYECCIÓN DE LA CREACIÓN DEL USUARIO
     formRegistro.addEventListener('submit', (e) => {
         e.preventDefault(); 
         let errores = false;
@@ -284,7 +266,6 @@ if (formRegistro) {
         if (errores) {
             alert("Error: Por favor corrige todos los campos antes de registrarte.");
         } else {
-            // Guardamos al usuario de forma local
             const usuariosGuardados = JSON.parse(localStorage.getItem('usuariosForkMenu')) || [];
             const correoExiste = usuariosGuardados.some(u => u.correo === inputCorreo.value.toLowerCase());
             
@@ -308,7 +289,7 @@ if (formRegistro) {
 }
 
 // ==================================================================
-// MÓDULO 6: CHECKOUT Y PROCESAMIENTO
+// MÓDULO 6: CHECKOUT, CUPONES Y PROCESAMIENTO
 // ==================================================================
 const inputsModalidad = document.querySelectorAll('input[name="modalidad"]');
 const campoDelivery = document.getElementById('campos-delivery');
@@ -325,6 +306,77 @@ if (inputsModalidad.length > 0) {
     });
 }
 
+// Lógica de Cupones
+let cuponAplicado = null; 
+const cuponesDisponibles = {
+    "FORK20": { tipo: "porcentaje", valor: 0.20 }, // 20% descuento
+    "BIENVENIDA": { tipo: "fijo", valor: 3000 }    // $3.000 descuento
+};
+
+const btnAplicarCupon = document.getElementById('btn-aplicar-cupon');
+if (btnAplicarCupon) {
+    btnAplicarCupon.addEventListener('click', () => {
+        const inputCupon = document.getElementById('input-cupon').value.toUpperCase().trim();
+        const mensaje = document.getElementById('mensaje-cupon');
+
+        if (cuponAplicado) {
+            mensaje.innerText = "Ya tienes un cupón aplicado.";
+            mensaje.style.color = "red";
+            return;
+        }
+
+        if (cuponesDisponibles[inputCupon]) {
+            cuponAplicado = cuponesDisponibles[inputCupon];
+            mensaje.innerText = "¡Cupón aplicado exitosamente!";
+            mensaje.style.color = "green";
+            document.getElementById('input-cupon').disabled = true; // Bloquea el input para no usar 2
+            renderizarResumenCheckout(); // Recalcula el total
+        } else {
+            mensaje.innerText = "El código ingresado no existe o expiró.";
+            mensaje.style.color = "red";
+        }
+    });
+}
+
+function renderizarResumenCheckout() {
+    const listaResumen = document.getElementById('resumen-items');
+    const totalResumen = document.getElementById('resumen-total');
+    if (!listaResumen) return;
+    
+    listaResumen.innerHTML = '';
+    let subtotal = 0;
+
+    carrito.forEach(producto => {
+        subtotal += producto.precio * producto.cantidad;
+        const li = document.createElement('li');
+        li.innerText = `${producto.nombre} x${producto.cantidad} — $${(producto.precio * producto.cantidad).toLocaleString('es-CL')}`;
+        listaResumen.appendChild(li);
+    });
+
+    let descuento = 0;
+    if (cuponAplicado) {
+        if (cuponAplicado.tipo === "porcentaje") {
+            descuento = subtotal * cuponAplicado.valor;
+        } else if (cuponAplicado.tipo === "fijo") {
+            descuento = cuponAplicado.valor;
+        }
+        // Evitar que el descuento sea mayor a la compra
+        if (descuento > subtotal) descuento = subtotal; 
+    }
+
+    const totalFinal = subtotal - descuento;
+
+    if (totalResumen) {
+        if (descuento > 0) {
+            document.getElementById('linea-subtotal').style.display = 'block';
+            document.getElementById('linea-descuento').style.display = 'block';
+            document.getElementById('resumen-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')}`;
+            document.getElementById('resumen-descuento').innerText = `-$${descuento.toLocaleString('es-CL')}`;
+        }
+        totalResumen.innerText = `$${totalFinal.toLocaleString('es-CL')}`;
+    }
+}
+
 const formCheckout = document.getElementById('form-checkout');
 if (formCheckout) {
     formCheckout.addEventListener('submit', (e) => {
@@ -333,8 +385,17 @@ if (formCheckout) {
             alert("Tu carrito está vacío.");
             return;
         }
+
+        // Recalculamos el total final a cobrar
+        let subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+        let descuento = 0;
+        if (cuponAplicado) {
+            descuento = cuponAplicado.tipo === "porcentaje" ? (subtotal * cuponAplicado.valor) : cuponAplicado.valor;
+            if (descuento > subtotal) descuento = subtotal;
+        }
+        const totalPagar = subtotal - descuento;
+
         const codigoGenerado = 'FM-' + Math.floor(Math.random() * 10000);
-        const totalPagar = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
         
         localStorage.setItem('ordenReciente', JSON.stringify({ codigo: codigoGenerado, items: carrito, total: totalPagar }));
         carrito = [];
@@ -395,10 +456,13 @@ function verificarSesion() {
     const contenedorAcciones = document.querySelector('.user-actions');
     
     if (usuarioActivo && contenedorAcciones) {
+        // Detectamos si estamos en la raíz (index) o ya dentro de la carpeta vistas
+        const rutaVistas = window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/') ? 'vistas/' : '';
+        
         contenedorAcciones.innerHTML = `
-            <span style="font-weight: bold; color: var(--color-principal);">Hola, ${usuarioActivo.nombre}</span> | 
+            <a href="${rutaVistas}perfil.html" style="font-weight: bold; color: var(--color-principal); text-decoration: none;">👤 Hola, ${usuarioActivo.nombre}</a> | 
             <a href="#" id="btn-cerrar-sesion">Cerrar sesión</a>
-            <a href="carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
+            <a href="${rutaVistas}carrito.html" class="cart" id="contador-carrito">🛒 Cart (0)</a>
         `;
     }
 }
@@ -412,10 +476,29 @@ document.addEventListener('click', (e) => {
 });
 
 // ==================================================================
-// MÓDULO 8: INICIALIZADOR GENERAL
+// MÓDULO 8: CARGAR DATOS EN EL PERFIL
+// ==================================================================
+function cargarPerfilUsuario() {
+    const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
+    const nombrePerfil = document.getElementById('perfil-nombre');
+    const correoPerfil = document.getElementById('perfil-correo');
+    
+    // Si estamos en la vista del perfil y el usuario existe
+    if (nombrePerfil && correoPerfil && usuarioActivo) {
+        nombrePerfil.innerText = usuarioActivo.nombre;
+        correoPerfil.innerText = usuarioActivo.correo;
+    } else if (nombrePerfil && !usuarioActivo) {
+        // Si alguien intenta entrar a perfil.html sin estar logeado, lo expulsamos al login
+        window.location.href = 'login.html';
+    }
+}
+
+// ==================================================================
+// MÓDULO 9: INICIALIZADOR GENERAL
 // ==================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    verificarSesion(); // Primero revisa si el usuario está logeado
+    verificarSesion(); 
+    cargarPerfilUsuario(); // Módulo nuevo agregado al inicio
     actualizarContadorSuperior(); 
     renderizarCarrito();          
     renderizarResumenCheckout();  

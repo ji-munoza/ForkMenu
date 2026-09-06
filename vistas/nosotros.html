@@ -22,9 +22,7 @@
             </ul>
         </nav>
         <div class="user-actions">
-            <a href="login.html">Iniciar sesión</a> |
-            <a href="registro.html">Registrar usuario</a>
-            <a href="carrito.html" class="cart">🛒 Cart (0)</a>
+            <!-- JS inyectará aquí el nombre del usuario y el botón de cerrar sesión -->
         </div>
     </header>
 
@@ -38,22 +36,29 @@
                 a domicilio, retiro en el local o directamente desde la mesa.
             </p>
 
-            <h3>El equipo</h3>
-            <!-- Video embebido-->
-            <div class="video-wrapper">
-                <iframe
-                    width="560" height="315"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                    title="Video de presentación de ForkMenu"
-                    frameborder="0"
-                    allowfullscreen>
-                </iframe>
+            <!-- CARRUSEL MODERNO -->
+            <div class="carrusel-nosotros">
+                <div class="carrusel-track">
+                    <div class="carrusel-slide">
+                         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1000" alt="Interior minimalista del restaurante">
+                    </div>
+                    <div class="carrusel-slide">
+                         <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1000" alt="Preparación de platos deliciosos">
+                    </div>
+                    <div class="carrusel-slide">
+                         <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000" alt="Ambiente y mesas del local">
+                    </div>
+                     <div class="carrusel-slide">
+                         <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=1000" alt="Detalle culinario">
+                    </div>
+                </div>
             </div>
 
+            <h3 style="margin-top: var(--space-6);">El equipo</h3>
             <ul class="equipo">
-                <li>Nombre Apellido — Desarrollo Frontend</li>
-                <li>Nombre Apellido — Desarrollo Backend</li>
-                <li>Nombre Apellido — Diseño UX/UI</li>
+                <li>Javier Muñoz — Desarrollo Fullstack</li>
+                <li>Matias Perez — Desarrollo Fullstack</li>
+                
             </ul>
         </section>
     </main>
@@ -62,5 +67,6 @@
         <p>&copy; 2026 ForkMenu. Todos los derechos reservados.</p>
     </footer>
 
+    <script src="../js/validaciones.js"></script>
 </body>
 </html>
