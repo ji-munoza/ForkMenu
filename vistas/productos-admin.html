@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ForkMenu Admin - Mantenedor de Productos</title>
-    <!-- Ruta corregida: solo retrocedemos una carpeta -->
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body class="admin-body">
 
     <div class="admin-layout">
-        <!-- Menú lateral del panel de administración -->
         <nav class="admin-menu">
             <div class="admin-logo">ForkMenu Admin</div>
             <ul>
@@ -24,13 +22,13 @@
         </nav>
 
         <main class="admin-content">
-            <h1>Gestión de Productos</h1>
+            <h1>Gestión y Registro de Productos</h1>
             
-            <!-- Formulario preparado con todos los campos requeridos en la evaluación -->
-            <form id="form-producto" class="form-mantenedor">
+            <!-- Formulario de ingreso / edición -->
+            <form id="form-producto" class="form-mantenedor" style="margin-bottom: 2rem;">
                 <div class="campo">
                     <label for="codigo-prod">Código de Producto</label>
-                    <input type="text" id="codigo-prod" minlength="3" required>
+                    <input type="text" id="codigo-prod" minlength="3" placeholder="Ej: FM-105" required>
                 </div>
                 
                 <div class="campo">
@@ -60,13 +58,33 @@
                         <option value="hamburguesas">Hamburguesas</option>
                         <option value="pizzas">Pizzas</option>
                         <option value="bebidas">Bebidas</option>
+                        <option value="postres">Postres</option>
                     </select>
                 </div>
 
                 <button type="submit">Guardar Producto</button>
             </form>
+
+            <h2>Inventario y Control de Stock</h2>
+            <table class="tabla-pedidos">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock Actual</th>
+                        <th>Stock Crítico</th>
+                        <th>Categoría</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-productos-body">
+                    <!-- Carga dinámica mediante JS -->
+                </tbody>
+            </table>
         </main>
     </div>
+
     <script src="../js/validaciones.js"></script>
 </body>
 </html>

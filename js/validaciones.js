@@ -1,12 +1,24 @@
 // ==================================================================
-// MÓDULO 1: BASE DE DATOS SIMULADA (MOCK)
+// MÓDULO 1: BASE DE DATOS Y PRODUCTOS EN LOCALSTORAGE
 // ==================================================================
-const baseDeDatosProductos = [
-    { id: "1", nombre: "Hamburguesa Clásica", precio: 8000, descripcion: "Carne 100% vacuno, queso cheddar, lechuga, tomate y salsa de la casa, en pan brioche.", imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
-    { id: "2", nombre: "Pizza Margarita", precio: 10000, descripcion: "Masa artesanal a la piedra, salsa de tomate natural, queso mozzarella y albahaca.", imagen: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" },
-    { id: "3", nombre: "Tiramisú", precio: 5500, descripcion: "Clásico postre italiano con capas de bizcocho bañadas en café espresso, mascarpone y cacao.", imagen: "https://images.unsplash.com/photo-1746473079155-6e7c4b2c6c8f?auto=format&fit=crop&w=600&q=80" },
-    { id: "4", nombre: "Limonada Natural", precio: 3000, descripcion: "Refrescante limonada preparada con limones recién exprimidos, un toque de menta y hielo frappé.", imagen: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80" }
+const productosIniciales = [
+    { id: "1", codigo: "FM-101", nombre: "Hamburguesa Clásica", precio: 8000, stock: 15, stockCritico: 3, categoria: "hamburguesas", descripcion: "Carne 100% vacuno, queso cheddar, lechuga, tomate y salsa de la casa, en pan brioche.", imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
+    { id: "2", codigo: "FM-102", nombre: "Pizza Margarita", precio: 10000, stock: 10, stockCritico: 2, categoria: "pizzas", descripcion: "Masa artesanal a la piedra, salsa de tomate natural, queso mozzarella y albahaca.", imagen: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" },
+    { id: "3", codigo: "FM-103", nombre: "Tiramisú", precio: 5500, stock: 8, stockCritico: 2, categoria: "postres", descripcion: "Clásico postre italiano con capas de bizcocho bañadas en café espresso, mascarpone y cacao.", imagen: "https://images.unsplash.com/photo-1746473079155-6e7c4b2c6c8f?auto=format&fit=crop&w=600&q=80" },
+    { id: "4", codigo: "FM-104", nombre: "Limonada Natural", precio: 3000, stock: 25, stockCritico: 5, categoria: "bebidas", descripcion: "Refrescante limonada preparada con limones recién exprimidos, un toque de menta y hielo frappé.", imagen: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80" }
 ];
+
+if (!localStorage.getItem('productosForkMenu')) {
+    localStorage.setItem('productosForkMenu', JSON.stringify(productosIniciales));
+}
+
+function obtenerProductos() {
+    return JSON.parse(localStorage.getItem('productosForkMenu')) || [];
+}
+
+function guardarProductos(productos) {
+    localStorage.setItem('productosForkMenu', JSON.stringify(productos));
+}
 
 // ==================================================================
 // MÓDULO 2: LÓGICA GLOBAL DEL CARRITO
@@ -31,12 +43,23 @@ function actualizarContadorSuperior() {
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-agregar')) {
         const id = e.target.getAttribute('data-id');
+        const productos = obtenerProductos();
+        const productoBD = productos.find(p => p.id === id);
+
+        const platoEnCarrito = carrito.find(item => item.id === id);
+        const cantidadEnCarrito = platoEnCarrito ? platoEnCarrito.cantidad : 0;
+
+        // Verificar stock antes de agregar
+        if (productoBD && (cantidadEnCarrito + 1) > productoBD.stock) {
+            alert(`Stock insuficiente. Solo quedan ${productoBD.stock} unidades de ${productoBD.nombre}.`);
+            return;
+        }
+
         const nombre = e.target.getAttribute('data-nombre');
         const precio = parseFloat(e.target.getAttribute('data-precio'));
-        const platoExistente = carrito.find(item => item.id === id);
-        
-        if (platoExistente) {
-            platoExistente.cantidad += 1;
+
+        if (platoEnCarrito) {
+            platoEnCarrito.cantidad += 1;
         } else {
             carrito.push({ id, nombre, precio, cantidad: 1 });
         }
@@ -47,7 +70,7 @@ document.addEventListener('click', (e) => {
 });
 
 // ==================================================================
-// MÓDULO 3: DIBUJAR VISTAS DINÁMICAS
+// MÓDULO 3: DIBUJAR VISTAS DINÁMICAS (CARRITO Y DETALLE)
 // ==================================================================
 function renderizarCarrito() {
     const contenedor = document.getElementById('lista-carrito');
@@ -87,7 +110,17 @@ function renderizarCarrito() {
 
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-sumar')) {
-        carrito[e.target.getAttribute('data-index')].cantidad += 1;
+        const index = e.target.getAttribute('data-index');
+        const item = carrito[index];
+        const productos = obtenerProductos();
+        const productoBD = productos.find(p => p.id === item.id);
+
+        if (productoBD && item.cantidad + 1 > productoBD.stock) {
+            alert(`No puedes agregar más. Stock disponible: ${productoBD.stock}`);
+            return;
+        }
+
+        carrito[index].cantidad += 1;
         guardarYActualizarCarrito();
     }
     if (e.target.classList.contains('btn-restar')) {
@@ -102,7 +135,8 @@ function cargarDetalleProducto() {
     const parametrosURL = new URLSearchParams(window.location.search);
     const idProductoURL = parametrosURL.get('id');
     if (idProductoURL && document.getElementById('detalle-nombre')) {
-        const productoElegido = baseDeDatosProductos.find(plato => plato.id === idProductoURL);
+        const productos = obtenerProductos();
+        const productoElegido = productos.find(plato => plato.id === idProductoURL);
         if (productoElegido) {
             document.getElementById('detalle-nombre').innerText = productoElegido.nombre;
             document.getElementById('breadcrumb-nombre').innerText = productoElegido.nombre;
@@ -111,15 +145,17 @@ function cargarDetalleProducto() {
             document.getElementById('detalle-imagen').src = productoElegido.imagen;
             
             const btnAgregar = document.getElementById('detalle-btn-agregar');
-            btnAgregar.setAttribute('data-id', productoElegido.id);
-            btnAgregar.setAttribute('data-nombre', productoElegido.nombre);
-            btnAgregar.setAttribute('data-precio', productoElegido.precio);
+            if (btnAgregar) {
+                btnAgregar.setAttribute('data-id', productoElegido.id);
+                btnAgregar.setAttribute('data-nombre', productoElegido.nombre);
+                btnAgregar.setAttribute('data-precio', productoElegido.precio);
+            }
         }
     }
 }
 
 // ==================================================================
-// MÓDULO 4: FILTROS Y BÚSQUEDA
+// MÓDULO 4: FILTROS Y BÚSQUEDA EN TIENDA
 // ==================================================================
 const inputBuscador = document.getElementById('buscar-producto');
 const botonesFiltro = document.querySelectorAll('.tab-categoria');
@@ -150,12 +186,11 @@ if (botonesFiltro.length > 0) {
 }
 
 // ==================================================================
-// MÓDULO 5: VALIDACIÓN Y FORMATO DEL REGISTRO (SIN TOCAR EL RUT)
+// MÓDULO 5: VALIDACIÓN Y REGISTRO
 // ==================================================================
 function formatearRUT(rut) {
     const limpio = rut.replace(/[^0-9kK]/gi, '').toUpperCase();
     if (limpio.length <= 1) return limpio;
-    
     const cuerpo = limpio.slice(0, -1);
     const dv = limpio.slice(-1);
     const cuerpoConPuntos = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -163,7 +198,6 @@ function formatearRUT(rut) {
 }
 
 const formRegistro = document.getElementById('form-registro');
-
 if (formRegistro) {
     const inputRun = document.getElementById('run');
     const inputNombre = document.getElementById('nombre');
@@ -176,7 +210,6 @@ if (formRegistro) {
     const inputDireccion = document.getElementById('direccion');
 
     inputRun.maxLength = 12;
-
     inputRun.addEventListener('input', (e) => {
         let valorLimpio = e.target.value.replace(/[^0-9kK]/gi, '').toUpperCase();
         if (valorLimpio.length > 9) valorLimpio = valorLimpio.slice(0, 9);
@@ -289,7 +322,7 @@ if (formRegistro) {
 }
 
 // ==================================================================
-// MÓDULO 6: CHECKOUT, CUPONES Y PROCESAMIENTO
+// MÓDULO 6: CHECKOUT Y CREACIÓN DE PEDIDOS
 // ==================================================================
 const inputsModalidad = document.querySelectorAll('input[name="modalidad"]');
 const campoDelivery = document.getElementById('campos-delivery');
@@ -306,11 +339,10 @@ if (inputsModalidad.length > 0) {
     });
 }
 
-// Lógica de Cupones
 let cuponAplicado = null; 
 const cuponesDisponibles = {
-    "FORK20": { tipo: "porcentaje", valor: 0.20 }, // 20% descuento
-    "BIENVENIDA": { tipo: "fijo", valor: 3000 }    // $3.000 descuento
+    "FORK20": { tipo: "porcentaje", valor: 0.20 },
+    "BIENVENIDA": { tipo: "fijo", valor: 3000 }
 };
 
 const btnAplicarCupon = document.getElementById('btn-aplicar-cupon');
@@ -329,8 +361,8 @@ if (btnAplicarCupon) {
             cuponAplicado = cuponesDisponibles[inputCupon];
             mensaje.innerText = "¡Cupón aplicado exitosamente!";
             mensaje.style.color = "green";
-            document.getElementById('input-cupon').disabled = true; // Bloquea el input para no usar 2
-            renderizarResumenCheckout(); // Recalcula el total
+            document.getElementById('input-cupon').disabled = true;
+            renderizarResumenCheckout();
         } else {
             mensaje.innerText = "El código ingresado no existe o expiró.";
             mensaje.style.color = "red";
@@ -360,7 +392,6 @@ function renderizarResumenCheckout() {
         } else if (cuponAplicado.tipo === "fijo") {
             descuento = cuponAplicado.valor;
         }
-        // Evitar que el descuento sea mayor a la compra
         if (descuento > subtotal) descuento = subtotal; 
     }
 
@@ -386,7 +417,22 @@ if (formCheckout) {
             return;
         }
 
-        // Recalculamos el total final a cobrar
+        let productos = obtenerProductos();
+
+        // 1. Descontar Stock de los productos
+        for (const item of carrito) {
+            const prod = productos.find(p => p.id === item.id);
+            if (prod) {
+                if (prod.stock < item.cantidad) {
+                    alert(`No hay suficiente stock disponible para ${prod.nombre}. Stock actual: ${prod.stock}`);
+                    return;
+                }
+                prod.stock -= item.cantidad;
+            }
+        }
+        guardarProductos(productos);
+
+        // 2. Recalcular Total
         let subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
         let descuento = 0;
         if (cuponAplicado) {
@@ -395,9 +441,39 @@ if (formCheckout) {
         }
         const totalPagar = subtotal - descuento;
 
-        const codigoGenerado = 'FM-' + Math.floor(Math.random() * 10000);
+        // 3. Obtener Datos de Cliente y Modalidad
+        const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
+        const clienteNombre = usuarioActivo ? usuarioActivo.nombre : "Cliente Anónimo";
         
-        localStorage.setItem('ordenReciente', JSON.stringify({ codigo: codigoGenerado, items: carrito, total: totalPagar }));
+        const modalidadSeleccionada = document.querySelector('input[name="modalidad"]:checked')?.value || 'retirar';
+        let detalleModalidad = "Retiro en local";
+        if (modalidadSeleccionada === 'delivery') {
+            const dir = document.getElementById('direccion').value;
+            detalleModalidad = `Delivery (${dir || 'Sin dirección'})`;
+        } else if (modalidadSeleccionada === 'mesa') {
+            const numMesa = document.getElementById('numero-mesa').value;
+            detalleModalidad = `Mesa #${numMesa || '1'}`;
+        }
+
+        const codigoGenerado = 'FM-' + Math.floor(1000 + Math.random() * 9000);
+        
+        const nuevaOrden = {
+            codigo: codigoGenerado,
+            cliente: clienteNombre,
+            modalidad: detalleModalidad,
+            items: [...carrito],
+            total: totalPagar,
+            estado: "En preparación",
+            fecha: new Date().toLocaleString()
+        };
+
+        // 4. Guardar orden individual y en el array global de pedidos para el Admin
+        localStorage.setItem('ordenReciente', JSON.stringify(nuevaOrden));
+        const pedidosTotales = JSON.parse(localStorage.getItem('pedidosForkMenu')) || [];
+        pedidosTotales.push(nuevaOrden);
+        localStorage.setItem('pedidosForkMenu', JSON.stringify(pedidosTotales));
+
+        // 5. Vaciar Carrito y Redirigir
         carrito = [];
         localStorage.setItem('carritoForkMenu', JSON.stringify(carrito));
         window.location.href = 'confirmacion.html';
@@ -429,7 +505,7 @@ function renderizarTicketConfirmacion() {
 }
 
 // ==================================================================
-// MÓDULO 7: LOGIN Y CONTROL DE SESIÓN DINÁMICA
+// MÓDULO 7: LOGIN Y SESIÓN
 // ==================================================================
 const formLogin = document.getElementById('form-login');
 if (formLogin) {
@@ -456,9 +532,7 @@ function verificarSesion() {
     const contenedorAcciones = document.querySelector('.user-actions');
     
     if (usuarioActivo && contenedorAcciones) {
-        // Detectamos si estamos en la raíz (index) o ya dentro de la carpeta vistas
         const rutaVistas = window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/') ? 'vistas/' : '';
-        
         contenedorAcciones.innerHTML = `
             <a href="${rutaVistas}perfil.html" style="font-weight: bold; color: var(--color-principal); text-decoration: none;">👤 Hola, ${usuarioActivo.nombre}</a> | 
             <a href="#" id="btn-cerrar-sesion">Cerrar sesión</a>
@@ -475,33 +549,170 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// ==================================================================
-// MÓDULO 8: CARGAR DATOS EN EL PERFIL
-// ==================================================================
 function cargarPerfilUsuario() {
     const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
     const nombrePerfil = document.getElementById('perfil-nombre');
     const correoPerfil = document.getElementById('perfil-correo');
     
-    // Si estamos en la vista del perfil y el usuario existe
     if (nombrePerfil && correoPerfil && usuarioActivo) {
         nombrePerfil.innerText = usuarioActivo.nombre;
         correoPerfil.innerText = usuarioActivo.correo;
     } else if (nombrePerfil && !usuarioActivo) {
-        // Si alguien intenta entrar a perfil.html sin estar logeado, lo expulsamos al login
         window.location.href = 'login.html';
     }
 }
 
 // ==================================================================
-// MÓDULO 9: INICIALIZADOR GENERAL
+// MÓDULO 8: PANEL ADMIN - GESTIÓN DE PRODUCTOS Y STOCK
+// ==================================================================
+function renderizarProductosAdmin() {
+    const tbody = document.getElementById('tabla-productos-body');
+    if (!tbody) return;
+
+    const productos = obtenerProductos();
+    tbody.innerHTML = '';
+
+    productos.forEach(p => {
+        const esCritico = p.stock <= (p.stockCritico || 0);
+        const tr = document.createElement('tr');
+        if (esCritico) tr.style.backgroundColor = '#ffe6e6';
+
+        tr.innerHTML = `
+            <td>${p.codigo}</td>
+            <td><strong>${p.nombre}</strong></td>
+            <td>$${p.precio.toLocaleString('es-CL')}</td>
+            <td>
+                <input type="number" value="${p.stock}" min="0" style="width: 70px; padding: 5px;" id="stock-input-${p.id}">
+                ${esCritico ? '<span style="color:red; font-weight:bold; margin-left: 5px;">⚠️ Stock Crítico</span>' : ''}
+            </td>
+            <td>${p.stockCritico || 0}</td>
+            <td><span style="text-transform: capitalize;">${p.categoria}</span></td>
+            <td>
+                <button type="button" class="btn" style="padding: 5px 10px;" onclick="actualizarStockDirecto('${p.id}')">Guardar Stock</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+window.actualizarStockDirecto = function(id) {
+    const input = document.getElementById(`stock-input-${id}`);
+    if (!input) return;
+
+    const nuevoStock = parseInt(input.value);
+    if (isNaN(nuevoStock) || nuevoStock < 0) {
+        alert("Ingresa una cantidad válida.");
+        return;
+    }
+
+    let productos = obtenerProductos();
+    productos = productos.map(p => p.id === id ? { ...p, stock: nuevoStock } : p);
+    guardarProductos(productos);
+    alert("Stock actualizado exitosamente.");
+    renderizarProductosAdmin();
+};
+
+const formProducto = document.getElementById('form-producto');
+if (formProducto) {
+    formProducto.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const codigo = document.getElementById('codigo-prod').value;
+        const nombre = document.getElementById('nombre-prod').value;
+        const precio = parseFloat(document.getElementById('precio-prod').value);
+        const stock = parseInt(document.getElementById('stock-prod').value);
+        const stockCritico = parseInt(document.getElementById('stock-critico').value) || 0;
+        const categoria = document.getElementById('categoria-prod').value;
+
+        let productos = obtenerProductos();
+        const existe = productos.find(p => p.codigo === codigo);
+
+        if (existe) {
+            // Actualizar existente
+            existe.nombre = nombre;
+            existe.precio = precio;
+            existe.stock = stock;
+            existe.stockCritico = stockCritico;
+            existe.categoria = categoria;
+        } else {
+            // Crear nuevo
+            const nuevoProd = {
+                id: String(Date.now()),
+                codigo,
+                nombre,
+                precio,
+                stock,
+                stockCritico,
+                categoria,
+                descripcion: "Producto agregado desde panel admin",
+                imagen: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"
+            };
+            productos.push(nuevoProd);
+        }
+
+        guardarProductos(productos);
+        alert("Producto guardado correctamente.");
+        formProducto.reset();
+        renderizarProductosAdmin();
+    });
+}
+
+// ==================================================================
+// MÓDULO 9: PANEL ADMIN - GESTIÓN DE PEDIDOS
+// ==================================================================
+function renderizarPedidosAdmin() {
+    const tbody = document.getElementById('tabla-pedidos-body');
+    if (!tbody) return;
+
+    const pedidos = JSON.parse(localStorage.getItem('pedidosForkMenu')) || [];
+    tbody.innerHTML = '';
+
+    if (pedidos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 1rem;">No hay pedidos registrados en el sistema.</td></tr>';
+        return;
+    }
+
+    pedidos.forEach((ped, index) => {
+        const tr = document.createElement('tr');
+        const listaItems = ped.items ? ped.items.map(i => `${i.nombre} (x${i.cantidad})`).join('<br>') : 'Sin items';
+
+        tr.innerHTML = `
+            <td><strong>${ped.codigo}</strong></td>
+            <td>${ped.cliente}</td>
+            <td>${ped.modalidad}</td>
+            <td>
+                <select onchange="cambiarEstadoPedido(${index}, this.value)" style="padding: 5px;">
+                    <option value="En preparación" ${ped.estado === 'En preparación' ? 'selected' : ''}>En preparación</option>
+                    <option value="Listo para retiro" ${ped.estado === 'Listo para retiro' ? 'selected' : ''}>Listo para retiro</option>
+                    <option value="En camino" ${ped.estado === 'En camino' ? 'selected' : ''}>En camino</option>
+                    <option value="Entregado" ${ped.estado === 'Entregado' ? 'selected' : ''}>Entregado</option>
+                    <option value="Cancelado" ${ped.estado === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
+                </select>
+            </td>
+            <td>$${ped.total.toLocaleString('es-CL')}</td>
+            <td style="font-size: 0.85rem;">${listaItems}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+window.cambiarEstadoPedido = function(index, nuevoEstado) {
+    let pedidos = JSON.parse(localStorage.getItem('pedidosForkMenu')) || [];
+    pedidos[index].estado = nuevoEstado;
+    localStorage.setItem('pedidosForkMenu', JSON.stringify(pedidos));
+    alert(`El pedido ${pedidos[index].codigo} cambió a estado: "${nuevoEstado}"`);
+};
+
+// ==================================================================
+// INICIALIZADOR GENERAL
 // ==================================================================
 document.addEventListener('DOMContentLoaded', () => {
     verificarSesion(); 
-    cargarPerfilUsuario(); // Módulo nuevo agregado al inicio
+    cargarPerfilUsuario(); 
     actualizarContadorSuperior(); 
     renderizarCarrito();          
     renderizarResumenCheckout();  
     cargarDetalleProducto();      
     renderizarTicketConfirmacion(); 
+    renderizarProductosAdmin();
+    renderizarPedidosAdmin();
 });
