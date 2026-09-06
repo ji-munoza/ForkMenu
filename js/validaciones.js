@@ -20,6 +20,19 @@ function guardarProductos(productos) {
     localStorage.setItem('productosForkMenu', JSON.stringify(productos));
 }
 
+const usuariosIniciales = [
+    {
+        nombre: "Administrador",
+        correo: "admin@forkmenu.cl",
+        contrasena: "admin123",
+        rol: "admin"
+    }
+];
+
+if (!localStorage.getItem('usuariosForkMenu')) {
+    localStorage.setItem('usuariosForkMenu', JSON.stringify(usuariosIniciales));
+}
+
 // ==================================================================
 // MÓDULO 2: LÓGICA GLOBAL DEL CARRITO
 // ==================================================================
@@ -519,8 +532,19 @@ if (formLogin) {
         const usuarioValido = usuariosGuardados.find(u => u.correo === correoIngresado && u.contrasena === passIngresada);
         
         if (usuarioValido) {
-            localStorage.setItem('usuarioActivo', JSON.stringify({ nombre: usuarioValido.nombre, correo: usuarioValido.correo }));
-            window.location.href = '../index.html';
+            const usuarioActivo = {
+                nombre: usuarioValido.nombre,
+                correo: usuarioValido.correo,
+                rol: usuarioValido.rol || 'cliente'
+            };
+            localStorage.setItem('usuarioActivo', JSON.stringify(usuarioActivo));
+            
+            if (usuarioActivo.rol === 'admin') {
+                alert("Bienvenido al Panel de Administración");
+                window.location.href = 'pedidos.html';
+            } else {
+                window.location.href = '../index.html';
+            }
         } else {
             alert("Error: El usuario no existe o la contraseña es incorrecta.");
         }
@@ -703,15 +727,30 @@ window.cambiarEstadoPedido = function(index, nuevoEstado) {
 };
 
 // ==================================================================
-// INICIALIZADOR GENERAL
+// MÓDULO: SEGURIDAD Y PROTECCIÓN DE RUTAS ADMIN
 // ==================================================================
+function protegerRutasAdmin() {
+    const esVistaAdmin = window.location.pathname.includes('pedidos.html') || 
+                         window.location.pathname.includes('productos-admin.html') || 
+                         window.location.pathname.includes('usuarios-admin.html');
+    
+    if (esVistaAdmin) {
+        const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
+        if (!usuarioActivo || usuarioActivo.rol !== 'admin') {
+            alert("Acceso denegado: Debes iniciar sesión como Administrador.");
+            window.location.href = 'login.html';
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    protegerRutasAdmin(); // Se ejecuta en primer lugar para bloquear el render si no es admin
     verificarSesion(); 
     cargarPerfilUsuario(); 
     actualizarContadorSuperior(); 
-    renderizarCarrito();          
-    renderizarResumenCheckout();  
-    cargarDetalleProducto();      
+    renderizarCarrito(); 
+    renderizarResumenCheckout(); 
+    cargarDetalleProducto(); 
     renderizarTicketConfirmacion(); 
     renderizarProductosAdmin();
     renderizarPedidosAdmin();
