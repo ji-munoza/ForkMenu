@@ -10,9 +10,10 @@ export const meta = {
 };
 
 export default function AdminProductosPage() {
-  const { productos, updateStock, saveProduct } = useProducts();
+  const { productos, actualizarStock, guardarProducto } = useProducts();
 
-  const [form, setForm] = useState({
+  // Estado del formulario de creación y edición
+  const [formulario, setFormulario] = useState({
     codigo: '',
     nombre: '',
     categoria: '',
@@ -23,19 +24,29 @@ export default function AdminProductosPage() {
     imagen: '',
   });
 
+  // Estado de los inputs de stock editados directamente en la tabla
   const [stocksEditados, setStocksEditados] = useState({});
   const [feedback, setFeedback] = useState(null);
 
-  const handleFormChange = (e) => {
-    const { id, value } = e.target;
-    setForm((prev) => ({ ...prev, [id]: value }));
-  };
+  /**
+   * Maneja el cambio de inputs en el formulario de producto
+   */
+  function manejarCambioFormulario(evento) {
+    const { id, value } = evento.target;
+    setFormulario((prev) => ({ ...prev, [id]: value }));
+  }
 
-  const handleStockInputChange = (id, valor) => {
+  /**
+   * Actualiza el valor temporal en el input de stock de la fila
+   */
+  function manejarCambioStockInput(id, valor) {
     setStocksEditados((prev) => ({ ...prev, [id]: valor }));
-  };
+  }
 
-  const handleGuardarStock = (id) => {
+  /**
+   * Guarda el stock modificado para un producto
+   */
+  function manejarGuardarStock(id) {
     const valor = stocksEditados[id];
     if (valor === undefined || valor === '') return;
 
@@ -45,31 +56,36 @@ export default function AdminProductosPage() {
       return;
     }
 
-    updateStock(id, parsed);
+    actualizarStock(id, parsed);
     setFeedback({ tipo: 'success', texto: 'Stock actualizado exitosamente.' });
     setTimeout(() => setFeedback(null), 3000);
-  };
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.codigo || !form.nombre || !form.precio || !form.stock) {
+  /**
+   * Valida y guarda un nuevo producto o actualiza uno existente
+   */
+  function manejarEnvio(evento) {
+    evento.preventDefault();
+    if (!formulario.codigo || !formulario.nombre || !formulario.precio || !formulario.stock) {
       setFeedback({ tipo: 'danger', texto: 'Por favor completa todos los campos requeridos.' });
       return;
     }
 
-    const res = saveProduct({
-      codigo: form.codigo.trim(),
-      nombre: form.nombre.trim(),
-      categoria: form.categoria || 'otros',
-      precio: parseFloat(form.precio),
-      stock: parseInt(form.stock, 10),
-      stockCritico: parseInt(form.stockCritico, 10) || 0,
-      descripcion: form.descripcion || 'Producto agregado desde el panel de administración.',
-      imagen: form.imagen || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+    const respuesta = guardarProducto({
+      codigo: formulario.codigo.trim(),
+      nombre: formulario.nombre.trim(),
+      categoria: formulario.categoria || 'otros',
+      precio: parseFloat(formulario.precio),
+      stock: parseInt(formulario.stock, 10),
+      stockCritico: parseInt(formulario.stockCritico, 10) || 0,
+      descripcion: formulario.descripcion || 'Producto agregado desde el panel de administración.',
+      imagen:
+        formulario.imagen ||
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
     });
 
-    setFeedback({ tipo: 'success', texto: res.message });
-    setForm({
+    setFeedback({ tipo: 'success', texto: respuesta.message });
+    setFormulario({
       codigo: '',
       nombre: '',
       categoria: '',
@@ -80,7 +96,7 @@ export default function AdminProductosPage() {
       imagen: '',
     });
     setTimeout(() => setFeedback(null), 3500);
-  };
+  }
 
   return (
     <div>
@@ -102,7 +118,7 @@ export default function AdminProductosPage() {
           <h2 className="card-title h5 mb-0 fw-bold">Agregar / Editar Producto</h2>
         </Card.Header>
         <Card.Body className="p-4">
-          <Form id="form-producto" onSubmit={handleSubmit}>
+          <Form id="form-producto" onSubmit={manejarEnvio}>
             <Row className="g-3">
               <Col md={3}>
                 <Form.Group controlId="codigo">
@@ -112,8 +128,8 @@ export default function AdminProductosPage() {
                     id="codigo"
                     placeholder="Ej: FM-107"
                     minLength={3}
-                    value={form.codigo}
-                    onChange={handleFormChange}
+                    value={formulario.codigo}
+                    onChange={manejarCambioFormulario}
                     required
                   />
                 </Form.Group>
@@ -127,8 +143,8 @@ export default function AdminProductosPage() {
                     id="nombre"
                     placeholder="Ej: Empanada de Pino Horno"
                     maxLength={100}
-                    value={form.nombre}
-                    onChange={handleFormChange}
+                    value={formulario.nombre}
+                    onChange={manejarCambioFormulario}
                     required
                   />
                 </Form.Group>
@@ -139,8 +155,8 @@ export default function AdminProductosPage() {
                   <Form.Label className="fw-semibold small">Categoría</Form.Label>
                   <Form.Select
                     id="categoria"
-                    value={form.categoria}
-                    onChange={handleFormChange}
+                    value={formulario.categoria}
+                    onChange={manejarCambioFormulario}
                     required
                   >
                     <option value="">Seleccione categoría</option>
@@ -160,8 +176,8 @@ export default function AdminProductosPage() {
                     id="precio"
                     min={0}
                     placeholder="Ej: 5000"
-                    value={form.precio}
-                    onChange={handleFormChange}
+                    value={formulario.precio}
+                    onChange={manejarCambioFormulario}
                     required
                   />
                 </Form.Group>
@@ -175,8 +191,8 @@ export default function AdminProductosPage() {
                     id="stock"
                     min={0}
                     placeholder="Ej: 20"
-                    value={form.stock}
-                    onChange={handleFormChange}
+                    value={formulario.stock}
+                    onChange={manejarCambioFormulario}
                     required
                   />
                 </Form.Group>
@@ -190,8 +206,8 @@ export default function AdminProductosPage() {
                     id="stockCritico"
                     min={0}
                     placeholder="Ej: 5"
-                    value={form.stockCritico}
-                    onChange={handleFormChange}
+                    value={formulario.stockCritico}
+                    onChange={manejarCambioFormulario}
                   />
                 </Form.Group>
               </Col>
@@ -203,8 +219,8 @@ export default function AdminProductosPage() {
                     type="text"
                     id="descripcion"
                     placeholder="Ingredientes y notas del plato..."
-                    value={form.descripcion}
-                    onChange={handleFormChange}
+                    value={formulario.descripcion}
+                    onChange={manejarCambioFormulario}
                   />
                 </Form.Group>
               </Col>
@@ -216,8 +232,8 @@ export default function AdminProductosPage() {
                     type="url"
                     id="imagen"
                     placeholder="https://images.unsplash.com/..."
-                    value={form.imagen}
-                    onChange={handleFormChange}
+                    value={formulario.imagen}
+                    onChange={manejarCambioFormulario}
                   />
                 </Form.Group>
               </Col>
@@ -276,7 +292,7 @@ export default function AdminProductosPage() {
                             size="sm"
                             style={{ width: '85px' }}
                             value={valorStock}
-                            onChange={(e) => handleStockInputChange(p.id, e.target.value)}
+                            onChange={(e) => manejarCambioStockInput(p.id, e.target.value)}
                             id={`stock-input-${p.id}`}
                           />
                           {esCritico && (
@@ -296,7 +312,7 @@ export default function AdminProductosPage() {
                         <Button
                           variant="outline-danger"
                           size="sm"
-                          onClick={() => handleGuardarStock(p.id)}
+                          onClick={() => manejarGuardarStock(p.id)}
                         >
                           Guardar
                         </Button>

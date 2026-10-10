@@ -5,9 +5,10 @@ import { useCart } from './CartContext';
 const OrderContext = createContext();
 
 export function OrderProvider({ children }) {
-  const { deductStock } = useProducts();
-  const { clearCart } = useCart();
+  const { descontarStock, deductStock } = useProducts();
+  const { vaciarCarrito, clearCart } = useCart();
 
+  // Historial de pedidos registrados en el sistema
   const [pedidos, setPedidos] = useState(() => {
     try {
       const guardados = localStorage.getItem('pedidosForkMenu');
@@ -43,6 +44,7 @@ export function OrderProvider({ children }) {
     }
   });
 
+  // Última orden confirmada por el usuario en la sesión actual
   const [ordenReciente, setOrdenReciente] = useState(() => {
     try {
       const guardado = localStorage.getItem('ordenReciente');
@@ -52,10 +54,12 @@ export function OrderProvider({ children }) {
     }
   });
 
+  // Sincronizar pedidos con localStorage
   useEffect(() => {
     localStorage.setItem('pedidosForkMenu', JSON.stringify(pedidos));
   }, [pedidos]);
 
+  // Sincronizar orden reciente con localStorage
   useEffect(() => {
     if (ordenReciente) {
       localStorage.setItem('ordenReciente', JSON.stringify(ordenReciente));
@@ -64,7 +68,10 @@ export function OrderProvider({ children }) {
     }
   }, [ordenReciente]);
 
-  const createOrder = ({ modalidad, detalleModalidad, items, total, cliente }) => {
+  /**
+   * Crea un nuevo pedido, descuenta inventario y limpia el carrito
+   */
+  function crearPedido({ modalidad, detalleModalidad, items, total, cliente }) {
     const codigoGenerado = 'FM-' + Math.floor(1000 + Math.random() * 9000);
     const nuevaOrden = {
       codigo: codigoGenerado,
@@ -76,32 +83,42 @@ export function OrderProvider({ children }) {
       fecha: new Date().toLocaleString('es-CL'),
     };
 
-    // Descontar inventario
-    deductStock(items);
+    // Descontar inventario disponible
+    const descontarFn = descontarStock || deductStock;
+    if (descontarFn) descontarFn(items);
 
-    // Guardar orden
+    // Guardar pedido en el listado y como orden reciente
     setPedidos((prev) => [nuevaOrden, ...prev]);
     setOrdenReciente(nuevaOrden);
 
-    // Vaciar carrito
-    clearCart();
+    // Vaciar los productos del carrito
+    const vaciarFn = vaciarCarrito || clearCart;
+    if (vaciarFn) vaciarFn();
 
     return nuevaOrden;
-  };
+  }
 
-  const updateOrderStatus = (codigo, nuevoEstado) => {
+  /**
+   * Actualiza el estado de seguimiento de un pedido
+   */
+  function actualizarEstadoPedido(codigo, nuevoEstado) {
     setPedidos((prev) =>
       prev.map((ord) => (ord.codigo === codigo ? { ...ord, estado: nuevoEstado } : ord))
     );
-  };
+  }
 
   return (
     <OrderContext.Provider
       value={{
+        // Propiedades y métodos en español
         pedidos,
         ordenReciente,
-        createOrder,
-        updateOrderStatus,
+        crearPedido,
+        actualizarEstadoPedido,
+
+        // Alias en inglés para compatibilidad
+        createOrder: crearPedido,
+        updateOrderStatus: actualizarEstadoPedido,
       }}
     >
       {children}

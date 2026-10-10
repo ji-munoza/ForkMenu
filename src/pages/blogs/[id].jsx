@@ -12,6 +12,7 @@ export default function DetalleBlogPage() {
   const { id } = useParams();
   const blog = blogsIniciales.find((b) => b.id === id || b.slug === id);
 
+  // Si no se encuentra el artículo del blog
   if (!blog) {
     return (
       <Container className="my-5 py-5 text-center">
@@ -29,7 +30,7 @@ export default function DetalleBlogPage() {
 
   return (
     <Container className="my-5">
-      {/* Breadcrumb */}
+      {/* Breadcrumb de navegación */}
       <Breadcrumb className="mb-4">
         <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/' }}>
           Home

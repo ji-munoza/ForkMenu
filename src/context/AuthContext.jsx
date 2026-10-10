@@ -4,6 +4,7 @@ import { usuariosIniciales } from '../utils/dataInicial';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  // Estado del usuario con sesión activa en el sistema
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const guardado = localStorage.getItem('usuarioActivo');
@@ -13,6 +14,7 @@ export function AuthProvider({ children }) {
     }
   });
 
+  // Lista de usuarios registrados en el sistema
   const [usersList, setUsersList] = useState(() => {
     try {
       const guardados = localStorage.getItem('usuariosForkMenu');
@@ -24,6 +26,7 @@ export function AuthProvider({ children }) {
     }
   });
 
+  // Sincronización del usuario activo con localStorage
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('usuarioActivo', JSON.stringify(currentUser));
@@ -32,11 +35,15 @@ export function AuthProvider({ children }) {
     }
   }, [currentUser]);
 
+  // Sincronización del listado de usuarios con localStorage
   useEffect(() => {
     localStorage.setItem('usuariosForkMenu', JSON.stringify(usersList));
   }, [usersList]);
 
-  const login = (correo, contrasena) => {
+  /**
+   * Autentica a un usuario según su correo y contraseña
+   */
+  function iniciarSesion(correo, contrasena) {
     const emailNorm = (correo || '').trim().toLowerCase();
     const usuarioEncontrado = usersList.find(
       (u) => u.correo.toLowerCase() === emailNorm && u.contrasena === contrasena
@@ -51,17 +58,26 @@ export function AuthProvider({ children }) {
       nombre: usuarioEncontrado.nombre || 'Usuario',
       correo: usuarioEncontrado.correo,
       rol: usuarioEncontrado.rol || 'cliente',
+      direccion: usuarioEncontrado.direccion || '',
+      region: usuarioEncontrado.region || '',
+      comuna: usuarioEncontrado.comuna || '',
     };
 
     setCurrentUser(activo);
     return { success: true, user: activo };
-  };
+  }
 
-  const logout = () => {
+  /**
+   * Cierra la sesión activa del usuario
+   */
+  function cerrarSesion() {
     setCurrentUser(null);
-  };
+  }
 
-  const register = (datosUsuario) => {
+  /**
+   * Registra a un nuevo usuario cliente en el sistema
+   */
+  function registrarUsuario(datosUsuario) {
     const emailNorm = (datosUsuario.correo || '').trim().toLowerCase();
     const existe = usersList.some((u) => u.correo.toLowerCase() === emailNorm);
     if (existe) {
@@ -81,9 +97,12 @@ export function AuthProvider({ children }) {
 
     setUsersList((prev) => [...prev, nuevo]);
     return { success: true, user: nuevo };
-  };
+  }
 
-  const updateUserRole = (identificador, nuevoRol) => {
+  /**
+   * Actualiza el rol o perfil de un usuario existente
+   */
+  function actualizarRolUsuario(identificador, nuevoRol) {
     setUsersList((prev) =>
       prev.map((u) => {
         if (u.correo === identificador || u.run === identificador) {
@@ -92,17 +111,26 @@ export function AuthProvider({ children }) {
         return u;
       })
     );
-  };
+  }
 
-  const deleteUser = (identificador) => {
+  /**
+   * Elimina un usuario por su correo o RUN
+   */
+  function eliminarUsuario(identificador) {
     setUsersList((prev) =>
       prev.filter((u) => u.correo !== identificador && u.run !== identificador)
     );
-  };
+  }
 
-  const addUser = (nuevo) => {
+  /**
+   * Agrega o actualiza un usuario desde el panel de administración
+   */
+  function agregarUsuario(nuevo) {
     const emailNorm = (nuevo.correo || '').trim().toLowerCase();
-    const existe = usersList.some((u) => u.correo.toLowerCase() === emailNorm || (nuevo.run && u.run === nuevo.run));
+    const existe = usersList.some(
+      (u) => u.correo.toLowerCase() === emailNorm || (nuevo.run && u.run === nuevo.run)
+    );
+
     if (existe) {
       setUsersList((prev) =>
         prev.map((u) => {
@@ -117,24 +145,38 @@ export function AuthProvider({ children }) {
 
     setUsersList((prev) => [...prev, { ...nuevo, correo: emailNorm }]);
     return { success: true, message: 'Usuario creado exitosamente.' };
-  };
+  }
 
+  // Comprobaciones de permisos
   const isAdmin = currentUser?.rol === 'admin';
   const isVendedor = currentUser?.rol === 'vendedor';
 
   return (
     <AuthContext.Provider
       value={{
+        // Propiedades y métodos en español
+        usuarioActual: currentUser,
+        listaUsuarios: usersList,
+        esAdmin: isAdmin,
+        esVendedor: isVendedor,
+        iniciarSesion,
+        cerrarSesion,
+        registrarUsuario,
+        actualizarRolUsuario,
+        eliminarUsuario,
+        agregarUsuario,
+
+        // Alias en inglés para compatibilidad
         currentUser,
         usersList,
-        login,
-        logout,
-        register,
-        updateUserRole,
-        deleteUser,
-        addUser,
         isAdmin,
         isVendedor,
+        login: iniciarSesion,
+        logout: cerrarSesion,
+        register: registrarUsuario,
+        updateUserRole: actualizarRolUsuario,
+        deleteUser: eliminarUsuario,
+        addUser: agregarUsuario,
       }}
     >
       {children}

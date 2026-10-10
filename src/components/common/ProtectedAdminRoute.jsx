@@ -4,13 +4,24 @@ import { useAuth } from '../../context/AuthContext';
 import { Alert, Container, Button } from 'react-bootstrap';
 
 export default function ProtectedAdminRoute({ children }) {
-  const { currentUser, isAdmin } = useAuth();
+  const { usuarioActual: currentUser, esAdmin: isAdmin } = useAuth();
   const location = useLocation();
 
+  // Si no ha iniciado sesión, redirigir a login recordando la ruta de origen
   if (!currentUser) {
-    return <Navigate to="/login" state={{ from: location, message: 'Debes iniciar sesión con perfil Administrador para acceder.' }} replace />;
+    return (
+      <Navigate
+        to="/login"
+        state={{
+          from: location,
+          message: 'Debes iniciar sesión con perfil Administrador para acceder.',
+        }}
+        replace
+      />
+    );
   }
 
+  // Si el usuario no tiene rol administrador, mostrar pantalla de acceso restringido
   if (!isAdmin) {
     return (
       <Container className="my-5 py-5 text-center">

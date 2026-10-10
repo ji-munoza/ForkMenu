@@ -13,12 +13,22 @@ export const meta = {
 };
 
 export default function CheckoutPage() {
-  const { cart, subtotal, discount, total, appliedCoupon, applyCoupon, removeCoupon } = useCart();
-  const { currentUser } = useAuth();
-  const { createOrder } = useOrders();
+  const {
+    carrito: cart,
+    subtotal,
+    descuento: discount,
+    total,
+    cuponAplicado: appliedCoupon,
+    aplicarCupon,
+    quitarCupon,
+  } = useCart();
+
+  const { usuarioActual: currentUser } = useAuth();
+  const { crearPedido } = useOrders();
   const { productos } = useProducts();
   const navigate = useNavigate();
 
+  // Estados locales para el proceso de compra
   const [modalidad, setModalidad] = useState('retirar');
   const [direccion, setDireccion] = useState(currentUser?.direccion || '');
   const [numeroMesa, setNumeroMesa] = useState('1');
@@ -27,6 +37,7 @@ export default function CheckoutPage() {
   const [mensajeCupon, setMensajeCupon] = useState(null);
   const [errorEnvio, setErrorEnvio] = useState('');
 
+  // Si no hay productos en el carrito, mostrar advertencia
   if (cart.length === 0) {
     return (
       <Container className="my-5 py-5 text-center">
@@ -44,29 +55,43 @@ export default function CheckoutPage() {
     );
   }
 
-  const handleAplicarCupon = (e) => {
-    e.preventDefault();
-    const res = applyCoupon(codigoCupon);
+  /**
+   * Procesa la aplicación del código promocional
+   */
+  function manejarAplicarCupon(evento) {
+    evento.preventDefault();
+    const resultado = aplicarCupon(codigoCupon);
     setMensajeCupon({
-      tipo: res.success ? 'success' : 'danger',
-      texto: res.message,
+      tipo: resultado.success ? 'success' : 'danger',
+      texto: resultado.message,
     });
-    if (res.success) {
+    if (resultado.success) {
       setCodigoCupon('');
     }
-  };
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  /**
+   * Remueve el cupón activo
+   */
+  function manejarQuitarCupon() {
+    quitarCupon();
+    setMensajeCupon(null);
+  }
+
+  /**
+   * Valida la información y envía la orden a cocina
+   */
+  function manejarEnvio(evento) {
+    evento.preventDefault();
     setErrorEnvio('');
 
-    // Validar nombre
+    // Validación de nombre del comensal
     if (!nombreCliente.trim()) {
       setErrorEnvio('Por favor ingresa tu nombre para el pedido.');
       return;
     }
 
-    // Validar modalidad específica
+    // Validación según la modalidad seleccionada
     if (modalidad === 'delivery' && !direccion.trim()) {
       setErrorEnvio('Debes ingresar la dirección de entrega para la modalidad delivery.');
       return;
@@ -77,7 +102,7 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Validar stock disponible
+    // Validación de stock antes de confirmar orden
     for (const item of cart) {
       const prodBD = productos.find((p) => String(p.id) === String(item.id));
       if (prodBD && prodBD.stock < item.cantidad) {
@@ -93,7 +118,8 @@ export default function CheckoutPage() {
       detalleModalidad = `Mesa #${numeroMesa.trim()}`;
     }
 
-    createOrder({
+    // Crear pedido en el sistema
+    crearPedido({
       modalidad,
       detalleModalidad,
       items: cart,
@@ -102,7 +128,7 @@ export default function CheckoutPage() {
     });
 
     navigate('/confirmacion');
-  };
+  }
 
   return (
     <Container className="my-5">
@@ -120,7 +146,7 @@ export default function CheckoutPage() {
         </Alert>
       )}
 
-      <Form id="form-checkout" onSubmit={handleSubmit}>
+      <Form id="form-checkout" onSubmit={manejarEnvio}>
         <Row className="g-4">
           <Col lg={7}>
             {/* 1. Modalidad de Entrega */}
@@ -280,7 +306,7 @@ export default function CheckoutPage() {
                       <Badge bg="success" className="me-2">{appliedCoupon.codigo}</Badge>
                       <small className="text-success fw-bold">{appliedCoupon.descripcion}</small>
                     </div>
-                    <Button variant="link" size="sm" className="text-danger p-0" onClick={removeCoupon}>
+                    <Button variant="link" size="sm" className="text-danger p-0" onClick={manejarQuitarCupon}>
                       Quitar
                     </Button>
                   </div>
@@ -298,7 +324,7 @@ export default function CheckoutPage() {
                         id="btn-aplicar-cupon"
                         variant="outline-danger"
                         type="button"
-                        onClick={handleAplicarCupon}
+                        onClick={manejarAplicarCupon}
                       >
                         Aplicar
                       </Button>

@@ -20,36 +20,65 @@ const CATEGORIAS = [
 
 export default function ProductosPage() {
   const { productos } = useProducts();
-  const { addToCart } = useCart();
+  const { agregarAlCarrito } = useCart();
 
+  // Estados locales para los filtros y búsqueda
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todas');
   const [feedback, setFeedback] = useState(null);
 
+  /**
+   * Filtra los productos según la categoría activa y el término de búsqueda
+   */
   const productosFiltrados = useMemo(() => {
-    return productos.filter((p) => {
+    return productos.filter((producto) => {
       const coincideCat =
         categoriaSeleccionada === 'todas' ||
-        (p.categoria || '').toLowerCase() === categoriaSeleccionada.toLowerCase();
+        (producto.categoria || '').toLowerCase() === categoriaSeleccionada.toLowerCase();
 
-      const texto = busqueda.toLowerCase().trim();
-      const coincideBusqueda =
-        !texto ||
-        p.nombre.toLowerCase().includes(texto) ||
-        (p.descripcion && p.descripcion.toLowerCase().includes(texto));
+      const textoBusqueda = busqueda.toLowerCase().trim();
+      const coincideTexto =
+        !textoBusqueda ||
+        producto.nombre.toLowerCase().includes(textoBusqueda) ||
+        (producto.descripcion && producto.descripcion.toLowerCase().includes(textoBusqueda));
 
-      return coincideCat && coincideBusqueda;
+      return coincideCat && coincideTexto;
     });
   }, [productos, categoriaSeleccionada, busqueda]);
 
-  const handleAgregar = (prod) => {
-    const res = addToCart(prod, 1);
+  /**
+   * Agrega un producto al carrito de compras
+   */
+  function manejarAgregarAlCarrito(producto) {
+    const resultado = agregarAlCarrito(producto, 1);
     setFeedback({
-      tipo: res.success ? 'success' : 'danger',
-      mensaje: res.message,
+      tipo: resultado.success ? 'success' : 'danger',
+      mensaje: resultado.message,
     });
     setTimeout(() => setFeedback(null), 3500);
-  };
+  }
+
+  /**
+   * Actualiza el valor del input de búsqueda
+   */
+  function manejarCambioBusqueda(evento) {
+    setBusqueda(evento.target.value);
+  }
+
+  /**
+   * Selecciona una categoría específica para filtrar
+   */
+  function manejarSeleccionarCategoria(idCategoria) {
+    setCategoriaSeleccionada(idCategoria);
+  }
+
+  /**
+   * Restablece los filtros a su estado inicial
+   */
+  function manejarLimpiarFiltros() {
+    setBusqueda('');
+    setCategoriaSeleccionada('todas');
+  }
 
   return (
     <Container className="my-5">
@@ -98,7 +127,7 @@ export default function ProductosPage() {
                 id="buscar-producto"
                 placeholder="Buscar por nombre o ingrediente..."
                 value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
+                onChange={manejarCambioBusqueda}
                 className="bg-light border-start-0"
               />
             </InputGroup>
@@ -112,7 +141,7 @@ export default function ProductosPage() {
                   variant={categoriaSeleccionada === cat.id ? 'danger' : 'outline-danger'}
                   size="sm"
                   className="rounded-pill px-3 fw-semibold"
-                  onClick={() => setCategoriaSeleccionada(cat.id)}
+                  onClick={() => manejarSeleccionarCategoria(cat.id)}
                 >
                   {cat.label}
                 </Button>
@@ -122,7 +151,7 @@ export default function ProductosPage() {
         </Row>
       </Card>
 
-      {/* Resultados contador */}
+      {/* Contador de resultados */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <span className="text-muted small">
           Mostrando <strong>{productosFiltrados.length}</strong> plato(s)
@@ -147,10 +176,7 @@ export default function ProductosPage() {
             </p>
             <Button
               variant="outline-danger"
-              onClick={() => {
-                setBusqueda('');
-                setCategoriaSeleccionada('todas');
-              }}
+              onClick={manejarLimpiarFiltros}
             >
               Restablecer filtros
             </Button>
@@ -199,7 +225,7 @@ export default function ProductosPage() {
                     variant="outline-danger"
                     size="sm"
                     className="w-100 fw-semibold d-flex align-items-center justify-content-center gap-1 btn-agregar"
-                    onClick={() => handleAgregar(prod)}
+                    onClick={() => manejarAgregarAlCarrito(prod)}
                     disabled={prod.stock <= 0}
                   >
                     <i className="bi bi-cart-plus"></i>

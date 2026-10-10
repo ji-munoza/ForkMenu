@@ -12,23 +12,27 @@ export const meta = {
 
 export default function HomePage() {
   const { productos } = useProducts();
-  const { addToCart } = useCart();
+  const { agregarAlCarrito } = useCart();
   const [feedback, setFeedback] = useState(null);
 
+  // Seleccionar los primeros 3 productos para la sección destacada
   const platosDestacados = productos.slice(0, 3);
 
-  const handleAgregar = (producto) => {
-    const res = addToCart(producto, 1);
+  /**
+   * Agrega un plato destacado directamente al carrito
+   */
+  function manejarAgregarAlCarrito(producto) {
+    const resultado = agregarAlCarrito(producto, 1);
     setFeedback({
-      tipo: res.success ? 'success' : 'danger',
-      mensaje: res.message,
+      tipo: resultado.success ? 'success' : 'danger',
+      mensaje: resultado.message,
     });
     setTimeout(() => setFeedback(null), 3500);
-  };
+  }
 
   return (
     <div>
-      {/* Alerta flotante de feedback */}
+      {/* Alerta flotante de feedback al interactuar con el carrito */}
       {feedback && (
         <div
           className="position-fixed top-0 end-0 p-3"
@@ -40,13 +44,19 @@ export default function HomePage() {
             onClose={() => setFeedback(null)}
             className="shadow-lg animate__animated animate__fadeInDown"
           >
-            <i className={`bi ${feedback.tipo === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'} me-2`}></i>
+            <i
+              className={`bi ${
+                feedback.tipo === 'success'
+                  ? 'bi-check-circle-fill'
+                  : 'bi-exclamation-triangle-fill'
+              } me-2`}
+            ></i>
             {feedback.mensaje}
           </Alert>
         </div>
       )}
 
-      {/* Hero Section */}
+      {/* Hero Section Principal */}
       <section
         className="text-white text-center py-5 mb-5 shadow-sm position-relative overflow-hidden"
         style={{
@@ -81,7 +91,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Características Destacadas */}
+      {/* Características Destacadas del Servicio */}
       <Container className="mb-5">
         <Row className="g-4 text-center">
           <Col md={4}>
@@ -168,7 +178,7 @@ export default function HomePage() {
                     <Button
                       variant="outline-danger"
                       className="w-100 fw-semibold d-flex align-items-center justify-content-center gap-1"
-                      onClick={() => handleAgregar(plato)}
+                      onClick={() => manejarAgregarAlCarrito(plato)}
                       disabled={plato.stock <= 0}
                     >
                       <i className="bi bi-cart-plus"></i>

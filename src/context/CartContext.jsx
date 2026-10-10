@@ -8,6 +8,7 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const { productos } = useProducts();
 
+  // Estado del carrito almacenado en localStorage para persistencia
   const [cart, setCart] = useState(() => {
     try {
       const guardado = localStorage.getItem('carritoForkMenu');
@@ -17,6 +18,7 @@ export function CartProvider({ children }) {
     }
   });
 
+  // Estado del cupón de descuento activo
   const [appliedCoupon, setAppliedCoupon] = useState(() => {
     try {
       const guardado = localStorage.getItem('cuponForkMenu');
@@ -26,10 +28,12 @@ export function CartProvider({ children }) {
     }
   });
 
+  // Sincronización automática con localStorage al modificar el carrito
   useEffect(() => {
     localStorage.setItem('carritoForkMenu', JSON.stringify(cart));
   }, [cart]);
 
+  // Sincronización del cupón activo con localStorage
   useEffect(() => {
     if (appliedCoupon) {
       localStorage.setItem('cuponForkMenu', JSON.stringify(appliedCoupon));
@@ -38,7 +42,10 @@ export function CartProvider({ children }) {
     }
   }, [appliedCoupon]);
 
-  const addToCart = (producto, cantidad = 1) => {
+  /**
+   * Agrega un producto al carrito verificando stock disponible en inventario
+   */
+  function agregarAlCarrito(producto, cantidad = 1) {
     const prodBD = productos.find((p) => String(p.id) === String(producto.id));
     const stockDisponible = prodBD ? prodBD.stock : producto.stock || 0;
 
@@ -46,6 +53,7 @@ export function CartProvider({ children }) {
     const cantidadActual = itemExistente ? itemExistente.cantidad : 0;
     const nuevaCantidad = cantidadActual + cantidad;
 
+    // Validación de disponibilidad de stock
     if (nuevaCantidad > stockDisponible) {
       return {
         success: false,
@@ -79,13 +87,19 @@ export function CartProvider({ children }) {
       success: true,
       message: `¡Excelente! Se añadió ${producto.nombre} al carrito.`,
     };
-  };
+  }
 
-  const removeFromCart = (id) => {
+  /**
+   * Elimina un producto del carrito por su ID
+   */
+  function eliminarDelCarrito(id) {
     setCart((prev) => prev.filter((item) => String(item.id) !== String(id)));
-  };
+  }
 
-  const updateQuantity = (id, delta) => {
+  /**
+   * Incrementa o decrementa la cantidad de un producto en el carrito
+   */
+  function actualizarCantidad(id, delta) {
     const item = cart.find((i) => String(i.id) === String(id));
     if (!item) return;
 
@@ -111,20 +125,29 @@ export function CartProvider({ children }) {
           )
         );
       } else {
-        removeFromCart(id);
+        eliminarDelCarrito(id);
       }
     }
 
     return { success: true };
-  };
+  }
 
-  const clearCart = () => {
+  /**
+   * Vacía todos los productos del carrito y remueve cupones aplicados
+   */
+  function vaciarCarrito() {
     setCart([]);
     setAppliedCoupon(null);
-  };
+  }
 
-  const applyCoupon = (codigo) => {
-    if (!codigo) return { success: false, message: 'Ingresa un cupón válido.' };
+  /**
+   * Aplica un cupón promocional si es válido y no hay otro aplicado
+   */
+  function aplicarCupon(codigo) {
+    if (!codigo) {
+      return { success: false, message: 'Ingresa un cupón válido.' };
+    }
+
     const codigoUpper = codigo.trim().toUpperCase();
 
     if (appliedCoupon) {
@@ -138,12 +161,16 @@ export function CartProvider({ children }) {
 
     setAppliedCoupon(cupon);
     return { success: true, message: `¡Cupón ${cupon.codigo} aplicado exitosamente!` };
-  };
+  }
 
-  const removeCoupon = () => {
+  /**
+   * Remueve el cupón actualmente aplicado
+   */
+  function quitarCupon() {
     setAppliedCoupon(null);
-  };
+  }
 
+  // Cálculos de totales
   const subtotal = cart.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
   const discount = calcularDescuento(subtotal, appliedCoupon);
   const total = Math.max(0, subtotal - discount);
@@ -152,18 +179,31 @@ export function CartProvider({ children }) {
   return (
     <CartContext.Provider
       value={{
-        cart,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        appliedCoupon,
-        applyCoupon,
-        removeCoupon,
+        // Métodos y propiedades en español
+        carrito: cart,
+        cuponAplicado: appliedCoupon,
         subtotal,
-        discount,
+        descuento: discount,
         total,
+        totalArticulos: totalItems,
+        agregarAlCarrito,
+        eliminarDelCarrito,
+        actualizarCantidad,
+        vaciarCarrito,
+        aplicarCupon,
+        quitarCupon,
+
+        // Alias en inglés para compatibilidad total
+        cart,
+        appliedCoupon,
+        discount,
         totalItems,
+        addToCart: agregarAlCarrito,
+        removeFromCart: eliminarDelCarrito,
+        updateQuantity: actualizarCantidad,
+        clearCart: vaciarCarrito,
+        applyCoupon: aplicarCupon,
+        removeCoupon: quitarCupon,
       }}
     >
       {children}

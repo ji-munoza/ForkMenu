@@ -11,14 +11,22 @@ export const meta = {
 };
 
 export default function PerfilPage() {
-  const { currentUser, logout, isAdmin } = useAuth();
+  const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin } = useAuth();
   const { pedidos } = useOrders();
 
+  // Si no hay usuario autenticado, redirigir al login
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
 
-  // Filtrar pedidos realizados por este usuario o ver todos si admin
+  /**
+   * Cierra la sesión activa del usuario
+   */
+  function manejarCerrarSesion() {
+    cerrarSesion();
+  }
+
+  // Filtrar pedidos realizados por este usuario o mostrar todos si es administrador
   const misPedidos = pedidos.filter(
     (p) =>
       p.cliente?.toLowerCase() === currentUser.nombre?.toLowerCase() ||
@@ -63,7 +71,7 @@ export default function PerfilPage() {
                   <i className="bi bi-shield-lock me-2"></i>Ir al Panel Admin
                 </Button>
               )}
-              <Button variant="outline-secondary" onClick={logout}>
+              <Button variant="outline-secondary" onClick={manejarCerrarSesion}>
                 <i className="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
               </Button>
             </div>

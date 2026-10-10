@@ -10,9 +10,15 @@ export const meta = {
 };
 
 export default function AdminUsuariosPage() {
-  const { usersList, updateUserRole, deleteUser, addUser } = useAuth();
+  const {
+    listaUsuarios: usersList,
+    actualizarRolUsuario,
+    eliminarUsuario,
+    agregarUsuario,
+  } = useAuth();
 
-  const [form, setForm] = useState({
+  // Estado del formulario para crear un nuevo usuario o asignar rol
+  const [formulario, setFormulario] = useState({
     run: '',
     correo: '',
     rol: 'cliente',
@@ -20,48 +26,63 @@ export default function AdminUsuariosPage() {
 
   const [feedback, setFeedback] = useState(null);
 
-  const handleRunChange = (e) => {
-    setForm((prev) => ({ ...prev, run: formatearRUT(e.target.value) }));
-  };
+  /**
+   * Formatea dinámicamente el RUN al escribir
+   */
+  function manejarCambioRun(evento) {
+    setFormulario((prev) => ({ ...prev, run: formatearRUT(evento.target.value) }));
+  }
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setForm((prev) => ({ ...prev, [id]: value }));
-  };
+  /**
+   * Maneja el cambio de inputs en el formulario
+   */
+  function manejarCambioInput(evento) {
+    const { id, value } = evento.target;
+    setFormulario((prev) => ({ ...prev, [id]: value }));
+  }
 
-  const handleRolChange = (identificador, nuevoRol) => {
-    updateUserRole(identificador, nuevoRol);
+  /**
+   * Actualiza el rol de un usuario existente
+   */
+  function manejarCambioRol(identificador, nuevoRol) {
+    actualizarRolUsuario(identificador, nuevoRol);
     setFeedback({ tipo: 'info', texto: `Rol de ${identificador} actualizado a "${nuevoRol}".` });
     setTimeout(() => setFeedback(null), 3000);
-  };
+  }
 
-  const handleEliminar = (identificador) => {
+  /**
+   * Solicita confirmación y elimina un usuario del sistema
+   */
+  function manejarEliminarUsuario(identificador) {
     if (window.confirm(`¿Estás seguro de eliminar a ${identificador}?`)) {
-      deleteUser(identificador);
+      eliminarUsuario(identificador);
       setFeedback({ tipo: 'warning', texto: `Usuario ${identificador} eliminado.` });
       setTimeout(() => setFeedback(null), 3000);
     }
-  };
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.run || !form.correo) {
+  /**
+   * Valida y registra un nuevo usuario en el sistema
+   */
+  function manejarEnvio(evento) {
+    evento.preventDefault();
+    if (!formulario.run || !formulario.correo) {
       setFeedback({ tipo: 'danger', texto: 'RUN y Correo son obligatorios.' });
       return;
     }
 
-    const res = addUser({
-      run: form.run.trim(),
+    const respuesta = agregarUsuario({
+      run: formulario.run.trim(),
       nombre: 'Usuario Administrado',
-      correo: form.correo.trim().toLowerCase(),
+      correo: formulario.correo.trim().toLowerCase(),
       contrasena: '1234',
-      rol: form.rol,
+      rol: formulario.rol,
     });
 
-    setFeedback({ tipo: 'success', texto: `${res.message} (Contraseña asignada: 1234)` });
-    setForm({ run: '', correo: '', rol: 'cliente' });
+    setFeedback({ tipo: 'success', texto: `${respuesta.message} (Contraseña asignada: 1234)` });
+    setFormulario({ run: '', correo: '', rol: 'cliente' });
     setTimeout(() => setFeedback(null), 4000);
-  };
+  }
 
   return (
     <div>
@@ -83,7 +104,7 @@ export default function AdminUsuariosPage() {
           <h2 className="card-title h5 mb-0 fw-bold">Crear / Asignar Rol de Usuario</h2>
         </Card.Header>
         <Card.Body className="p-4">
-          <Form id="form-usuario-admin" onSubmit={handleSubmit}>
+          <Form id="form-usuario-admin" onSubmit={manejarEnvio}>
             <Row className="g-3">
               <Col md={4}>
                 <Form.Group controlId="run">
@@ -92,8 +113,8 @@ export default function AdminUsuariosPage() {
                     type="text"
                     id="run-usuario"
                     placeholder="Ej: 19.011.022-K"
-                    value={form.run}
-                    onChange={handleRunChange}
+                    value={formulario.run}
+                    onChange={manejarCambioRun}
                     required
                   />
                 </Form.Group>
@@ -106,8 +127,8 @@ export default function AdminUsuariosPage() {
                     type="email"
                     id="correo-usuario"
                     placeholder="ejemplo@forkmenu.cl"
-                    value={form.correo}
-                    onChange={handleChange}
+                    value={formulario.correo}
+                    onChange={manejarCambioInput}
                     required
                   />
                 </Form.Group>
@@ -118,8 +139,8 @@ export default function AdminUsuariosPage() {
                   <Form.Label className="fw-semibold small">Tipo de Usuario (Rol)</Form.Label>
                   <Form.Select
                     id="rol-usuario"
-                    value={form.rol}
-                    onChange={handleChange}
+                    value={formulario.rol}
+                    onChange={manejarCambioInput}
                     required
                   >
                     <option value="cliente">Cliente (Solo Tienda)</option>
@@ -169,7 +190,7 @@ export default function AdminUsuariosPage() {
                       <Form.Select
                         size="sm"
                         value={user.rol || 'cliente'}
-                        onChange={(e) => handleRolChange(user.correo, e.target.value)}
+                        onChange={(e) => manejarCambioRol(user.correo, e.target.value)}
                         className={`fw-semibold ${user.rol === 'admin' ? 'border-danger text-danger' : ''}`}
                       >
                         <option value="cliente">Cliente (Solo Tienda)</option>
@@ -181,7 +202,7 @@ export default function AdminUsuariosPage() {
                       <Button
                         variant="outline-danger"
                         size="sm"
-                        onClick={() => handleEliminar(user.correo)}
+                        onClick={() => manejarEliminarUsuario(user.correo)}
                         title="Eliminar usuario"
                       >
                         <i className="bi bi-trash"></i> Eliminar

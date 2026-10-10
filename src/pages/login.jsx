@@ -9,37 +9,47 @@ export const meta = {
 };
 
 export default function LoginPage() {
-  const { login, currentUser } = useAuth();
+  const { iniciarSesion } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Estados locales para las credenciales y mensajes de error
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState(location.state?.message || '');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  /**
+   * Maneja el envío del formulario de inicio de sesión
+   */
+  function manejarEnvio(evento) {
+    evento.preventDefault();
     setError('');
 
-    const res = login(correo, contrasena);
-    if (!res.success) {
-      setError(res.error);
+    // Intentar autenticar con el contexto de autenticación
+    const resultado = iniciarSesion(correo, contrasena);
+
+    if (!resultado.success) {
+      setError(resultado.error);
       return;
     }
 
-    if (res.user.rol === 'admin') {
+    // Redirección inteligente según el rol del usuario
+    if (resultado.user.rol === 'admin') {
       navigate('/admin/pedidos');
     } else {
-      const destino = location.state?.from?.pathname || '/';
-      navigate(destino);
+      const rutaDestino = location.state?.from?.pathname || '/';
+      navigate(rutaDestino);
     }
-  };
+  }
 
-  const llenarDemo = (emailDemo, passDemo) => {
-    setCorreo(emailDemo);
+  /**
+   * Carga credenciales de prueba predefinidas en el formulario
+   */
+  function manejarLlenarDemo(correoDemo, passDemo) {
+    setCorreo(correoDemo);
     setContrasena(passDemo);
     setError('');
-  };
+  }
 
   return (
     <Container className="my-5 d-flex align-items-center justify-content-center" style={{ minHeight: '65vh' }}>
@@ -59,7 +69,7 @@ export default function LoginPage() {
           </Alert>
         )}
 
-        <Form id="form-login" onSubmit={handleSubmit}>
+        <Form id="form-login" onSubmit={manejarEnvio}>
           <Form.Group className="mb-3" controlId="correo">
             <Form.Label className="fw-semibold">Correo Electrónico</Form.Label>
             <Form.Control
@@ -96,7 +106,7 @@ export default function LoginPage() {
             <button
               type="button"
               className="btn btn-sm btn-outline-dark text-start d-flex justify-content-between align-items-center py-1"
-              onClick={() => llenarDemo('admin@forkmenu.cl', 'admin123')}
+              onClick={() => manejarLlenarDemo('admin@forkmenu.cl', 'admin123')}
             >
               <span>admin@forkmenu.cl</span>
               <Badge bg="danger">Admin</Badge>
@@ -104,7 +114,7 @@ export default function LoginPage() {
             <button
               type="button"
               className="btn btn-sm btn-outline-secondary text-start d-flex justify-content-between align-items-center py-1"
-              onClick={() => llenarDemo('juan.perez@duoc.cl', 'cliente123')}
+              onClick={() => manejarLlenarDemo('juan.perez@duoc.cl', 'cliente123')}
             >
               <span>juan.perez@duoc.cl</span>
               <Badge bg="secondary">Cliente</Badge>

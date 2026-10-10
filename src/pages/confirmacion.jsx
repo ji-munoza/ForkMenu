@@ -13,6 +13,7 @@ export default function ConfirmacionPage() {
   const { ordenReciente } = useOrders();
   const navigate = useNavigate();
 
+  // Si no se encuentra una orden reciente, sugerir volver al menú
   if (!ordenReciente) {
     return (
       <Container className="my-5 py-5 text-center">
@@ -33,6 +34,7 @@ export default function ConfirmacionPage() {
   return (
     <Container className="my-5">
       <Card className="shadow border-0 rounded-4 mx-auto overflow-hidden bg-white" style={{ maxWidth: '650px' }}>
+        {/* Banner de éxito */}
         <div className="bg-success text-white text-center py-4 px-3">
           <div className="display-4 mb-2">
             <i className="bi bi-check-circle-fill"></i>
@@ -44,7 +46,7 @@ export default function ConfirmacionPage() {
         </div>
 
         <Card.Body className="p-4 p-md-5">
-          {/* Identificador y Estado */}
+          {/* Código de seguimiento y estado del pedido */}
           <div className="p-3 bg-light rounded-3 mb-4 text-center border">
             <span className="text-muted small text-uppercase fw-semibold d-block">
               Código de Seguimiento
@@ -78,7 +80,7 @@ export default function ConfirmacionPage() {
             </Row>
           </div>
 
-          {/* Detalle de Platos */}
+          {/* Detalle de Platos Comprados */}
           <div className="mb-4">
             <h2 className="h6 fw-bold text-uppercase text-muted mb-3 border-bottom pb-2">
               Detalle de Productos
@@ -101,7 +103,7 @@ export default function ConfirmacionPage() {
             </ListGroup>
           </div>
 
-          {/* Total */}
+          {/* Total pagado */}
           <div className="d-flex justify-content-between align-items-center p-3 bg-light rounded-3 mb-4">
             <span className="fs-5 fw-bold">Monto Total Pagado:</span>
             <span className="fs-3 fw-bold text-danger" id="total-confirmacion">
@@ -109,6 +111,7 @@ export default function ConfirmacionPage() {
             </span>
           </div>
 
+          {/* Opciones de navegación */}
           <div className="d-grid gap-2">
             <Button as={Link} to="/productos" variant="danger" size="lg" className="fw-bold">
               <i className="bi bi-journal-richtext me-2"></i>Seguir Ordenando

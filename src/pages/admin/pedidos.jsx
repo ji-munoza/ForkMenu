@@ -18,19 +18,30 @@ const ESTADOS_DISPONIBLES = [
 ];
 
 export default function AdminPedidosPage() {
-  const { pedidos, updateOrderStatus } = useOrders();
+  const { pedidos, actualizarEstadoPedido } = useOrders();
   const [feedback, setFeedback] = useState(null);
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
-  const handleEstadoChange = (codigo, nuevoEstado) => {
-    updateOrderStatus(codigo, nuevoEstado);
+  /**
+   * Actualiza el estado del pedido y muestra notificación informativa
+   */
+  function manejarCambioEstado(codigo, nuevoEstado) {
+    actualizarEstadoPedido(codigo, nuevoEstado);
     setFeedback(`El pedido ${codigo} cambió a estado: "${nuevoEstado}"`);
     setTimeout(() => setFeedback(null), 3000);
-  };
+  }
 
-  const pedidosFiltrados = pedidos.filter((p) => {
+  /**
+   * Cambia el filtro de pedidos según su estado
+   */
+  function manejarCambioFiltro(evento) {
+    setFiltroEstado(evento.target.value);
+  }
+
+  // Filtrado de pedidos según la opción seleccionada
+  const pedidosFiltrados = pedidos.filter((pedido) => {
     if (filtroEstado === 'todos') return true;
-    return p.estado === filtroEstado;
+    return pedido.estado === filtroEstado;
   });
 
   return (
@@ -46,7 +57,7 @@ export default function AdminPedidosPage() {
           <Form.Select
             size="sm"
             value={filtroEstado}
-            onChange={(e) => setFiltroEstado(e.target.value)}
+            onChange={manejarCambioFiltro}
             style={{ width: '180px' }}
           >
             <option value="todos">Todos ({pedidos.length})</option>
@@ -109,7 +120,7 @@ export default function AdminPedidosPage() {
                         <Form.Select
                           size="sm"
                           value={ped.estado}
-                          onChange={(e) => handleEstadoChange(ped.codigo, e.target.value)}
+                          onChange={(e) => manejarCambioEstado(ped.codigo, e.target.value)}
                           className={`fw-semibold ${
                             ped.estado === 'Entregado'
                               ? 'text-success'

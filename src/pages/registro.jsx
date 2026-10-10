@@ -16,10 +16,11 @@ export const meta = {
 };
 
 export default function RegistroPage() {
-  const { register } = useAuth();
+  const { registrarUsuario } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
+  // Estado del formulario con todos los campos requeridos
+  const [formulario, setFormulario] = useState({
     run: '',
     nombre: '',
     apellidos: '',
@@ -31,67 +32,85 @@ export default function RegistroPage() {
     direccion: '',
   });
 
+  // Estados de errores de validación y alerta global
   const [errores, setErrores] = useState({});
   const [alertaGeneral, setAlertaGeneral] = useState(null);
 
-  const handleRunChange = (e) => {
-    const formateado = formatearRUT(e.target.value);
-    setForm((prev) => ({ ...prev, run: formateado }));
+  /**
+   * Maneja el cambio y formateo dinámico del campo RUN
+   */
+  function manejarCambioRun(evento) {
+    const valorFormateado = formatearRUT(evento.target.value);
+    setFormulario((prev) => ({ ...prev, run: valorFormateado }));
 
-    const limpio = formateado.replace(/[^0-9kK]/gi, '');
-    if (limpio.length < 8) {
+    const caracteresLimpios = valorFormateado.replace(/[^0-9kK]/gi, '');
+    if (caracteresLimpios.length < 8) {
       setErrores((prev) => ({ ...prev, run: 'El RUN está incompleto.' }));
     } else {
       setErrores((prev) => ({ ...prev, run: '' }));
     }
-  };
+  }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
+  /**
+   * Maneja el cambio de valores en los campos de texto y selección
+   */
+  function manejarCambioInput(evento) {
+    const { name, value } = evento.target;
+
+    setFormulario((prev) => ({
       ...prev,
       [name]: value,
-      // Si cambia de región, limpiar comuna
+      // Si cambia de región, reiniciar la comuna seleccionada
       ...(name === 'region' ? { comuna: '' } : {}),
     }));
 
+    // Limpiar el error del campo que se está modificando
     if (errores[name]) {
       setErrores((prev) => ({ ...prev, [name]: '' }));
     }
-  };
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  /**
+   * Valida los datos y ejecuta el registro del nuevo usuario
+   */
+  function manejarEnvio(evento) {
+    evento.preventDefault();
     setAlertaGeneral(null);
     const nuevosErrores = {};
 
-    const rutLimpio = form.run.replace(/[^0-9kK]/gi, '');
+    // 1. Validación de RUN
+    const rutLimpio = formulario.run.replace(/[^0-9kK]/gi, '');
     if (rutLimpio.length < 8 || rutLimpio.length > 9) {
       nuevosErrores.run = 'El RUN debe tener entre 8 y 9 dígitos.';
     }
 
-    const resNombre = validarTexto(form.nombre, 1, 50, 'El nombre');
-    if (!resNombre.valido) nuevosErrores.nombre = resNombre.mensaje;
+    // 2. Validación de nombre y apellidos
+    const resultadoNombre = validarTexto(formulario.nombre, 1, 50, 'El nombre');
+    if (!resultadoNombre.valido) nuevosErrores.nombre = resultadoNombre.mensaje;
 
-    const resApellidos = validarTexto(form.apellidos, 1, 100, 'Los apellidos');
-    if (!resApellidos.valido) nuevosErrores.apellidos = resApellidos.mensaje;
+    const resultadoApellidos = validarTexto(formulario.apellidos, 1, 100, 'Los apellidos');
+    if (!resultadoApellidos.valido) nuevosErrores.apellidos = resultadoApellidos.mensaje;
 
-    const resCorreo = validarEmail(form.correo);
-    if (!resCorreo.valido) nuevosErrores.correo = resCorreo.mensaje;
+    // 3. Validación de correo electrónico
+    const resultadoCorreo = validarEmail(formulario.correo);
+    if (!resultadoCorreo.valido) nuevosErrores.correo = resultadoCorreo.mensaje;
 
-    const resPass = validarPassword(form.contrasena);
-    if (!resPass.valido) nuevosErrores.contrasena = resPass.mensaje;
+    // 4. Validación de contraseña
+    const resultadoPass = validarPassword(formulario.contrasena);
+    if (!resultadoPass.valido) nuevosErrores.contrasena = resultadoPass.mensaje;
 
-    if (form.contrasena !== form.confirmarContrasena) {
+    if (formulario.contrasena !== formulario.confirmarContrasena) {
       nuevosErrores.confirmarContrasena = 'Las contraseñas no coinciden.';
     }
 
-    if (!form.region) nuevosErrores.region = 'Debes seleccionar una región.';
-    if (!form.comuna) nuevosErrores.comuna = 'Debes seleccionar una comuna.';
+    // 5. Validación de ubicación geográfica
+    if (!formulario.region) nuevosErrores.region = 'Debes seleccionar una región.';
+    if (!formulario.comuna) nuevosErrores.comuna = 'Debes seleccionar una comuna.';
 
-    const resDir = validarTexto(form.direccion, 3, 300, 'La dirección');
-    if (!resDir.valido) nuevosErrores.direccion = resDir.mensaje;
+    const resultadoDireccion = validarTexto(formulario.direccion, 3, 300, 'La dirección');
+    if (!resultadoDireccion.valido) nuevosErrores.direccion = resultadoDireccion.mensaje;
 
+    // Si existen errores, no continuar
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
       setAlertaGeneral({
@@ -101,18 +120,21 @@ export default function RegistroPage() {
       return;
     }
 
-    const res = register(form);
-    if (!res.success) {
-      setAlertaGeneral({ tipo: 'danger', texto: res.error });
+    // Intentar registrar el usuario en el contexto
+    const respuesta = registrarUsuario(formulario);
+    if (!respuesta.success) {
+      setAlertaGeneral({ tipo: 'danger', texto: respuesta.error });
       return;
     }
 
+    // Navegar al login con mensaje de éxito
     navigate('/login', {
       state: { message: '¡Usuario registrado exitosamente! Ahora puedes iniciar sesión.' },
     });
-  };
+  }
 
-  const comunasDisponibles = form.region ? comunasPorRegion[form.region] || [] : [];
+  // Lista de comunas disponibles según la región seleccionada
+  const comunasDisponibles = formulario.region ? comunasPorRegion[formulario.region] || [] : [];
 
   return (
     <Container className="my-5">
@@ -136,7 +158,7 @@ export default function RegistroPage() {
               </Alert>
             )}
 
-            <Form id="form-registro" onSubmit={handleSubmit} noValidate>
+            <Form id="form-registro" onSubmit={manejarEnvio} noValidate>
               <Row className="g-3">
                 {/* RUN */}
                 <Col xs={12}>
@@ -146,10 +168,10 @@ export default function RegistroPage() {
                       type="text"
                       name="run"
                       placeholder="Ej: 19.011.022-K"
-                      value={form.run}
-                      onChange={handleRunChange}
+                      value={formulario.run}
+                      onChange={manejarCambioRun}
                       maxLength={12}
-                      isInvalid={!!errores.run}
+                      isInvalid={Boolean(errores.run)}
                     />
                     <Form.Control.Feedback type="invalid" id="error-run">
                       {errores.run}
@@ -165,10 +187,10 @@ export default function RegistroPage() {
                       type="text"
                       name="nombre"
                       placeholder="Juan"
-                      value={form.nombre}
-                      onChange={handleChange}
+                      value={formulario.nombre}
+                      onChange={manejarCambioInput}
                       maxLength={50}
-                      isInvalid={!!errores.nombre}
+                      isInvalid={Boolean(errores.nombre)}
                     />
                     <Form.Control.Feedback type="invalid" id="error-nombre">
                       {errores.nombre}
@@ -184,10 +206,10 @@ export default function RegistroPage() {
                       type="text"
                       name="apellidos"
                       placeholder="Pérez Soto"
-                      value={form.apellidos}
-                      onChange={handleChange}
+                      value={formulario.apellidos}
+                      onChange={manejarCambioInput}
                       maxLength={100}
-                      isInvalid={!!errores.apellidos}
+                      isInvalid={Boolean(errores.apellidos)}
                     />
                     <Form.Control.Feedback type="invalid" id="error-apellidos">
                       {errores.apellidos}
@@ -195,7 +217,7 @@ export default function RegistroPage() {
                   </Form.Group>
                 </Col>
 
-                {/* Correo */}
+                {/* Correo Electrónico */}
                 <Col xs={12}>
                   <Form.Group controlId="correo">
                     <Form.Label className="fw-semibold">Correo Electrónico</Form.Label>
@@ -203,9 +225,9 @@ export default function RegistroPage() {
                       type="email"
                       name="correo"
                       placeholder="ejemplo@duoc.cl o @gmail.com"
-                      value={form.correo}
-                      onChange={handleChange}
-                      isInvalid={!!errores.correo}
+                      value={formulario.correo}
+                      onChange={manejarCambioInput}
+                      isInvalid={Boolean(errores.correo)}
                     />
                     <Form.Text className="text-muted small">
                       Solo dominios @duoc.cl, @profesor.duoc.cl o @gmail.com.
@@ -224,10 +246,10 @@ export default function RegistroPage() {
                       type="password"
                       name="contrasena"
                       placeholder="4 a 10 caracteres"
-                      value={form.contrasena}
-                      onChange={handleChange}
+                      value={formulario.contrasena}
+                      onChange={manejarCambioInput}
                       maxLength={10}
-                      isInvalid={!!errores.contrasena}
+                      isInvalid={Boolean(errores.contrasena)}
                     />
                     <Form.Control.Feedback type="invalid" id="error-contrasena">
                       {errores.contrasena}
@@ -243,10 +265,10 @@ export default function RegistroPage() {
                       type="password"
                       name="confirmarContrasena"
                       placeholder="Repite la contraseña"
-                      value={form.confirmarContrasena}
-                      onChange={handleChange}
+                      value={formulario.confirmarContrasena}
+                      onChange={manejarCambioInput}
                       maxLength={10}
-                      isInvalid={!!errores.confirmarContrasena}
+                      isInvalid={Boolean(errores.confirmarContrasena)}
                     />
                     <Form.Control.Feedback type="invalid" id="error-confirmar-contrasena">
                       {errores.confirmarContrasena}
@@ -260,14 +282,14 @@ export default function RegistroPage() {
                     <Form.Label className="fw-semibold">Región</Form.Label>
                     <Form.Select
                       name="region"
-                      value={form.region}
-                      onChange={handleChange}
-                      isInvalid={!!errores.region}
+                      value={formulario.region}
+                      onChange={manejarCambioInput}
+                      isInvalid={Boolean(errores.region)}
                     >
                       <option value="">-- Seleccione la región --</option>
-                      {Object.keys(comunasPorRegion).map((regKey) => (
-                        <option key={regKey} value={regKey}>
-                          {nombresRegiones[regKey] || regKey}
+                      {Object.keys(comunasPorRegion).map((claveRegion) => (
+                        <option key={claveRegion} value={claveRegion}>
+                          {nombresRegiones[claveRegion] || claveRegion}
                         </option>
                       ))}
                     </Form.Select>
@@ -283,15 +305,15 @@ export default function RegistroPage() {
                     <Form.Label className="fw-semibold">Comuna</Form.Label>
                     <Form.Select
                       name="comuna"
-                      value={form.comuna}
-                      onChange={handleChange}
-                      disabled={!form.region}
-                      isInvalid={!!errores.comuna}
+                      value={formulario.comuna}
+                      onChange={manejarCambioInput}
+                      disabled={!formulario.region}
+                      isInvalid={Boolean(errores.comuna)}
                     >
                       <option value="">-- Seleccione la comuna --</option>
-                      {comunasDisponibles.map((c) => (
-                        <option key={c} value={c.toLowerCase()}>
-                          {c}
+                      {comunasDisponibles.map((comunaNombre) => (
+                        <option key={comunaNombre} value={comunaNombre.toLowerCase()}>
+                          {comunaNombre}
                         </option>
                       ))}
                     </Form.Select>
@@ -309,10 +331,10 @@ export default function RegistroPage() {
                       type="text"
                       name="direccion"
                       placeholder="Calle, número, departamento..."
-                      value={form.direccion}
-                      onChange={handleChange}
+                      value={formulario.direccion}
+                      onChange={manejarCambioInput}
                       maxLength={300}
-                      isInvalid={!!errores.direccion}
+                      isInvalid={Boolean(errores.direccion)}
                     />
                     <Form.Control.Feedback type="invalid" id="error-direccion">
                       {errores.direccion}

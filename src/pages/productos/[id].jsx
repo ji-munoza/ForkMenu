@@ -13,15 +13,18 @@ export const meta = {
 export default function DetalleProductoPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById } = useProducts();
-  const { addToCart } = useCart();
+  const { obtenerProductoPorId } = useProducts();
+  const { agregarAlCarrito } = useCart();
 
-  const producto = getProductById(id);
+  // Obtener la información del producto actual
+  const producto = obtenerProductoPorId(id);
 
+  // Estados locales para la selección de porción y cantidad
   const [cantidad, setCantidad] = useState(1);
   const [tamano, setTamano] = useState('individual');
   const [feedback, setFeedback] = useState(null);
 
+  // Si el producto no existe o fue descontinuado
   if (!producto) {
     return (
       <Container className="my-5 py-5 text-center">
@@ -39,15 +42,30 @@ export default function DetalleProductoPage() {
     );
   }
 
-  const handleAgregar = (e) => {
-    e.preventDefault();
-    const res = addToCart(producto, cantidad);
+  /**
+   * Maneja la adición del producto configurado al carrito
+   */
+  function manejarAgregarAlCarrito(evento) {
+    evento.preventDefault();
+    const resultado = agregarAlCarrito(producto, cantidad);
     setFeedback({
-      tipo: res.success ? 'success' : 'danger',
-      mensaje: res.message,
+      tipo: resultado.success ? 'success' : 'danger',
+      mensaje: resultado.message,
     });
     setTimeout(() => setFeedback(null), 3500);
-  };
+  }
+
+  /**
+   * Ajusta la cantidad deseada respetando el stock
+   */
+  function manejarCambioCantidad(delta) {
+    setCantidad((prev) => {
+      const nuevoValor = prev + delta;
+      if (nuevoValor < 1) return 1;
+      if (nuevoValor > producto.stock) return producto.stock;
+      return nuevoValor;
+    });
+  }
 
   return (
     <Container className="my-5">
@@ -74,7 +92,7 @@ export default function DetalleProductoPage() {
         </div>
       )}
 
-      {/* Breadcrumb */}
+      {/* Breadcrumb de navegación */}
       <Breadcrumb className="mb-4">
         <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/' }}>
           Home
@@ -143,7 +161,7 @@ export default function DetalleProductoPage() {
               </div>
             </div>
 
-            <Form onSubmit={handleAgregar} className="row g-3">
+            <Form onSubmit={manejarAgregarAlCarrito} className="row g-3">
               <Col sm={6}>
                 <Form.Group controlId="tamano">
                   <Form.Label className="fw-semibold">Porción / Tamaño</Form.Label>
@@ -164,7 +182,7 @@ export default function DetalleProductoPage() {
                     <Button
                       variant="outline-secondary"
                       size="sm"
-                      onClick={() => setCantidad((prev) => Math.max(1, prev - 1))}
+                      onClick={() => manejarCambioCantidad(-1)}
                       disabled={cantidad <= 1}
                     >
                       <i className="bi bi-dash"></i>
@@ -175,8 +193,8 @@ export default function DetalleProductoPage() {
                       max={producto.stock}
                       value={cantidad}
                       onChange={(e) => {
-                        const v = parseInt(e.target.value, 10) || 1;
-                        setCantidad(Math.min(Math.max(1, v), producto.stock));
+                        const valor = parseInt(e.target.value, 10) || 1;
+                        setCantidad(Math.min(Math.max(1, valor), producto.stock));
                       }}
                       className="text-center fw-bold"
                       style={{ width: '70px' }}
@@ -184,7 +202,7 @@ export default function DetalleProductoPage() {
                     <Button
                       variant="outline-secondary"
                       size="sm"
-                      onClick={() => setCantidad((prev) => Math.min(producto.stock, prev + 1))}
+                      onClick={() => manejarCambioCantidad(1)}
                       disabled={cantidad >= producto.stock}
                     >
                       <i className="bi bi-plus"></i>

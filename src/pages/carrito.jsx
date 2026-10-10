@@ -10,17 +10,42 @@ export const meta = {
 };
 
 export default function CarritoPage() {
-  const { cart, updateQuantity, removeFromCart, clearCart, subtotal, totalItems } = useCart();
+  const {
+    carrito: cart,
+    actualizarCantidad,
+    eliminarDelCarrito,
+    vaciarCarrito,
+    subtotal,
+    totalArticulos: totalItems,
+  } = useCart();
+
   const [feedback, setFeedback] = useState(null);
   const navigate = useNavigate();
 
-  const handleUpdate = (id, delta) => {
-    const res = updateQuantity(id, delta);
-    if (res && !res.success) {
-      setFeedback({ tipo: 'warning', mensaje: res.message });
+  /**
+   * Actualiza la cantidad de un ítem en el carrito con validación de stock
+   */
+  function manejarActualizarCantidad(id, delta) {
+    const resultado = actualizarCantidad(id, delta);
+    if (resultado && !resultado.success) {
+      setFeedback({ tipo: 'warning', mensaje: resultado.message });
       setTimeout(() => setFeedback(null), 3000);
     }
-  };
+  }
+
+  /**
+   * Elimina un producto específico del carrito
+   */
+  function manejarEliminarDelCarrito(id) {
+    eliminarDelCarrito(id);
+  }
+
+  /**
+   * Limpia todos los productos del carrito
+   */
+  function manejarVaciarCarrito() {
+    vaciarCarrito();
+  }
 
   return (
     <Container className="my-5">
@@ -40,7 +65,7 @@ export default function CarritoPage() {
         </div>
 
         {cart.length > 0 && (
-          <Button variant="outline-secondary" size="sm" onClick={clearCart}>
+          <Button variant="outline-secondary" size="sm" onClick={manejarVaciarCarrito}>
             <i className="bi bi-trash me-1"></i>Vaciar Carrito
           </Button>
         )}
@@ -80,7 +105,7 @@ export default function CarritoPage() {
                       </tr>
                     </thead>
                     <tbody id="lista-carrito">
-                      {cart.map((item, index) => (
+                      {cart.map((item) => (
                         <tr key={item.id} className="item-carrito">
                           <td>
                             <div className="d-flex align-items-center gap-3">
@@ -111,7 +136,7 @@ export default function CarritoPage() {
                                 variant="link"
                                 size="sm"
                                 className="p-0 text-dark text-decoration-none btn-restar"
-                                onClick={() => handleUpdate(item.id, -1)}
+                                onClick={() => manejarActualizarCantidad(item.id, -1)}
                               >
                                 <i className="bi bi-dash"></i>
                               </Button>
@@ -122,7 +147,7 @@ export default function CarritoPage() {
                                 variant="link"
                                 size="sm"
                                 className="p-0 text-dark text-decoration-none btn-sumar"
-                                onClick={() => handleUpdate(item.id, 1)}
+                                onClick={() => manejarActualizarCantidad(item.id, 1)}
                               >
                                 <i className="bi bi-plus"></i>
                               </Button>
@@ -136,7 +161,7 @@ export default function CarritoPage() {
                               variant="outline-danger"
                               size="sm"
                               className="border-0 rounded-circle"
-                              onClick={() => removeFromCart(item.id)}
+                              onClick={() => manejarEliminarDelCarrito(item.id)}
                               title="Eliminar producto"
                             >
                               <i className="bi bi-trash"></i>

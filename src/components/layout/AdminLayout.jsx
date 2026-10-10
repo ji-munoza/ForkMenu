@@ -4,13 +4,16 @@ import { Nav, Button, Badge } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AdminLayout() {
-  const { currentUser, logout } = useAuth();
+  const { usuarioActual: currentUser, cerrarSesion } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  /**
+   * Cierra la sesión activa del administrador y navega al login
+   */
+  function manejarCerrarSesion() {
+    cerrarSesion();
     navigate('/login');
-  };
+  }
 
   return (
     <div className="admin-wrapper">
@@ -52,7 +55,7 @@ export default function AdminLayout() {
           <Button as={Link} to="/" variant="outline-light" size="sm" className="w-100">
             <i className="bi bi-shop me-2"></i> Ir a la Tienda
           </Button>
-          <Button onClick={handleLogout} variant="danger" size="sm" className="w-100">
+          <Button onClick={manejarCerrarSesion} variant="danger" size="sm" className="w-100">
             <i className="bi bi-box-arrow-right me-2"></i> Cerrar sesión
           </Button>
         </div>

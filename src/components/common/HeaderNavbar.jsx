@@ -5,14 +5,17 @@ import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 
 export default function HeaderNavbar() {
-  const { currentUser, logout, isAdmin } = useAuth();
-  const { totalItems } = useCart();
+  const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin } = useAuth();
+  const { totalArticulos: totalItems } = useCart();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  /**
+   * Cierra la sesión activa y redirige a la página principal
+   */
+  function manejarCerrarSesion() {
+    cerrarSesion();
     navigate('/');
-  };
+  }
 
   return (
     <header>
@@ -76,7 +79,7 @@ export default function HeaderNavbar() {
                       </>
                     )}
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={handleLogout} className="text-danger">
+                    <Dropdown.Item onClick={manejarCerrarSesion} className="text-danger">
                       <i className="bi bi-box-arrow-right me-2"></i>Cerrar sesión
                     </Dropdown.Item>
                   </Dropdown.Menu>

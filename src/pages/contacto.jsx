@@ -8,7 +8,8 @@ export const meta = {
 };
 
 export default function ContactoPage() {
-  const [formData, setFormData] = useState({
+  // Estado local para los campos del formulario de contacto
+  const [datosFormulario, setDatosFormulario] = useState({
     nombre: '',
     correo: '',
     mensaje: '',
@@ -17,37 +18,44 @@ export default function ContactoPage() {
   const [errores, setErrores] = useState({});
   const [enviado, setEnviado] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  /**
+   * Maneja el cambio en los inputs del formulario
+   */
+  function manejarCambioInput(evento) {
+    const { name, value } = evento.target;
+    setDatosFormulario((prev) => ({ ...prev, [name]: value }));
 
-    // Limpiar error del campo
+    // Limpiar mensaje de error específico del campo
     if (errores[name]) {
       setErrores((prev) => ({ ...prev, [name]: '' }));
     }
-  };
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  /**
+   * Valida y procesa el envío del formulario de contacto
+   */
+  function manejarEnvio(evento) {
+    evento.preventDefault();
     const nuevosErrores = {};
 
-    const resNombre = validarTexto(formData.nombre, 2, 100, 'El nombre');
-    if (!resNombre.valido) nuevosErrores.nombre = resNombre.mensaje;
+    const resultadoNombre = validarTexto(datosFormulario.nombre, 2, 100, 'El nombre');
+    if (!resultadoNombre.valido) nuevosErrores.nombre = resultadoNombre.mensaje;
 
-    const resCorreo = validarEmail(formData.correo);
-    if (!resCorreo.valido) nuevosErrores.correo = resCorreo.mensaje;
+    const resultadoCorreo = validarEmail(datosFormulario.correo);
+    if (!resultadoCorreo.valido) nuevosErrores.correo = resultadoCorreo.mensaje;
 
-    const resMensaje = validarTexto(formData.mensaje, 5, 500, 'El mensaje');
-    if (!resMensaje.valido) nuevosErrores.mensaje = resMensaje.mensaje;
+    const resultadoMensaje = validarTexto(datosFormulario.mensaje, 5, 500, 'El mensaje');
+    if (!resultadoMensaje.valido) nuevosErrores.mensaje = resultadoMensaje.mensaje;
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
       return;
     }
 
+    // Envío exitoso
     setEnviado(true);
-    setFormData({ nombre: '', correo: '', mensaje: '' });
-  };
+    setDatosFormulario({ nombre: '', correo: '', mensaje: '' });
+  }
 
   return (
     <Container className="my-5">
@@ -71,16 +79,16 @@ export default function ContactoPage() {
               </Alert>
             )}
 
-            <Form id="form-contacto" onSubmit={handleSubmit} noValidate>
+            <Form id="form-contacto" onSubmit={manejarEnvio} noValidate>
               <Form.Group className="mb-3" controlId="nombre">
                 <Form.Label className="fw-semibold">Nombre Completo</Form.Label>
                 <Form.Control
                   type="text"
                   name="nombre"
                   placeholder="Ej: Juan Pérez"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  isInvalid={!!errores.nombre}
+                  value={datosFormulario.nombre}
+                  onChange={manejarCambioInput}
+                  isInvalid={Boolean(errores.nombre)}
                 />
                 <Form.Control.Feedback type="invalid" id="error-nombre">
                   {errores.nombre}
@@ -93,9 +101,9 @@ export default function ContactoPage() {
                   type="email"
                   name="correo"
                   placeholder="ejemplo@duoc.cl"
-                  value={formData.correo}
-                  onChange={handleChange}
-                  isInvalid={!!errores.correo}
+                  value={datosFormulario.correo}
+                  onChange={manejarCambioInput}
+                  isInvalid={Boolean(errores.correo)}
                 />
                 <Form.Control.Feedback type="invalid" id="error-correo">
                   {errores.correo}
@@ -109,9 +117,9 @@ export default function ContactoPage() {
                   rows={4}
                   name="mensaje"
                   placeholder="Escribe tu mensaje aquí..."
-                  value={formData.mensaje}
-                  onChange={handleChange}
-                  isInvalid={!!errores.mensaje}
+                  value={datosFormulario.mensaje}
+                  onChange={manejarCambioInput}
+                  isInvalid={Boolean(errores.mensaje)}
                 />
                 <Form.Control.Feedback type="invalid" id="error-mensaje">
                   {errores.mensaje}
