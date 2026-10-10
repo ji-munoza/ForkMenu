@@ -1,0 +1,66 @@
+:root {
+  --bs-primary: #dc3545;
+  --bs-primary-rgb: 220, 53, 69;
+  --bg-admin: #1e1e2d;
+  --bg-admin-card: #2b2b40;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Navbar de la Tienda */
+.navbar-brand {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* Layout del Panel Admin */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 260px;
+  background-color: var(--bg-admin);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.admin-sidebar .nav-link {
+  color: #a2a3b7;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.375rem;
+  margin-bottom: 0.25rem;
+}
+
+.admin-sidebar .nav-link:hover,
+.admin-sidebar .nav-link.active {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-content {
+  flex-grow: 1;
+  background-color: #f4f5f8;
+  padding: 2rem;
+}
+
+/* Tarjetas y Tablas */
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.badge-soft-warning {
+  background-color: #fff3cd;
+  color: #664d03;
+}
