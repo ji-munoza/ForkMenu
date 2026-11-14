@@ -3,6 +3,8 @@ package cl.duoc.forkmenu.common.exception;
 import cl.duoc.forkmenu.common.dto.MensajeRespuestaDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +29,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MensajeRespuestaDTO> manejarNegocio(NegocioException ex) {
         MensajeRespuestaDTO respuesta = new MensajeRespuestaDTO(false, ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<MensajeRespuestaDTO> manejarCredencialesInvalidas(BadCredentialsException ex) {
+        MensajeRespuestaDTO respuesta = new MensajeRespuestaDTO(false, "Correo o contraseña incorrectos.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<MensajeRespuestaDTO> manejarAccesoDenegado(AccessDeniedException ex) {
+        MensajeRespuestaDTO respuesta = new MensajeRespuestaDTO(false, "Acceso denegado. No tienes permisos suficientes para realizar esta accion.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
