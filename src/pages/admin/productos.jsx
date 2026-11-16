@@ -40,7 +40,7 @@ export default function AdminProductosPage() {
   }
 
   // Valida y guarda el nuevo stock.
-  function manejarGuardarStock(id) {
+  async function manejarGuardarStock(id) {
     const valor = stocksEditados[id];
     if (valor === undefined || valor === '') return;
 
@@ -50,20 +50,20 @@ export default function AdminProductosPage() {
       return;
     }
 
-    actualizarStock(id, parsed);
+    await actualizarStock(id, parsed);
     setFeedback({ tipo: 'success', texto: 'Stock actualizado exitosamente.' });
     setTimeout(() => setFeedback(null), 3000);
   }
 
   // Revisa los datos y guarda el producto.
-  function manejarEnvio(evento) {
+  async function manejarEnvio(evento) {
     evento.preventDefault();
     if (!formulario.codigo || !formulario.nombre || !formulario.precio || !formulario.stock) {
       setFeedback({ tipo: 'danger', texto: 'Por favor completa todos los campos requeridos.' });
       return;
     }
 
-    const respuesta = guardarProducto({
+    const respuesta = await guardarProducto({
       codigo: formulario.codigo.trim(),
       nombre: formulario.nombre.trim(),
       categoria: formulario.categoria || 'otros',
@@ -76,17 +76,19 @@ export default function AdminProductosPage() {
         'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
     });
 
-    setFeedback({ tipo: 'success', texto: respuesta.message });
-    setFormulario({
-      codigo: '',
-      nombre: '',
-      categoria: '',
-      precio: '',
-      stock: '',
-      stockCritico: '',
-      descripcion: '',
-      imagen: '',
-    });
+    setFeedback({ tipo: respuesta.success ? 'success' : 'danger', texto: respuesta.message });
+    if (respuesta.success) {
+      setFormulario({
+        codigo: '',
+        nombre: '',
+        categoria: '',
+        precio: '',
+        stock: '',
+        stockCritico: '',
+        descripcion: '',
+        imagen: '',
+      });
+    }
     setTimeout(() => setFeedback(null), 3500);
   }
 
