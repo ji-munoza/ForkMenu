@@ -38,30 +38,30 @@ export default function AdminUsuariosPage() {
   }
 
   // Cambia el rol del usuario.
-  function manejarCambioRol(identificador, nuevoRol) {
-    actualizarRolUsuario(identificador, nuevoRol);
+  async function manejarCambioRol(identificador, nuevoRol) {
+    await actualizarRolUsuario(identificador, nuevoRol);
     setFeedback({ tipo: 'info', texto: `Rol de ${identificador} actualizado a "${nuevoRol}".` });
     setTimeout(() => setFeedback(null), 3000);
   }
 
   // Pide confirmación antes de eliminar al usuario.
-  function manejarEliminarUsuario(identificador) {
+  async function manejarEliminarUsuario(identificador) {
     if (window.confirm(`¿Estás seguro de eliminar a ${identificador}?`)) {
-      eliminarUsuario(identificador);
+      await eliminarUsuario(identificador);
       setFeedback({ tipo: 'warning', texto: `Usuario ${identificador} eliminado.` });
       setTimeout(() => setFeedback(null), 3000);
     }
   }
 
   // Revisa los datos y agrega al usuario.
-  function manejarEnvio(evento) {
+  async function manejarEnvio(evento) {
     evento.preventDefault();
     if (!formulario.run || !formulario.correo) {
       setFeedback({ tipo: 'danger', texto: 'RUN y Correo son obligatorios.' });
       return;
     }
 
-    const respuesta = agregarUsuario({
+    const respuesta = await agregarUsuario({
       run: formulario.run.trim(),
       nombre: 'Usuario Administrado',
       correo: formulario.correo.trim().toLowerCase(),

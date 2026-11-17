@@ -19,12 +19,12 @@ export default function LoginPage() {
   const [error, setError] = useState(location.state?.message || '');
 
   // Intenta iniciar sesión y muestra un error si los datos no coinciden.
-  function manejarEnvio(evento) {
+  async function manejarEnvio(evento) {
     evento.preventDefault();
     setError('');
 
-    // Comprueba las credenciales.
-    const resultado = iniciarSesion(correo, contrasena);
+    // Comprueba las credenciales contra el backend.
+    const resultado = await iniciarSesion(correo, contrasena);
 
     if (!resultado.success) {
       setError(resultado.error);

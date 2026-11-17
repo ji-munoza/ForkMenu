@@ -67,7 +67,7 @@ export default function RegistroPage() {
   }
 
   // Revisa los datos y registra la cuenta si son válidos.
-  function manejarEnvio(evento) {
+  async function manejarEnvio(evento) {
     evento.preventDefault();
     setAlertaGeneral(null);
     const nuevosErrores = {};
@@ -114,8 +114,8 @@ export default function RegistroPage() {
       return;
     }
 
-    // Guarda la cuenta en el contexto de usuarios.
-    const respuesta = registrarUsuario(formulario);
+    // Guarda la cuenta registrándola en el backend.
+    const respuesta = await registrarUsuario(formulario);
     if (!respuesta.success) {
       setAlertaGeneral({ tipo: 'danger', texto: respuesta.error });
       return;
