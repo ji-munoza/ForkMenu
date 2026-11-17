@@ -23,8 +23,8 @@ export default function AdminPedidosPage() {
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
   // Cambia el estado del pedido y muestra un aviso.
-  function manejarCambioEstado(codigo, nuevoEstado) {
-    actualizarEstadoPedido(codigo, nuevoEstado);
+  async function manejarCambioEstado(codigo, nuevoEstado) {
+    await actualizarEstadoPedido(codigo, nuevoEstado);
     setFeedback(`El pedido ${codigo} cambió a estado: "${nuevoEstado}"`);
     setTimeout(() => setFeedback(null), 3000);
   }

@@ -74,8 +74,8 @@ export default function CheckoutPage() {
     setMensajeCupon(null);
   }
 
-  // Revisa los datos y confirma el pedido.
-  function manejarEnvio(evento) {
+  // Revisa los datos y confirma el pedido contra el backend.
+  async function manejarEnvio(evento) {
     evento.preventDefault();
     setErrorEnvio('');
 
@@ -112,16 +112,23 @@ export default function CheckoutPage() {
       detalleModalidad = `Mesa #${numeroMesa.trim()}`;
     }
 
-    // Registra el pedido.
-    crearPedido({
-      modalidad,
-      detalleModalidad,
-      items: cart,
-      total,
-      cliente: nombreCliente.trim(),
-    });
+    try {
+      // Registra el pedido y emite la boleta en el backend
+      await crearPedido({
+        modalidad,
+        detalleModalidad,
+        items: cart,
+        subtotal,
+        descuento: discount,
+        total,
+        cliente: nombreCliente.trim(),
+        clienteCorreo: currentUser?.correo || '',
+      });
 
-    navigate('/confirmacion');
+      navigate('/confirmacion');
+    } catch (err) {
+      setErrorEnvio(err.message || 'No se pudo procesar la orden. Inténtalo de nuevo.');
+    }
   }
 
   return (

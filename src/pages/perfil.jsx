@@ -28,6 +28,7 @@ export default function PerfilPage() {
   const misPedidos = pedidos.filter(
     (p) =>
       p.cliente?.toLowerCase() === currentUser.nombre?.toLowerCase() ||
+      (p.clienteCorreo && p.clienteCorreo.toLowerCase() === currentUser.correo?.toLowerCase()) ||
       currentUser.rol === 'admin'
   );
 
