@@ -13,17 +13,14 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Guarda el correo, la contraseña y el mensaje de error.
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState(location.state?.message || '');
 
-  // Intenta iniciar sesión y muestra un error si los datos no coinciden.
   async function manejarEnvio(evento) {
     evento.preventDefault();
     setError('');
 
-    // Comprueba las credenciales contra el backend.
     const resultado = await iniciarSesion(correo, contrasena);
 
     if (!resultado.success) {
@@ -31,7 +28,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Lleva al administrador al panel y a los demás a la página solicitada.
     if (resultado.user.rol === 'admin') {
       navigate('/admin/pedidos');
     } else {
@@ -40,7 +36,6 @@ export default function LoginPage() {
     }
   }
 
-  // Completa el formulario con una cuenta de prueba.
   function manejarLlenarDemo(correoDemo, passDemo) {
     setCorreo(correoDemo);
     setContrasena(passDemo);

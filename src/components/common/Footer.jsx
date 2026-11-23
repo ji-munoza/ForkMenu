@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-// Pie de página con información y enlaces del sitio.
 export default function Footer() {
   return (
     <footer className="bg-dark text-white py-4 mt-auto border-top border-secondary">

@@ -8,7 +8,6 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const { productos } = useProducts();
 
-  // Carga el carrito guardado en el navegador o empieza vacío.
   const [cart, setCart] = useState(() => {
     try {
       const guardado = localStorage.getItem('carritoForkMenu');
@@ -18,7 +17,6 @@ export function CartProvider({ children }) {
     }
   });
 
-  // Carga el cupón guardado, si hay uno.
   const [appliedCoupon, setAppliedCoupon] = useState(() => {
     try {
       const guardado = localStorage.getItem('cuponForkMenu');
@@ -28,12 +26,10 @@ export function CartProvider({ children }) {
     }
   });
 
-  // Guarda el carrito cada vez que cambia.
   useEffect(() => {
     localStorage.setItem('carritoForkMenu', JSON.stringify(cart));
   }, [cart]);
 
-  // Guarda o elimina el cupón cuando cambia.
   useEffect(() => {
     if (appliedCoupon) {
       localStorage.setItem('cuponForkMenu', JSON.stringify(appliedCoupon));
@@ -42,7 +38,6 @@ export function CartProvider({ children }) {
     }
   }, [appliedCoupon]);
 
-  // Agrega un producto si hay stock suficiente.
   function agregarAlCarrito(producto, cantidad = 1) {
     const prodBD = productos.find((p) => String(p.id) === String(producto.id));
     const stockDisponible = prodBD ? prodBD.stock : producto.stock || 0;
@@ -51,7 +46,6 @@ export function CartProvider({ children }) {
     const cantidadActual = itemExistente ? itemExistente.cantidad : 0;
     const nuevaCantidad = cantidadActual + cantidad;
 
-    // No permite agregar más unidades que las disponibles.
     if (nuevaCantidad > stockDisponible) {
       return {
         success: false,
@@ -87,12 +81,10 @@ export function CartProvider({ children }) {
     };
   }
 
-  // Quita del carrito el producto indicado.
   function eliminarDelCarrito(id) {
     setCart((prev) => prev.filter((item) => String(item.id) !== String(id)));
   }
 
-  // Cambia la cantidad o quita el producto si llega a cero.
   function actualizarCantidad(id, delta) {
     const item = cart.find((i) => String(i.id) === String(id));
     if (!item) return;
@@ -126,13 +118,11 @@ export function CartProvider({ children }) {
     return { success: true };
   }
 
-  // Vacía el carrito y quita el cupón.
   function vaciarCarrito() {
     setCart([]);
     setAppliedCoupon(null);
   }
 
-  // Aplica un cupón válido si todavía no hay otro.
   function aplicarCupon(codigo) {
     if (!codigo) {
       return { success: false, message: 'Ingresa un cupón válido.' };
@@ -153,12 +143,10 @@ export function CartProvider({ children }) {
     return { success: true, message: `¡Cupón ${cupon.codigo} aplicado exitosamente!` };
   }
 
-  // Quita el cupón aplicado.
   function quitarCupon() {
     setAppliedCoupon(null);
   }
 
-  // Calcula el subtotal, el descuento, el total y la cantidad de artículos.
   const subtotal = cart.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
   const discount = calcularDescuento(subtotal, appliedCoupon);
   const total = Math.max(0, subtotal - discount);
@@ -167,7 +155,6 @@ export function CartProvider({ children }) {
   return (
     <CartContext.Provider
       value={{
-        // Nombres en español usados por la aplicación.
         carrito: cart,
         cuponAplicado: appliedCoupon,
         subtotal,
@@ -181,7 +168,6 @@ export function CartProvider({ children }) {
         aplicarCupon,
         quitarCupon,
 
-        // Los mismos datos y funciones también están disponibles en inglés.
         cart,
         appliedCoupon,
         discount,

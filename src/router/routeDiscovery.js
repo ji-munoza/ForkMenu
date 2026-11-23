@@ -40,7 +40,6 @@ export function convertirRutaEnPath(rutaArchivo) {
   return normalizada;
 }
 
-// Nombre alternativo en inglés para las pruebas.
 export const convertPathToRoute = convertirRutaEnPath;
 
 /**
@@ -82,5 +81,4 @@ export function descubrirRutas(modulos) {
   });
 }
 
-// Nombre alternativo en inglés para las pruebas.
 export const discoverRoutes = descubrirRutas;

@@ -19,7 +19,6 @@ export default function RegistroPage() {
   const { registrarUsuario } = useAuth();
   const navigate = useNavigate();
 
-  // Guarda los datos ingresados en el formulario.
   const [formulario, setFormulario] = useState({
     run: '',
     nombre: '',
@@ -32,11 +31,9 @@ export default function RegistroPage() {
     direccion: '',
   });
 
-  // Guarda los errores y el aviso general.
   const [errores, setErrores] = useState({});
   const [alertaGeneral, setAlertaGeneral] = useState(null);
 
-  // Da formato al RUN mientras se escribe.
   function manejarCambioRun(evento) {
     const valorFormateado = formatearRUT(evento.target.value);
     setFormulario((prev) => ({ ...prev, run: valorFormateado }));
@@ -49,47 +46,39 @@ export default function RegistroPage() {
     }
   }
 
-  // Guarda los cambios de los campos.
   function manejarCambioInput(evento) {
     const { name, value } = evento.target;
 
     setFormulario((prev) => ({
       ...prev,
       [name]: value,
-      // Al cambiar de región, borra la comuna elegida.
       ...(name === 'region' ? { comuna: '' } : {}),
     }));
 
-    // Quita el error del campo que se está editando.
     if (errores[name]) {
       setErrores((prev) => ({ ...prev, [name]: '' }));
     }
   }
 
-  // Revisa los datos y registra la cuenta si son válidos.
   async function manejarEnvio(evento) {
     evento.preventDefault();
     setAlertaGeneral(null);
     const nuevosErrores = {};
 
-    // Revisa que el RUN tenga la longitud esperada.
     const rutLimpio = formulario.run.replace(/[^0-9kK]/gi, '');
     if (rutLimpio.length < 8 || rutLimpio.length > 9) {
       nuevosErrores.run = 'El RUN debe tener entre 8 y 9 dígitos.';
     }
 
-    // Revisa el nombre y los apellidos.
     const resultadoNombre = validarTexto(formulario.nombre, 1, 50, 'El nombre');
     if (!resultadoNombre.valido) nuevosErrores.nombre = resultadoNombre.mensaje;
 
     const resultadoApellidos = validarTexto(formulario.apellidos, 1, 100, 'Los apellidos');
     if (!resultadoApellidos.valido) nuevosErrores.apellidos = resultadoApellidos.mensaje;
 
-    // Revisa el correo.
     const resultadoCorreo = validarEmail(formulario.correo);
     if (!resultadoCorreo.valido) nuevosErrores.correo = resultadoCorreo.mensaje;
 
-    // Revisa la contraseña.
     const resultadoPass = validarPassword(formulario.contrasena);
     if (!resultadoPass.valido) nuevosErrores.contrasena = resultadoPass.mensaje;
 
@@ -97,14 +86,12 @@ export default function RegistroPage() {
       nuevosErrores.confirmarContrasena = 'Las contraseñas no coinciden.';
     }
 
-    // Revisa la región y la comuna.
     if (!formulario.region) nuevosErrores.region = 'Debes seleccionar una región.';
     if (!formulario.comuna) nuevosErrores.comuna = 'Debes seleccionar una comuna.';
 
     const resultadoDireccion = validarTexto(formulario.direccion, 3, 300, 'La dirección');
     if (!resultadoDireccion.valido) nuevosErrores.direccion = resultadoDireccion.mensaje;
 
-    // Si hay errores, muestra los mensajes y detiene el registro.
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
       setAlertaGeneral({
@@ -114,20 +101,17 @@ export default function RegistroPage() {
       return;
     }
 
-    // Guarda la cuenta registrándola en el backend.
     const respuesta = await registrarUsuario(formulario);
     if (!respuesta.success) {
       setAlertaGeneral({ tipo: 'danger', texto: respuesta.error });
       return;
     }
 
-    // Envía al usuario al login con un mensaje de éxito.
     navigate('/login', {
       state: { message: '¡Usuario registrado exitosamente! Ahora puedes iniciar sesión.' },
     });
   }
 
-  // Muestra solo las comunas de la región elegida.
   const comunasDisponibles = formulario.region ? comunasPorRegion[formulario.region] || [] : [];
 
   return (

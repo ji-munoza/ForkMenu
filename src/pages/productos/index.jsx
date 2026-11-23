@@ -22,12 +22,10 @@ export default function ProductosPage() {
   const { productos } = useProducts();
   const { agregarAlCarrito } = useCart();
 
-  // Valores elegidos para buscar y filtrar productos.
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todas');
   const [feedback, setFeedback] = useState(null);
 
-  // Filtra por categoría y por texto de búsqueda.
   const productosFiltrados = useMemo(() => {
     return productos.filter((producto) => {
       const coincideCat =
@@ -44,7 +42,6 @@ export default function ProductosPage() {
     });
   }, [productos, categoriaSeleccionada, busqueda]);
 
-  // Agrega el producto al carrito y muestra el resultado.
   function manejarAgregarAlCarrito(producto) {
     const resultado = agregarAlCarrito(producto, 1);
     setFeedback({
@@ -54,17 +51,14 @@ export default function ProductosPage() {
     setTimeout(() => setFeedback(null), 3500);
   }
 
-  // Guarda el texto de búsqueda.
   function manejarCambioBusqueda(evento) {
     setBusqueda(evento.target.value);
   }
 
-  // Guarda la categoría elegida.
   function manejarSeleccionarCategoria(idCategoria) {
     setCategoriaSeleccionada(idCategoria);
   }
 
-  // Quita la búsqueda y muestra todas las categorías.
   function manejarLimpiarFiltros() {
     setBusqueda('');
     setCategoriaSeleccionada('todas');

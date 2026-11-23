@@ -15,10 +15,8 @@ export default function HomePage() {
   const { agregarAlCarrito } = useCart();
   const [feedback, setFeedback] = useState(null);
 
-  // Usa los primeros tres productos como destacados.
   const platosDestacados = productos.slice(0, 3);
 
-  // Agrega el plato al carrito y muestra el resultado.
   function manejarAgregarAlCarrito(producto) {
     const resultado = agregarAlCarrito(producto, 1);
     setFeedback({

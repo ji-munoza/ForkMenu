@@ -13,7 +13,6 @@ export default function ConfirmacionPage() {
   const { ordenReciente } = useOrders();
   const navigate = useNavigate();
 
-  // Si no hay un pedido reciente, ofrece volver al menú.
   if (!ordenReciente) {
     return (
       <Container className="my-5 py-5 text-center">

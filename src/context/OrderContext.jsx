@@ -9,7 +9,6 @@ export function OrderProvider({ children }) {
   const { descontarStock, deductStock } = useProducts();
   const { vaciarCarrito, clearCart } = useCart();
 
-  // Historial de pedidos y boletas emitidas
   const [pedidos, setPedidos] = useState(() => {
     try {
       const guardados = localStorage.getItem('pedidosForkMenu');
@@ -45,7 +44,6 @@ export function OrderProvider({ children }) {
     }
   });
 
-  // Última orden emitida confirmada en la compra
   const [ordenReciente, setOrdenReciente] = useState(() => {
     try {
       const guardado = localStorage.getItem('ordenReciente');
@@ -55,7 +53,6 @@ export function OrderProvider({ children }) {
     }
   });
 
-  // Sincroniza la lista de boletas desde el backend si hay permisos
   const cargarPedidosDesdeBackend = useCallback(async () => {
     const token = localStorage.getItem('tokenForkMenu');
     if (!token) return;
@@ -67,7 +64,6 @@ export function OrderProvider({ children }) {
         localStorage.setItem('pedidosForkMenu', JSON.stringify(datos));
       }
     } catch {
-      // Si no es admin/vendedor o no tiene permiso general, intenta consultar sus propias boletas
       try {
         const misBoletas = await boletaService.misBoletas();
         if (Array.isArray(misBoletas) && misBoletas.length > 0) {
@@ -84,7 +80,6 @@ export function OrderProvider({ children }) {
     cargarPedidosDesdeBackend();
   }, [cargarPedidosDesdeBackend]);
 
-  // Persistencia local
   useEffect(() => {
     localStorage.setItem('pedidosForkMenu', JSON.stringify(pedidos));
   }, [pedidos]);
@@ -97,12 +92,10 @@ export function OrderProvider({ children }) {
     }
   }, [ordenReciente]);
 
-  // Registra un pedido, emite la boleta en el backend, descuenta inventario y vacía el carrito
   async function crearPedido({ modalidad, detalleModalidad, items, subtotal, descuento, total, cliente, clienteCorreo }) {
     let nuevaOrden = null;
 
     try {
-      // 1. Emite la boleta en el backend Spring Boot
       const boletaServidor = await boletaService.emitirBoleta({
         modalidad,
         detalleModalidad,
@@ -128,12 +121,11 @@ export function OrderProvider({ children }) {
     } catch (error) {
       console.warn('Backend sin respuesta o no disponible, emitiendo boleta en modo local:', error.message);
 
-      // Si el backend arrojó un error de validación o de stock insuficiente, relanzar el error
       if (error.status && error.status >= 400 && error.status < 500) {
         throw error;
       }
 
-      // Modo de respaldo local para pruebas sin backend
+      // Fallback local
       const codigoGenerado = 'FM-' + Math.floor(1000 + Math.random() * 9000);
       nuevaOrden = {
         codigo: codigoGenerado,
@@ -149,22 +141,18 @@ export function OrderProvider({ children }) {
       };
     }
 
-    // 2. Descuenta del inventario los productos comprados en memoria
     const descontarFn = descontarStock || deductStock;
     if (descontarFn) descontarFn(items);
 
-    // 3. Guarda el pedido en el historial y en la orden más reciente
     setPedidos((prev) => [nuevaOrden, ...prev]);
     setOrdenReciente(nuevaOrden);
 
-    // 4. Vacía el carrito de compras
     const vaciarFn = vaciarCarrito || clearCart;
     if (vaciarFn) vaciarFn();
 
     return nuevaOrden;
   }
 
-  // Actualiza el estado de preparación o despacho de un pedido
   async function actualizarEstadoPedido(codigo, nuevoEstado) {
     try {
       await boletaService.actualizarEstado(codigo, nuevoEstado);
@@ -177,7 +165,6 @@ export function OrderProvider({ children }) {
     );
   }
 
-  // Consulta el estado en vivo de un pedido mediante su código
   async function consultarPedidoPorCodigo(codigo) {
     try {
       return await boletaService.obtenerPorCodigo(codigo);
@@ -189,7 +176,6 @@ export function OrderProvider({ children }) {
   return (
     <OrderContext.Provider
       value={{
-        // Nombres en español usados por la aplicación
         pedidos,
         ordenReciente,
         crearPedido,
@@ -197,7 +183,6 @@ export function OrderProvider({ children }) {
         consultarPedidoPorCodigo,
         recargarPedidos: cargarPedidosDesdeBackend,
 
-        // Compatibilidad con nombres en inglés
         createOrder: crearPedido,
         updateOrderStatus: actualizarEstadoPedido,
         getOrderDetails: consultarPedidoPorCodigo,

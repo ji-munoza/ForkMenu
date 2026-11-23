@@ -49,7 +49,7 @@ async function peticion(endpoint, opciones = {}) {
     const datos = await respuesta.json().catch(() => null);
 
     if (!respuesta.ok) {
-      // Si el backend devolvió un mensaje estructurado (MensajeRespuestaDTO o GlobalExceptionHandler)
+      // Error de respuesta del servidor
       const mensajeError = datos?.mensaje || datos?.error || `Error ${respuesta.status}: Petición fallida`;
       const error = new Error(mensajeError);
       error.status = respuesta.status;

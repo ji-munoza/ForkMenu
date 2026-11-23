@@ -9,7 +9,6 @@ export default function HeaderNavbar() {
   const { totalArticulos: totalItems } = useCart();
   const navigate = useNavigate();
 
-  // Cierra la sesión y vuelve al inicio.
   function manejarCerrarSesion() {
     cerrarSesion();
     navigate('/');

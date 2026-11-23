@@ -28,7 +28,6 @@ export default function CheckoutPage() {
   const { productos } = useProducts();
   const navigate = useNavigate();
 
-  // Datos que el cliente completa para confirmar el pedido.
   const [modalidad, setModalidad] = useState('retirar');
   const [direccion, setDireccion] = useState(currentUser?.direccion || '');
   const [numeroMesa, setNumeroMesa] = useState('1');
@@ -37,7 +36,6 @@ export default function CheckoutPage() {
   const [mensajeCupon, setMensajeCupon] = useState(null);
   const [errorEnvio, setErrorEnvio] = useState('');
 
-  // Si el carrito está vacío, invita a volver al menú.
   if (cart.length === 0) {
     return (
       <Container className="my-5 py-5 text-center">
@@ -55,7 +53,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // Intenta aplicar el cupón y muestra el resultado.
   function manejarAplicarCupon(evento) {
     evento.preventDefault();
     const resultado = aplicarCupon(codigoCupon);
@@ -68,24 +65,20 @@ export default function CheckoutPage() {
     }
   }
 
-  // Quita el cupón aplicado.
   function manejarQuitarCupon() {
     quitarCupon();
     setMensajeCupon(null);
   }
 
-  // Revisa los datos y confirma el pedido contra el backend.
   async function manejarEnvio(evento) {
     evento.preventDefault();
     setErrorEnvio('');
 
-    // El nombre es obligatorio.
     if (!nombreCliente.trim()) {
       setErrorEnvio('Por favor ingresa tu nombre para el pedido.');
       return;
     }
 
-    // Revisa los datos necesarios para la modalidad elegida.
     if (modalidad === 'delivery' && !direccion.trim()) {
       setErrorEnvio('Debes ingresar la dirección de entrega para la modalidad delivery.');
       return;
@@ -96,7 +89,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Confirma que todavía haya stock suficiente.
     for (const item of cart) {
       const prodBD = productos.find((p) => String(p.id) === String(item.id));
       if (prodBD && prodBD.stock < item.cantidad) {
@@ -113,7 +105,6 @@ export default function CheckoutPage() {
     }
 
     try {
-      // Registra el pedido y emite la boleta en el backend
       await crearPedido({
         modalidad,
         detalleModalidad,

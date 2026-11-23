@@ -7,7 +7,6 @@ export default function ProtectedAdminRoute({ children }) {
   const { usuarioActual: currentUser, esAdmin: isAdmin, esVendedor: isVendedor } = useAuth();
   const location = useLocation();
 
-  // Si no inició sesión, lo envía al login y recuerda la página que pidió.
   if (!currentUser) {
     return (
       <Navigate
@@ -21,7 +20,6 @@ export default function ProtectedAdminRoute({ children }) {
     );
   }
 
-  // Si no es administrador ni vendedor, muestra un aviso de acceso restringido.
   if (!isAdmin && !isVendedor) {
     return (
       <Container className="my-5 py-5 text-center">

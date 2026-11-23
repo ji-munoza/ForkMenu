@@ -5,7 +5,6 @@ import { authService } from '../services/authService';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  // Carga la sesión del usuario guardada previamente en el navegador.
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const guardado = localStorage.getItem('usuarioActivo');
@@ -15,7 +14,6 @@ export function AuthProvider({ children }) {
     }
   });
 
-  // Lista de usuarios registrados (utilizada en el panel de administración).
   const [usersList, setUsersList] = useState(() => {
     try {
       const guardados = localStorage.getItem('usuariosForkMenu');
@@ -26,7 +24,6 @@ export function AuthProvider({ children }) {
     }
   });
 
-  // Sincroniza la sesión activa con localStorage y almacena el token JWT correspondiente.
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('usuarioActivo', JSON.stringify(currentUser));
@@ -39,7 +36,7 @@ export function AuthProvider({ children }) {
     }
   }, [currentUser]);
 
-  // Si el usuario conectado es administrador, sincroniza la lista de usuarios desde MySQL.
+  // Sincroniza usuarios si el usuario activo es admin
   const cargarUsuariosDesdeBackend = useCallback(async () => {
     if (!currentUser || currentUser.rol !== 'admin') return;
     try {
@@ -57,7 +54,6 @@ export function AuthProvider({ children }) {
     cargarUsuariosDesdeBackend();
   }, [cargarUsuariosDesdeBackend]);
 
-  // Inicia sesión verificando credenciales en el backend con JWT.
   async function iniciarSesion(correo, contrasena) {
     const emailNorm = (correo || '').trim().toLowerCase();
 
@@ -81,12 +77,11 @@ export function AuthProvider({ children }) {
       setCurrentUser(activo);
       return { success: true, user: activo };
     } catch (error) {
-      // Si el backend rechaza las credenciales (401 Bad Credentials)
       if (error.status === 401) {
         return { success: false, error: 'Correo o contraseña incorrectos.' };
       }
 
-      // Si el servidor backend no responde (modo sin conexión o test aislado), se intenta respaldo local
+      // Fallback local si el servidor no responde
       console.warn('Servidor no disponible, verificando en credenciales de respaldo local:', error.message);
       const usuarioEncontrado = usersList.find(
         (u) => u.correo.toLowerCase() === emailNorm && u.contrasena === contrasena
@@ -115,12 +110,10 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // Cierra la sesión activa y elimina las credenciales locales.
   function cerrarSesion() {
     setCurrentUser(null);
   }
 
-  // Registra un nuevo usuario en la base de datos de MySQL.
   async function registrarUsuario(datosUsuario) {
     const emailNorm = (datosUsuario.correo || '').trim().toLowerCase();
 
@@ -129,12 +122,11 @@ export function AuthProvider({ children }) {
       setUsersList((prev) => [...prev, nuevoRegistrado]);
       return { success: true, user: nuevoRegistrado };
     } catch (error) {
-      // Si el error proviene del backend (por ejemplo correo ya registrado o validación)
       if (error.status) {
         return { success: false, error: error.message };
       }
 
-      // Respaldo en memoria local en caso de que el backend esté temporalmente apagado
+      // Fallback local
       console.warn('Backend sin conexión, registrando cuenta en almacenamiento local:', error.message);
       const existe = usersList.some((u) => u.correo.toLowerCase() === emailNorm);
       if (existe) {
@@ -157,7 +149,6 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // Cambia el rol de un usuario tanto en la base de datos como en el estado local.
   async function actualizarRolUsuario(identificador, nuevoRol) {
     const usuario = usersList.find(
       (u) => u.correo === identificador || u.run === identificador || String(u.id) === String(identificador)
@@ -181,7 +172,6 @@ export function AuthProvider({ children }) {
     );
   }
 
-  // Elimina a un usuario por su identificador.
   async function eliminarUsuario(identificador) {
     const usuario = usersList.find(
       (u) => u.correo === identificador || u.run === identificador || String(u.id) === String(identificador)
@@ -199,7 +189,6 @@ export function AuthProvider({ children }) {
     );
   }
 
-  // Agrega o actualiza un usuario desde el panel de administración.
   async function agregarUsuario(nuevo) {
     const emailNorm = (nuevo.correo || '').trim().toLowerCase();
 
@@ -237,7 +226,6 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // Banderas de privilegios
   const rolNormalizado = (currentUser?.rol || '').toLowerCase();
   const isAdmin = rolNormalizado === 'admin' || rolNormalizado === 'administrador';
   const isVendedor = rolNormalizado === 'vendedor';
@@ -245,7 +233,6 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider
       value={{
-        // Nombres en español
         usuarioActual: currentUser,
         listaUsuarios: usersList,
         esAdmin: isAdmin,
@@ -258,7 +245,6 @@ export function AuthProvider({ children }) {
         agregarUsuario,
         recargarUsuarios: cargarUsuariosDesdeBackend,
 
-        // Compatibilidad con nombres en inglés
         currentUser,
         usersList,
         isAdmin,

@@ -7,7 +7,6 @@ export default function AdminLayout() {
   const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin } = useAuth();
   const navigate = useNavigate();
 
-  // Cierra la sesión y vuelve al login.
   function manejarCerrarSesion() {
     cerrarSesion();
     navigate('/login');
@@ -15,7 +14,6 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-wrapper">
-      {/* Menú lateral del panel. */}
       <aside className="admin-sidebar p-3 d-flex flex-column justify-content-between">
         <div>
           <Link to="/" className="d-flex align-items-center mb-4 text-white text-decoration-none fs-4 fw-bold">
@@ -65,7 +63,6 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* Aquí aparece la página de administración elegida. */}
       <main className="admin-content">
         <Outlet />
       </main>

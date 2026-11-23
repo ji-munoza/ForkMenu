@@ -5,7 +5,6 @@ import { productoService } from '../services/productoService';
 const ProductContext = createContext();
 
 export function ProductProvider({ children }) {
-  // Estado local de productos, inicializado desde localStorage o datos iniciales de respaldo.
   const [productos, setProductos] = useState(() => {
     try {
       const guardados = localStorage.getItem('productosForkMenu');
@@ -19,7 +18,6 @@ export function ProductProvider({ children }) {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
 
-  // Sincroniza la lista de productos consultando al backend Spring Boot.
   const cargarProductos = useCallback(async (categoria = 'todas', busqueda = '') => {
     setCargando(true);
     setError(null);
@@ -30,7 +28,6 @@ export function ProductProvider({ children }) {
         localStorage.setItem('productosForkMenu', JSON.stringify(datos));
       }
     } catch (err) {
-      // Si el servidor backend no responde, se conserva el estado previo sin romper la interfaz.
       console.warn('No fue posible sincronizar con el backend de ForkMenu. Operando con caché local.', err.message);
       setError(err.message || 'Error de conexión con el catálogo');
     } finally {
@@ -38,19 +35,16 @@ export function ProductProvider({ children }) {
     }
   }, []);
 
-  // Carga inicial al montar el proveedor en la aplicación.
   useEffect(() => {
     cargarProductos();
   }, [cargarProductos]);
 
-  // Respaldo automático en localStorage cuando cambia la lista.
   useEffect(() => {
     if (productos && productos.length > 0) {
       localStorage.setItem('productosForkMenu', JSON.stringify(productos));
     }
   }, [productos]);
 
-  // Actualiza el stock de un producto tanto en el backend como en el estado local.
   async function actualizarStock(id, nuevoStock) {
     const stockNum = Math.max(0, parseInt(nuevoStock, 10) || 0);
 
@@ -65,7 +59,6 @@ export function ProductProvider({ children }) {
     );
   }
 
-  // Agrega un producto nuevo o actualiza uno existente en el backend y el estado.
   async function guardarProducto(datos) {
     const existe = productos.find((p) => p.codigo === datos.codigo || String(p.id) === String(datos.id));
 
@@ -86,7 +79,6 @@ export function ProductProvider({ children }) {
     } catch (err) {
       console.warn('Operación en backend falló o sin conexión, aplicando en almacenamiento local:', err.message);
 
-      // Mecanismo de respaldo local si el backend no está disponible
       if (existe) {
         setProductos((prev) =>
           prev.map((p) =>
@@ -123,7 +115,6 @@ export function ProductProvider({ children }) {
     }
   }
 
-  // Elimina un producto del backend y del estado local.
   async function eliminarProducto(id) {
     try {
       await productoService.eliminar(id);
@@ -133,7 +124,6 @@ export function ProductProvider({ children }) {
     setProductos((prev) => prev.filter((p) => String(p.id) !== String(id)));
   }
 
-  // Descuenta del inventario los platos comprados en una boleta.
   function descontarStock(items) {
     setProductos((prev) =>
       prev.map((prod) => {
@@ -147,7 +137,6 @@ export function ProductProvider({ children }) {
     );
   }
 
-  // Busca un producto por su identificador.
   function obtenerProductoPorId(id) {
     return productos.find((p) => String(p.id) === String(id) || p.codigo === String(id));
   }
@@ -155,7 +144,6 @@ export function ProductProvider({ children }) {
   return (
     <ProductContext.Provider
       value={{
-        // Nombres en español usados por la aplicación
         productos,
         cargando,
         error,
@@ -166,7 +154,6 @@ export function ProductProvider({ children }) {
         descontarStock,
         obtenerProductoPorId,
 
-        // Compatibilidad con nombres alternativos en inglés
         loading: cargando,
         reloadProducts: cargarProductos,
         updateStock: actualizarStock,

@@ -22,19 +22,16 @@ export default function AdminPedidosPage() {
   const [feedback, setFeedback] = useState(null);
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
-  // Cambia el estado del pedido y muestra un aviso.
   async function manejarCambioEstado(codigo, nuevoEstado) {
     await actualizarEstadoPedido(codigo, nuevoEstado);
     setFeedback(`El pedido ${codigo} cambió a estado: "${nuevoEstado}"`);
     setTimeout(() => setFeedback(null), 3000);
   }
 
-  // Guarda el estado elegido en el filtro.
   function manejarCambioFiltro(evento) {
     setFiltroEstado(evento.target.value);
   }
 
-  // Muestra todos los pedidos o solo los del estado elegido.
   const pedidosFiltrados = pedidos.filter((pedido) => {
     if (filtroEstado === 'todos') return true;
     return pedido.estado === filtroEstado;

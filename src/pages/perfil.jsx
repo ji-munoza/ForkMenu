@@ -14,17 +14,14 @@ export default function PerfilPage() {
   const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin, esVendedor: isVendedor } = useAuth();
   const { pedidos } = useOrders();
 
-  // Si no hay sesión, vuelve al login.
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
 
-  // Cierra la sesión.
   function manejarCerrarSesion() {
     cerrarSesion();
   }
 
-  // Muestra los pedidos del usuario o todos si es administrador o vendedor.
   const misPedidos = pedidos.filter(
     (p) =>
       p.cliente?.toLowerCase() === currentUser.nombre?.toLowerCase() ||
@@ -36,7 +33,6 @@ export default function PerfilPage() {
   return (
     <Container className="my-5">
       <Row className="g-4">
-        {/* Datos del usuario. */}
         <Col lg={4}>
           <Card className="shadow-sm border-0 rounded-4 p-4 bg-white text-center">
             <div className="display-4 text-danger mb-3">

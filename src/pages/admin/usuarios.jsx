@@ -27,25 +27,21 @@ export default function AdminUsuariosPage() {
 
   const [feedback, setFeedback] = useState(null);
 
-  // Da formato al RUN mientras se escribe.
   function manejarCambioRun(evento) {
     setFormulario((prev) => ({ ...prev, run: formatearRUT(evento.target.value) }));
   }
 
-  // Guarda el valor escrito en el formulario.
   function manejarCambioInput(evento) {
     const { id, value } = evento.target;
     setFormulario((prev) => ({ ...prev, [id]: value }));
   }
 
-  // Cambia el rol del usuario.
   async function manejarCambioRol(identificador, nuevoRol) {
     await actualizarRolUsuario(identificador, nuevoRol);
     setFeedback({ tipo: 'info', texto: `Rol de ${identificador} actualizado a "${nuevoRol}".` });
     setTimeout(() => setFeedback(null), 3000);
   }
 
-  // Pide confirmación antes de eliminar al usuario.
   async function manejarEliminarUsuario(identificador) {
     if (window.confirm(`¿Estás seguro de eliminar a ${identificador}?`)) {
       await eliminarUsuario(identificador);
@@ -54,7 +50,6 @@ export default function AdminUsuariosPage() {
     }
   }
 
-  // Revisa los datos y agrega al usuario.
   async function manejarEnvio(evento) {
     evento.preventDefault();
     if (!formulario.run || !formulario.correo) {

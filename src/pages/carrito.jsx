@@ -22,7 +22,6 @@ export default function CarritoPage() {
   const [feedback, setFeedback] = useState(null);
   const navigate = useNavigate();
 
-  // Cambia la cantidad y avisa si no hay stock suficiente.
   function manejarActualizarCantidad(id, delta) {
     const resultado = actualizarCantidad(id, delta);
     if (resultado && !resultado.success) {
@@ -31,12 +30,10 @@ export default function CarritoPage() {
     }
   }
 
-  // Quita el producto del carrito.
   function manejarEliminarDelCarrito(id) {
     eliminarDelCarrito(id);
   }
 
-  // Vacía el carrito.
   function manejarVaciarCarrito() {
     vaciarCarrito();
   }

@@ -26,22 +26,18 @@ export default function AdminProductosPage() {
     imagen: '',
   });
 
-  // Cambios de stock escritos directamente en la tabla.
   const [stocksEditados, setStocksEditados] = useState({});
   const [feedback, setFeedback] = useState(null);
 
-  // Guarda los cambios escritos en el formulario.
   function manejarCambioFormulario(evento) {
     const { id, value } = evento.target;
     setFormulario((prev) => ({ ...prev, [id]: value }));
   }
 
-  // Guarda temporalmente el stock escrito en una fila.
   function manejarCambioStockInput(id, valor) {
     setStocksEditados((prev) => ({ ...prev, [id]: valor }));
   }
 
-  // Valida y guarda el nuevo stock.
   async function manejarGuardarStock(id) {
     const valor = stocksEditados[id];
     if (valor === undefined || valor === '') return;
@@ -57,7 +53,6 @@ export default function AdminProductosPage() {
     setTimeout(() => setFeedback(null), 3000);
   }
 
-  // Revisa los datos y guarda el producto.
   async function manejarEnvio(evento) {
     evento.preventDefault();
     if (!formulario.codigo || !formulario.nombre || !formulario.precio || !formulario.stock) {

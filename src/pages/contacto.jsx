@@ -8,7 +8,6 @@ export const meta = {
 };
 
 export default function ContactoPage() {
-  // Guarda lo escrito en el formulario.
   const [datosFormulario, setDatosFormulario] = useState({
     nombre: '',
     correo: '',
@@ -18,18 +17,15 @@ export default function ContactoPage() {
   const [errores, setErrores] = useState({});
   const [enviado, setEnviado] = useState(false);
 
-  // Guarda el cambio y quita el error de ese campo.
   function manejarCambioInput(evento) {
     const { name, value } = evento.target;
     setDatosFormulario((prev) => ({ ...prev, [name]: value }));
 
-    // Quita el error del campo que se está editando.
     if (errores[name]) {
       setErrores((prev) => ({ ...prev, [name]: '' }));
     }
   }
 
-  // Revisa los datos y muestra una confirmación si son válidos.
   function manejarEnvio(evento) {
     evento.preventDefault();
     const nuevosErrores = {};
@@ -48,7 +44,6 @@ export default function ContactoPage() {
       return;
     }
 
-    // Limpia el formulario y muestra el mensaje de éxito.
     setEnviado(true);
     setDatosFormulario({ nombre: '', correo: '', mensaje: '' });
   }
