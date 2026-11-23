@@ -30,7 +30,7 @@ export const productosIniciales = [
     stockCritico: 2,
     categoria: "postres",
     descripcion: "Clásico postre italiano con finas capas de bizcocho soletilla bañadas en café espresso tostado, suave crema de mascarpone y espolvoreado de cacao puro.",
-    imagen: "https://images.unsplash.com/photo-1746473079155-6e7c4b2c6c8f?auto=format&fit=crop&w=600&q=80"
+    imagen: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80"
   },
   {
     id: "4",
