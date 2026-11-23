@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 /**
- * Entidad Producto de acuerdo con el modelo relacional del Anexo 1.
+ * Producto o plato de la carta.
  */
 @Entity
 @Table(name = "productos")
@@ -117,7 +117,7 @@ public class Producto {
         this.imagen = imagen;
     }
 
-    // Retorna el nombre de la categoria para total compatibilidad con el frontend
+    // Categoria asignada al producto
     @JsonProperty("categoria")
     public String getCategoriaNombre() {
         return categoria != null ? categoria.getNombre() : null;

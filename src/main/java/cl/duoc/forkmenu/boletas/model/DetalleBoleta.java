@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 /**
- * Entidad Detalle_Boleta de acuerdo con el modelo relacional del Anexo 1.
+ * Detalle de cada plato o bebida incluido en una boleta.
  */
 @Entity
 @Table(name = "detalle_boleta")

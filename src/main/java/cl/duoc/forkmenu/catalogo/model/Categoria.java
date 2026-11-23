@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entidad Categoria de acuerdo con el modelo relacional del Anexo 1.
+ * Categoria del menu (hamburguesas, pizzas, bebidas, postres).
  */
 @Entity
 @Table(name = "categorias")

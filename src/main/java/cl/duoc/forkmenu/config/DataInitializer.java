@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Carga datos iniciales consistentes con el frontend si la base de datos esta vacia.
+ * Carga inicial de categorias, platos y usuarios si la base esta vacia.
  */
 @Component
 public class DataInitializer implements CommandLineRunner {

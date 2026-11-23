@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entidad Boleta de acuerdo con el modelo relacional del Anexo 1.
+ * Entidad que representa la boleta o pedido emitido.
  */
 @Entity
 @Table(name = "boletas")

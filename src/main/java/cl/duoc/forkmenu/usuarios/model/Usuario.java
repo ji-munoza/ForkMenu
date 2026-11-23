@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 /**
- * Entidad Usuario de acuerdo con el modelo relacional del Anexo 1.
+ * Entidad de usuario para autenticacion y control de acceso.
  */
 @Entity
 @Table(name = "usuarios")
@@ -138,7 +138,7 @@ public class Usuario {
         this.direccion = direccion;
     }
 
-    // Nombre completo concatenado para facilitar su visualizacion en el frontend
+    // Nombre completo para visualizacion
     public String getNombreCompleto() {
         if (apellidos != null && !apellidos.isBlank()) {
             return (nombre + " " + apellidos).trim();
