@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 
 export default function HeaderNavbar() {
-  const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin } = useAuth();
+  const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin, esVendedor: isVendedor } = useAuth();
   const { totalArticulos: totalItems } = useCart();
   const navigate = useNavigate();
 
@@ -42,9 +42,9 @@ export default function HeaderNavbar() {
               <Nav.Link as={NavLink} to="/contacto">
                 Contacto
               </Nav.Link>
-              {isAdmin && (
+              {(isAdmin || isVendedor) && (
                 <Nav.Link as={NavLink} to="/admin/pedidos" className="text-warning fw-semibold">
-                  <i className="bi bi-shield-lock-fill me-1"></i>Panel Admin
+                  <i className="bi bi-shield-lock-fill me-1"></i>{isAdmin ? 'Panel Admin' : 'Panel Vendedor'}
                 </Nav.Link>
               )}
             </Nav>
@@ -56,13 +56,14 @@ export default function HeaderNavbar() {
                     <i className="bi bi-person-circle"></i>
                     <span>Hola, {currentUser.nombre.split(' ')[0]}</span>
                     {isAdmin && <Badge bg="danger" className="ms-1">Admin</Badge>}
+                    {isVendedor && <Badge bg="warning" text="dark" className="ms-1">Vendedor</Badge>}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu className="shadow-sm">
                     <Dropdown.Item as={Link} to="/perfil">
                       <i className="bi bi-person me-2"></i>Mi Perfil
                     </Dropdown.Item>
-                    {isAdmin && (
+                    {(isAdmin || isVendedor) && (
                       <>
                         <Dropdown.Divider />
                         <Dropdown.Item as={Link} to="/admin/pedidos">
@@ -71,10 +72,12 @@ export default function HeaderNavbar() {
                         <Dropdown.Item as={Link} to="/admin/productos">
                           <i className="bi bi-box-seam me-2"></i>Inventario Productos
                         </Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/admin/usuarios">
-                          <i className="bi bi-people me-2"></i>Gestión de Usuarios
-                        </Dropdown.Item>
                       </>
+                    )}
+                    {isAdmin && (
+                      <Dropdown.Item as={Link} to="/admin/usuarios">
+                        <i className="bi bi-people me-2"></i>Gestión de Usuarios
+                      </Dropdown.Item>
                     )}
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={manejarCerrarSesion} className="text-danger">

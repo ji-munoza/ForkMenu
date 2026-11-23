@@ -4,7 +4,7 @@ import { Nav, Button, Badge } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AdminLayout() {
-  const { usuarioActual: currentUser, cerrarSesion } = useAuth();
+  const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin } = useAuth();
   const navigate = useNavigate();
 
   // Cierra la sesión y vuelve al login.
@@ -24,10 +24,14 @@ export default function AdminLayout() {
           <div className="px-2 py-2 mb-3 rounded bg-dark border border-secondary text-white-50 small">
             <div className="fw-semibold text-white d-flex align-items-center gap-1">
               <i className="bi bi-person-badge text-warning"></i>
-              <span>{currentUser?.nombre || 'Administrador'}</span>
+              <span>{currentUser?.nombre || (isAdmin ? 'Administrador' : 'Vendedor')}</span>
             </div>
             <div className="text-truncate">{currentUser?.correo}</div>
-            <Badge bg="danger" className="mt-1">ADMINISTRADOR</Badge>
+            {isAdmin ? (
+              <Badge bg="danger" className="mt-1">ADMINISTRADOR</Badge>
+            ) : (
+              <Badge bg="warning" text="dark" className="mt-1">VENDEDOR</Badge>
+            )}
           </div>
 
           <Nav className="nav-pills flex-column">
@@ -41,11 +45,13 @@ export default function AdminLayout() {
                 <i className="bi bi-box-seam me-2"></i> Productos
               </Nav.Link>
             </Nav.Item>
-            <Nav.Item className="mb-1">
-              <Nav.Link as={NavLink} to="/admin/usuarios" className={({ isActive }) => (isActive ? 'active' : '')}>
-                <i className="bi bi-people me-2"></i> Usuarios
-              </Nav.Link>
-            </Nav.Item>
+            {isAdmin && (
+              <Nav.Item className="mb-1">
+                <Nav.Link as={NavLink} to="/admin/usuarios" className={({ isActive }) => (isActive ? 'active' : '')}>
+                  <i className="bi bi-people me-2"></i> Usuarios
+                </Nav.Link>
+              </Nav.Item>
+            )}
           </Nav>
         </div>
 

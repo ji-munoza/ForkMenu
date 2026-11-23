@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Table, Form, Button, Row, Col, Badge, Alert } from 'react-bootstrap';
 import { useProducts } from '../../context/ProductContext';
+import { useAuth } from '../../context/AuthContext';
 import { formatearPrecio } from '../../utils/validaciones';
 
 export const meta = {
@@ -11,6 +12,7 @@ export const meta = {
 
 export default function AdminProductosPage() {
   const { productos, actualizarStock, guardarProducto } = useProducts();
+  const { esAdmin: isAdmin } = useAuth();
 
   // Datos del formulario para crear o editar un producto.
   const [formulario, setFormulario] = useState({
@@ -106,7 +108,8 @@ export default function AdminProductosPage() {
         </Alert>
       )}
 
-      {/* Formulario de productos. */}
+      {/* Formulario de productos (exclusivo Administrador). */}
+      {isAdmin && (
       <Card className="shadow-sm border-0 rounded-4 mb-4 bg-white">
         <Card.Header className="bg-white py-3 border-bottom">
           <h2 className="card-title h5 mb-0 fw-bold">Agregar / Editar Producto</h2>
@@ -241,6 +244,7 @@ export default function AdminProductosPage() {
           </Form>
         </Card.Body>
       </Card>
+      )}
 
       {/* Tabla de productos y stock. */}
       <Card className="shadow-sm border-0 rounded-4 overflow-hidden bg-white">

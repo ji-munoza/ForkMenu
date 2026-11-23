@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Table, Form, Button, Row, Col, Badge, Alert } from 'react-bootstrap';
+import { Card, Table, Form, Button, Row, Col, Badge, Alert, Container } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
 import { formatearRUT } from '../../utils/validaciones';
 
@@ -15,6 +15,7 @@ export default function AdminUsuariosPage() {
     actualizarRolUsuario,
     eliminarUsuario,
     agregarUsuario,
+    esAdmin: isAdmin,
   } = useAuth();
 
   // Datos para crear un usuario o elegir su rol.
@@ -72,6 +73,25 @@ export default function AdminUsuariosPage() {
     setFeedback({ tipo: 'success', texto: `${respuesta.message} (Contraseña asignada: 1234)` });
     setFormulario({ run: '', correo: '', rol: 'cliente' });
     setTimeout(() => setFeedback(null), 4000);
+  }
+
+  // Si no es administrador, no tiene acceso a la gestión de usuarios
+  if (!isAdmin) {
+    return (
+      <Container className="my-5 py-5 text-center">
+        <Alert variant="danger" className="shadow-sm p-4 mx-auto" style={{ maxWidth: '600px' }}>
+          <Alert.Heading className="fw-bold">
+            <i className="bi bi-shield-lock-fill me-2"></i>Acceso Restringido
+          </Alert.Heading>
+          <p className="mb-3">
+            La gestión de usuarios y asignación de roles está reservada exclusivamente para el Administrador del sistema.
+          </p>
+          <Button variant="danger" href="/admin/pedidos">
+            Volver a Pedidos
+          </Button>
+        </Alert>
+      </Container>
+    );
   }
 
   return (

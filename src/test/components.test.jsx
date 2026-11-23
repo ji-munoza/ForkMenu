@@ -94,4 +94,28 @@ describe('Componentes UI de ForkMenu', () => {
 
     expect(screen.getByText('Panel de Control Autorizado')).toBeInTheDocument();
   });
+
+  // Un vendedor también puede acceder al panel operativo (pedidos y productos).
+  it('ProtectedAdminRoute permite acceso si el usuario activo es vendedor', () => {
+    localStorage.setItem(
+      'usuarioActivo',
+      JSON.stringify({
+        nombre: 'Vendedor Turno',
+        correo: 'vendedor@forkmenu.cl',
+        rol: 'vendedor',
+      })
+    );
+
+    render(
+      <MemoryRouter initialEntries={['/admin/pedidos']}>
+        <AuthProvider>
+          <ProtectedAdminRoute>
+            <div>Panel Operativo Vendedor</div>
+          </ProtectedAdminRoute>
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Panel Operativo Vendedor')).toBeInTheDocument();
+  });
 });

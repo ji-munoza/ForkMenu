@@ -11,7 +11,7 @@ export const meta = {
 };
 
 export default function PerfilPage() {
-  const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin } = useAuth();
+  const { usuarioActual: currentUser, cerrarSesion, esAdmin: isAdmin, esVendedor: isVendedor } = useAuth();
   const { pedidos } = useOrders();
 
   // Si no hay sesión, vuelve al login.
@@ -24,12 +24,13 @@ export default function PerfilPage() {
     cerrarSesion();
   }
 
-  // Muestra los pedidos del usuario o todos si es administrador.
+  // Muestra los pedidos del usuario o todos si es administrador o vendedor.
   const misPedidos = pedidos.filter(
     (p) =>
       p.cliente?.toLowerCase() === currentUser.nombre?.toLowerCase() ||
       (p.clienteCorreo && p.clienteCorreo.toLowerCase() === currentUser.correo?.toLowerCase()) ||
-      currentUser.rol === 'admin'
+      currentUser.rol === 'admin' ||
+      currentUser.rol === 'vendedor'
   );
 
   return (
@@ -48,7 +49,17 @@ export default function PerfilPage() {
               {currentUser.correo}
             </p>
             <div className="mb-3">
-              <Badge bg={currentUser.rol === 'admin' ? 'danger' : 'secondary'} className="px-3 py-2 text-uppercase">
+              <Badge
+                bg={
+                  currentUser.rol === 'admin'
+                    ? 'danger'
+                    : currentUser.rol === 'vendedor'
+                    ? 'warning'
+                    : 'secondary'
+                }
+                text={currentUser.rol === 'vendedor' ? 'dark' : undefined}
+                className="px-3 py-2 text-uppercase"
+              >
                 Rol: {currentUser.rol}
               </Badge>
             </div>
@@ -65,9 +76,10 @@ export default function PerfilPage() {
             </div>
 
             <div className="d-grid gap-2">
-              {isAdmin && (
+              {(isAdmin || isVendedor) && (
                 <Button as={Link} to="/admin/pedidos" variant="outline-danger">
-                  <i className="bi bi-shield-lock me-2"></i>Ir al Panel Admin
+                  <i className="bi bi-shield-lock me-2"></i>
+                  {isAdmin ? 'Ir al Panel Admin' : 'Ir al Panel Vendedor'}
                 </Button>
               )}
               <Button variant="outline-secondary" onClick={manejarCerrarSesion}>
